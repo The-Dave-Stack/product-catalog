@@ -19,10 +19,10 @@ Create a remote repository on GitHub and link the local repository to it.
 
 ## Acceptance Criteria
 
-- [ ] A remote repository exists on GitHub.
-- [ ] The local repository is linked to the remote 'origin'.
-- [ ] Both 'main' and 'develop' branches are pushed to the remote.
-- [ ] Human review and approval.
+- [x] A remote repository exists on GitHub.
+- [x] The local repository is linked to the remote 'origin'.
+- [x] Both 'main' and 'develop' branches are pushed to the remote.
+- [x] Human review and approval.
 
 ## Implementation Plan
 
