@@ -1,9 +1,10 @@
 ---
 id: task-5
 title: Set Up PostgreSQL with Docker Compose
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-07-28'
+updated_date: '2025-07-29'
 labels:
   - db
   - docker
@@ -47,3 +48,22 @@ Implementation Plan:
 3. Map port 5432:5432 and configure environment variables (POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD).
 4. Define a named volume for data persistence.
 5. In 'application.properties', add the datasource properties to connect to the Docker container.
+
+## Implementation Notes
+
+[2025-07-29 16:55:36] - Created docker-compose.yml and defined postgres-db service.
+
+[2025-07-29 16:56:10] - Datasource already configured in application.properties.
+
+[2025-07-29 16:57:29] - Successfully started container and verified application connection.
+
+[2025-07-29 16:57:39] - Total time spent: ~2 minutes.
+
+Pull Request created: https://github.com/telco2011/product-catalog/pull/2
+
+[2025-07-29 16:55:36] - Task started.
+[2025-07-29 16:56:10] - Created docker-compose.yml and defined postgres-db service.
+[2025-07-29 16:56:28] - Confirmed datasource was already correctly configured in application.properties.
+[2025-07-29 16:57:39] - Successfully started Docker container and verified Spring Boot application connection.
+[2025-07-29 16:57:50] - Total time spent: ~2 minutes.
+[2025-07-29 17:36:17] - Pull Request created: https://github.com/telco2011/product-catalog/pull/2

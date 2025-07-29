@@ -7,8 +7,8 @@ The immediate priority is to establish the foundational infrastructure for the p
 - The Memory Bank has just been initialized with comprehensive context derived from the project's planning and design documents.
 
 ## Next Steps
-1.  **Complete `task-5`**: Set up the PostgreSQL database using Docker Compose. This is the primary blocker for all subsequent development tasks.
-2.  **Unblock and Complete `task-2`**: With the database running, finalize the initial Spring Boot project setup and verify that the application can connect to the database.
+1.  **Complete `task-2`**: With the database running, finalize the initial Spring Boot project setup and verify that the application can connect to the database.
+2.  **Proceed with `task-6`**: Define the 'Product' JPA Entity.
 
 ## Active Decisions and Considerations
 - The project will strictly follow the Git Flow branching model. All new work will be done on feature branches off of `develop`.
