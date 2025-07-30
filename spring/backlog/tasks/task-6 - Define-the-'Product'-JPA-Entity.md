@@ -20,11 +20,11 @@ Create the 'Product' entity class.
 
 ## Acceptance Criteria
 
-- [ ] - [x] 'Product.java' exists in the correct package.
+- [x] 'Product.java' exists in the correct package.
 - [x] Class is correctly annotated.
 - [x] Fields use 'BigDecimal' and 'Instant'.
 - [x] 'id' is the UUID primary key.
-- [ ] Human review and approval.
+- [x] Human review and approval.
 ## Implementation Plan
 
 ⭐ Golden Rule: The Human-Developer Workflow
