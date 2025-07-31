@@ -1,0 +1,10 @@
+CREATE TABLE products (
+    id VARCHAR(36) PRIMARY KEY,
+    sku VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price NUMERIC(19, 2) NOT NULL,
+    category VARCHAR(255),
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL
+);
