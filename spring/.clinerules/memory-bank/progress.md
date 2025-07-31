@@ -9,13 +9,13 @@
 
 ## What's Left to Build
 The rest of the application layers need to be implemented:
-1.  Repository, Service, and Controller layers.
+1.  Controller layer.
 2.  Comprehensive testing.
 3.  Final documentation and deployment preparation.
 
 ## Current Status
 - **Phase**: Development.
-- **Next Task**: `task-9 - Implement-Business-Logic-in-'ProductService'.md`.
+- **Next Task**: `task-10 - Implement-REST-Endpoints-in-'ProductController'.md`.
 
 ## Known Issues
 - No known issues.

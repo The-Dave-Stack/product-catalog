@@ -10,7 +10,7 @@ With the `ProductRepository` in place, the next priority is to implement the bus
 - Added Testcontainers to the project for robust integration testing against a real PostgreSQL database.
 
 ## Next Steps
-1.  **Proceed with `task-9`**: Implement Business Logic in 'ProductService'.
+1.  **Proceed with `task-10`**: Implement REST Endpoints in 'ProductController'.
 
 ## Active Decisions and Considerations
 - The project will strictly follow the Git Flow branching model. All new work will be done on feature branches off of `develop`.
