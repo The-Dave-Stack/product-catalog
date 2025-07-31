@@ -15,7 +15,7 @@ The rest of the application layers need to be implemented:
 
 ## Current Status
 - **Phase**: Development.
-- **Next Task**: `task-8 - Create-the-'ProductRepository'-Interface.md`.
+- **Next Task**: `task-9 - Implement-Business-Logic-in-'ProductService'.md`.
 
 ## Known Issues
 - No known issues.
