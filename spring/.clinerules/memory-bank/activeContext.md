@@ -1,14 +1,15 @@
 # Active Context: Current Focus and Next Steps
 
 ## Current Work Focus
-With the `Product` entity defined, the next priority is to create the initial database schema using Flyway.
+With the database schema now in place, the next priority is to create the `ProductRepository` interface to enable data access.
 
 ## Recent Changes
+- **Completed `task-7`**: Created the initial database schema with a Flyway migration script.
 - **Completed `task-6`**: Defined the `Product` JPA Entity.
 - Added Testcontainers to the project for robust integration testing against a real PostgreSQL database.
 
 ## Next Steps
-1.  **Proceed with `task-7`**: Create the initial database schema with a Flyway migration script.
+1.  **Proceed with `task-8`**: Create the `ProductRepository` interface.
 
 ## Active Decisions and Considerations
 - The project will strictly follow the Git Flow branching model. All new work will be done on feature branches off of `develop`.

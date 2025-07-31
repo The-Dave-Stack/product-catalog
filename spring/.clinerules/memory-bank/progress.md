@@ -4,18 +4,18 @@
 - **Project Planning**: All initial tasks have been defined in the `backlog/` directory.
 - **API Design**: The API contract and data models are documented.
 - **Database Environment**: The PostgreSQL database runs in Docker.
-- **JPA Entity**: The `Product` entity is defined and the project builds successfully with Testcontainers for the test scope.
+- **JPA Entity**: The `Product` entity is defined.
+- **Database Schema**: The initial database schema is created and managed by Flyway.
 
 ## What's Left to Build
 The rest of the application layers need to be implemented:
-1.  Database schema creation (Flyway).
-2.  Repository, Service, and Controller layers.
-3.  Comprehensive testing.
-4.  Final documentation and deployment preparation.
+1.  Repository, Service, and Controller layers.
+2.  Comprehensive testing.
+3.  Final documentation and deployment preparation.
 
 ## Current Status
 - **Phase**: Development.
-- **Next Task**: `task-7 - Create-Initial-DB-Schema-with-Flyway.md`.
+- **Next Task**: `task-8 - Create-the-'ProductRepository'-Interface.md`.
 
 ## Known Issues
 - No known issues.
