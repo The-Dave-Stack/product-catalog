@@ -16,3 +16,4 @@ The application follows a classic three-layer architecture, ensuring a clean sep
     - **Unit Tests**: The service layer is tested in isolation using Mockito to mock repository dependencies.
     - **Repository Tests**: The data access layer is tested using `@DataJpaTest`, which provides an in-memory database to verify JPA queries.
     - **Integration & E2E Tests**: The full application is tested using **Testcontainers**, which spins up the entire `docker-compose` stack (including the real PostgreSQL database) to validate the interactions between all layers, from the API endpoints down to the database.
+- **Automated Code Formatting**: Code quality and consistency are enforced automatically by the **Spotless Maven Plugin**. It is configured to use `google-java-format` and enforce a standard import order, ensuring all code adheres to the project's style guide without manual intervention.

@@ -20,6 +20,7 @@
 
 ## Development Environment
 - **Containerization**: Docker and Docker Compose are used to manage the PostgreSQL database instance, ensuring a consistent and reproducible development environment.
+- **Code Formatting**: Spotless Maven Plugin with `google-java-format`.
 - **IDE**: Any modern IDE supporting Maven and Java (e.g., IntelliJ IDEA, VS Code).
 
 ## Project Paths
