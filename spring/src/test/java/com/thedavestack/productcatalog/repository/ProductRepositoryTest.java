@@ -1,20 +1,21 @@
 /**
  * ProductRepositoryTest.java
  *
- * Purpose:
- * - Contains integration tests for the ProductRepository interface.
+ * <p>Purpose: - Contains integration tests for the ProductRepository interface.
  *
- * Logic Overview:
- * - Uses @DataJpaTest to configure an in-memory database and test the repository layer in isolation.
- * - Leverages Testcontainers to run tests against a real PostgreSQL database, ensuring consistency with production.
- * - Tests the custom query methods findBySku and existsBySku.
+ * <p>Logic Overview: - Uses @DataJpaTest to configure an in-memory database and test the repository
+ * layer in isolation. - Leverages Testcontainers to run tests against a real PostgreSQL database,
+ * ensuring consistency with production. - Tests the custom query methods findBySku and existsBySku.
  *
- * Last Updated:
- * 2025-07-31 by Cline (Model: claude-3-opus, Task: task-8)
+ * <p>Last Updated: 2025-07-31 by Cline (Model: claude-3-opus, Task: task-8)
  */
 package com.thedavestack.productcatalog.repository;
 
-import com.thedavestack.productcatalog.model.Product;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.math.BigDecimal;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -26,10 +27,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.math.BigDecimal;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import com.thedavestack.productcatalog.model.Product;
 
 @DataJpaTest
 @Testcontainers
@@ -48,8 +46,7 @@ class ProductRepositoryTest {
         registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
     }
 
-    @Autowired
-    private ProductRepository productRepository;
+    @Autowired private ProductRepository productRepository;
 
     @Test
     void findBySku_shouldReturnProduct_whenProductExists() {

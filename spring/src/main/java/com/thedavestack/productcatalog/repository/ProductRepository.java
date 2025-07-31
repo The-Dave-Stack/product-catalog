@@ -1,25 +1,23 @@
 /**
  * ProductRepository.java
  *
- * Design Doc: ./docs/doc-1 - API-Design-Product-Catalog.md
+ * <p>Design Doc: ./docs/doc-1 - API-Design-Product-Catalog.md
  *
- * Purpose:
- * - Provides the data access layer for the Product entity.
+ * <p>Purpose: - Provides the data access layer for the Product entity.
  *
- * Logic Overview:
- * - Extends Spring Data JPA's JpaRepository to provide standard CRUD operations.
+ * <p>Logic Overview: - Extends Spring Data JPA's JpaRepository to provide standard CRUD operations.
  * - Defines custom query methods for finding products by SKU.
  *
- * Last Updated:
- * 2025-07-31 by Cline (Model: claude-3-opus, Task: task-8)
+ * <p>Last Updated: 2025-07-31 by Cline (Model: claude-3-opus, Task: task-8)
  */
 package com.thedavestack.productcatalog.repository;
 
-import com.thedavestack.productcatalog.model.Product;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import com.thedavestack.productcatalog.model.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {

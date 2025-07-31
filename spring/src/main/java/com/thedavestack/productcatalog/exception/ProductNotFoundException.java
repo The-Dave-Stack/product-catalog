@@ -1,13 +1,11 @@
 /**
  * ProductNotFoundException.java
  *
- * Design Doc: ./docs/API-Design-Product-Catalog.md
+ * <p>Design Doc: ./docs/API-Design-Product-Catalog.md
  *
- * Purpose:
- * - Custom exception to indicate that a requested product could not be found.
+ * <p>Purpose: - Custom exception to indicate that a requested product could not be found.
  *
- * Last Updated:
- * 2025-07-31 by Cline (Model: claude-3-opus, Task: Initial creation for task-9)
+ * <p>Last Updated: 2025-07-31 by Cline (Model: claude-3-opus, Task: Initial creation for task-9)
  */
 package com.thedavestack.productcatalog.exception;
 

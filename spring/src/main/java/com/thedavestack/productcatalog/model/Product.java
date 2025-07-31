@@ -1,21 +1,24 @@
 /**
  * Product.java
  *
- * Design Doc: ./docs/API-Design-Product-Catalog.md
+ * <p>Design Doc: ./docs/API-Design-Product-Catalog.md
  *
- * Purpose:
- * - Represents the Product entity in the database.
+ * <p>Purpose: - Represents the Product entity in the database.
  *
- * Logic Overview:
- * - This class is a JPA entity mapped to the "products" table.
- * - It includes fields for product details like SKU, name, price, etc.
- * - It uses Lombok for boilerplate code reduction and JPA annotations for ORM.
- * - Timestamps for creation and update are automatically managed.
+ * <p>Logic Overview: - This class is a JPA entity mapped to the "products" table. - It includes
+ * fields for product details like SKU, name, price, etc. - It uses Lombok for boilerplate code
+ * reduction and JPA annotations for ORM. - Timestamps for creation and update are automatically
+ * managed.
  *
- * Last Updated:
- * 2025-07-30 by Cline (Model: claude-3-opus, Task: Define Product JPA Entity)
+ * <p>Last Updated: 2025-07-30 by Cline (Model: claude-3-opus, Task: Define Product JPA Entity)
  */
 package com.thedavestack.productcatalog.model;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,11 +29,6 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.math.BigDecimal;
-import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -60,6 +58,5 @@ public class Product {
     @Column(updatable = false)
     private Instant createdAt;
 
-    @UpdateTimestamp
-    private Instant updatedAt;
+    @UpdateTimestamp private Instant updatedAt;
 }
