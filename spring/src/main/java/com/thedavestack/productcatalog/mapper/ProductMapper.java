@@ -1,9 +1,10 @@
 package com.thedavestack.productcatalog.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.thedavestack.productcatalog.dto.CreateProductRequest;
 import com.thedavestack.productcatalog.dto.ProductResponse;
 import com.thedavestack.productcatalog.model.Product;
-import org.springframework.stereotype.Component;
 
 @Component
 public class ProductMapper {
