@@ -1,3 +1,12 @@
+/**
+ * ProductMapper.java
+ *
+ * <p>Design Doc: ./docs/doc-1 - API-Design-Product-Catalog.md
+ *
+ * <p>Purpose: - Maps between Product entities and DTOs.
+ *
+ * <p>Last Updated: 2025-07-31 by Cline (Model: claude-3-opus, Task: task-10)
+ */
 package com.thedavestack.productcatalog.mapper;
 
 import org.springframework.stereotype.Component;

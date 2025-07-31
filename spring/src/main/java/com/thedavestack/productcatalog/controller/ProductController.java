@@ -1,3 +1,17 @@
+/**
+ * ProductController.java
+ *
+ * <p>Design Doc: ./docs/doc-1 - API-Design-Product-Catalog.md
+ *
+ * <p>Purpose: - Handles HTTP requests related to product accounts. - GET /products/:id → fetch
+ * product by ID - POST /products → create a new product
+ *
+ * <p>Logic Overview: 1. Validate request payloads and parameters. 2. Call the corresponding
+ * ProductService method to interact with the database. 3. Handle errors using a centralized error
+ * handler. 4. Send appropriate HTTP status codes and JSON responses.
+ *
+ * <p>Last Updated: 2025-07-31 by Cline (Model: claude-3-opus, Task: task-10)
+ */
 package com.thedavestack.productcatalog.controller;
 
 import org.springframework.http.HttpStatus;

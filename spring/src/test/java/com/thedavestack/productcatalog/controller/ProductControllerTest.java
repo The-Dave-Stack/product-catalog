@@ -1,3 +1,12 @@
+/**
+ * ProductControllerTest.java
+ *
+ * <p>Design Doc: ./docs/doc-1 - API-Design-Product-Catalog.md
+ *
+ * <p>Purpose: - Provides unit tests for the ProductController.
+ *
+ * <p>Last Updated: 2025-07-31 by Cline (Model: claude-3-opus, Task: task-10)
+ */
 package com.thedavestack.productcatalog.controller;
 
 import static org.mockito.ArgumentMatchers.any;
