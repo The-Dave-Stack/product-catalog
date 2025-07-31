@@ -1,9 +1,10 @@
 ---
 id: task-10
 title: Implement REST Endpoints in 'ProductController'
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-07-28'
+updated_date: '2025-07-31'
 labels:
   - api
   - controller
@@ -48,3 +49,17 @@ Implementation Plan:
 4. Implement methods for all MVP endpoints, using DTOs for request and response bodies.
 5. Implement a mapper component to convert between entities and DTOs.
 6. Create a @ControllerAdvice class to handle custom exceptions and return appropriate HTTP errors.
+
+## Implementation Notes
+
+[2025-07-31 18:07:38] - Created  and  DTOs.
+
+[2025-07-31 18:12:08] - Created  and .
+
+[2025-07-31 18:17:00] - Created unit tests for .
+
+[2025-07-31 18:17:56] - Created integration tests for .
+
+[2025-07-31 18:20:25] - Manually validated the endpoints using .
+
+[2025-07-31 18:20:54] - Total time spent: 18 minutes.
