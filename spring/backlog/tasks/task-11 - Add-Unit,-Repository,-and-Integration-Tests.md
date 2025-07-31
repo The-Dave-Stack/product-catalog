@@ -43,7 +43,7 @@ Universal Mandates:
 - If any step is unclear, ask for human clarification before proceeding and log the timestamped interaction.
 
 Implementation Plan:
-1. Add 'Testcontainers' dependency to pom.xml.
-2. Create Unit Tests for 'ProductService' using Mockito.
-3. Create Repository Tests for 'ProductRepository' using @DataJpaTest.
+1. Add 'Testcontainers' dependency to pom.xml, if not exists.
+2. Check the Unit Tests for 'ProductService' using Mockito and add more if needed.
+3. Check the Repository Tests for 'ProductRepository' using @DataJpaTest and add more if needed.
 4. Create Integration Tests for 'ProductController' using @SpringBootTest, Testcontainers, and MockMvc.
