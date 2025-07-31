@@ -9,13 +9,12 @@
 
 ## What's Left to Build
 The rest of the application layers need to be implemented:
-1.  Controller layer.
-2.  Comprehensive testing.
-3.  Final documentation and deployment preparation.
+1.  Comprehensive testing.
+2.  Final documentation and deployment preparation.
 
 ## Current Status
 - **Phase**: Development.
-- **Next Task**: `task-10 - Implement-REST-Endpoints-in-'ProductController'.md`.
+- **Next Task**: `task-11 - Add-Unit,-Repository,-and-Integration-Tests.md`.
 
 ## Known Issues
 - No known issues.
