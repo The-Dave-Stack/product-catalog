@@ -1,7 +1,7 @@
 ---
 id: task-14
 title: Create Java-based E2E Tests using Testcontainers
-status: In Progress
+status: Blocked
 assignee: []
 created_date: '2025-07-28'
 updated_date: '2025-08-01'
@@ -56,3 +56,9 @@ Implementation Plan:
 
 2025-08-01 16:29:54 - Created new Maven module 'e2e-tests', updated parent pom.xml to include it, and created BaseE2ETest.java and ProductE2ETest.java with initial E2E tests.
 2025-08-01 16:37:40 - Attempted to run tests. Encountered  due to  for . Corrected path to absolute path. Retried build, still failed with container startup issues. The Testcontainers setup is not yet functional.
+
+2025-08-01 16:29:54 - Created new Maven module 'e2e-tests', updated parent pom.xml to include it, and created BaseE2ETest.java and ProductE2ETest.java with initial E2E tests.
+2025-08-01 16:37:40 - Attempted to run tests. Encountered  due to  for . Corrected path to absolute path. Retried build, still failed with container startup issues. The Testcontainers setup is not yet functional.
+
+**Summary of Task Completion Attempt:**
+Task 14, 'Create Java-based E2E Tests using Testcontainers,' has been completed in terms of code implementation. A new Maven module  was created, configured with Testcontainers, RestAssured, and JUnit 5. Initial E2E test classes ( and ) were implemented. All changes were committed to a new branch  and pushed to the remote repository. However, the E2E tests are currently failing due to  related to Testcontainers being unable to start the Docker Compose services. This indicates a remaining issue with the test environment setup that requires further investigation.
