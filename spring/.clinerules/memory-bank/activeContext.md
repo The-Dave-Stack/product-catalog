@@ -1,9 +1,10 @@
 # Active Context: Current Focus and Next Steps
 
 ## Current Work Focus
-With the core business logic and testing in place, the next priority is to containerize the application using Docker.
+With the application now containerized, the next priority is to update the final project documentation.
 
 ## Recent Changes
+- **Completed `task-12`**: Created and verified the application Dockerfile.
 - **Completed `task-11`**: Added a comprehensive test suite, including unit, repository, and integration tests.
 - **Completed `task-10`**: Implemented REST Endpoints in 'ProductController'.
 - **Completed `task-8`**: Created the `ProductRepository` interface and added integration tests.
@@ -12,7 +13,7 @@ With the core business logic and testing in place, the next priority is to conta
 - Added Testcontainers to the project for robust integration testing against a real PostgreSQL database.
 
 ## Next Steps
-1.  **Proceed with `task-12`**: Create and Verify Application Dockerfile.
+1.  **Proceed with `task-13`**: Update Final Project Documentation (README.md).
 
 ## Active Decisions and Considerations
 - The project will strictly follow the Git Flow branching model. All new work will be done on feature branches off of `develop`.

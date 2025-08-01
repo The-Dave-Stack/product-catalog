@@ -10,12 +10,11 @@
 
 ## What's Left to Build
 The rest of the application layers need to be implemented:
-1.  Containerize the application with Docker.
-2.  Final documentation and deployment preparation.
+1.  Final documentation and deployment preparation.
 
 ## Current Status
 - **Phase**: Development.
-- **Next Task**: `task-12 - Create-and-Verify-Application-Dockerfile.md`.
+- **Next Task**: `task-13 - Update-Final-Project-Documentation-(README.md).md`.
 
 ## Known Issues
 - No known issues.
