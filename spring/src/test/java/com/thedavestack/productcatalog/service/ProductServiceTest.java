@@ -119,6 +119,15 @@ class ProductServiceTest {
     }
 
     @Test
+    void createMultipleProducts_shouldReturnEmptyList_whenInputIsEmpty() {
+        List<Product> createdProducts = productService.createMultipleProducts(List.of());
+
+        assertThat(createdProducts).isNotNull();
+        assertThat(createdProducts).isEmpty();
+        verify(productRepository, never()).save(any(Product.class));
+    }
+
+    @Test
     void updateProduct_shouldUpdateAndReturnProduct() {
         when(productRepository.findById("1")).thenReturn(Optional.of(product1));
         when(productRepository.save(any(Product.class))).thenReturn(product1);
