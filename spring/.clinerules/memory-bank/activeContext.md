@@ -1,9 +1,10 @@
 # Active Context: Current Focus and Next Steps
 
 ## Current Work Focus
-With the `ProductRepository` in place, the next priority is to implement the business logic in the `ProductService`.
+With the core business logic and testing in place, the next priority is to containerize the application using Docker.
 
 ## Recent Changes
+- **Completed `task-11`**: Added a comprehensive test suite, including unit, repository, and integration tests.
 - **Completed `task-10`**: Implemented REST Endpoints in 'ProductController'.
 - **Completed `task-8`**: Created the `ProductRepository` interface and added integration tests.
 - **Completed `task-7`**: Created the initial database schema with a Flyway migration script.
@@ -11,7 +12,7 @@ With the `ProductRepository` in place, the next priority is to implement the bus
 - Added Testcontainers to the project for robust integration testing against a real PostgreSQL database.
 
 ## Next Steps
-1.  **Proceed with `task-11`**: Add Unit, Repository, and Integration Tests.
+1.  **Proceed with `task-12`**: Create and Verify Application Dockerfile.
 
 ## Active Decisions and Considerations
 - The project will strictly follow the Git Flow branching model. All new work will be done on feature branches off of `develop`.
