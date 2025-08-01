@@ -1,9 +1,10 @@
 ---
 id: task-14
 title: Create Java-based E2E Tests using Testcontainers
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2025-07-28'
+updated_date: '2025-08-01'
 labels:
   - test
   - e2e
@@ -48,3 +49,10 @@ Implementation Plan:
 3. Create a test class that uses 'DockerComposeContainer' to point to the root 'docker-compose.yml'.
 4. Implement @Test methods for each defined user story (Happy Path, Duplicate SKU, Invalid Data, etc.).
 5. Use RestAssured to make HTTP calls and assert responses.
+
+## Implementation Notes
+
+2025-08-01 16:29:54 - Created new Maven module 'e2e-tests', updated parent pom.xml to include it, and created BaseE2ETest.java and ProductE2ETest.java with initial E2E tests.
+
+2025-08-01 16:29:54 - Created new Maven module 'e2e-tests', updated parent pom.xml to include it, and created BaseE2ETest.java and ProductE2ETest.java with initial E2E tests.
+2025-08-01 16:37:40 - Attempted to run tests. Encountered  due to  for . Corrected path to absolute path. Retried build, still failed with container startup issues. The Testcontainers setup is not yet functional.

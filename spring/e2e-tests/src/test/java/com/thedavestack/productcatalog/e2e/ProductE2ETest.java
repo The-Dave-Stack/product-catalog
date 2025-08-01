@@ -1,0 +1,130 @@
+/**
+ * ProductE2ETest.java
+ *
+ * Purpose:
+ * - Implements end-to-end tests for the Product Catalog API using RestAssured and Testcontainers.
+ * - Verifies the API's functionality for creating, retrieving, and handling products under various scenarios.
+ *
+ * Logic Overview:
+ * 1. Extends BaseE2ETest to leverage the shared Docker Compose environment setup.
+ * 2. Uses RestAssured to send HTTP requests to the running Spring Boot application.
+ * 3. Asserts the responses based on expected status codes, body content, and error messages.
+ * 4. Covers happy path, duplicate SKU, and invalid data scenarios.
+ *
+ * Last Updated:
+ * 2025-08-01 by Cline (Model: claude-3-opus, Task: Initial creation of ProductE2ETest)
+ */
+package com.thedavestack.productcatalog.e2e;
+
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
+
+public class ProductE2ETest extends BaseE2ETest {
+
+    @BeforeEach
+    void setUp() {
+        RestAssured.baseURI = BASE_URI;
+    }
+
+    @Test
+    @DisplayName("Should create a product successfully")
+    void shouldCreateProductSuccessfully() {
+        String requestBody = "{ \"name\": \"Test Product\", \"description\": \"A product for testing\", \"price\": 99.99, \"sku\": \"TP-001\" }";
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .post("/api/products")
+        .then()
+            .statusCode(201)
+            .body("id", notNullValue())
+            .body("name", equalTo("Test Product"))
+            .body("description", equalTo("A product for testing"))
+            .body("price", equalTo(99.99F))
+            .body("sku", equalTo("TP-001"));
+    }
+
+    @Test
+    @DisplayName("Should not create product with duplicate SKU")
+    void shouldNotCreateProductWithDuplicateSku() {
+        // Create first product
+        String firstProduct = "{ \"name\": \"Product A\", \"description\": \"Desc A\", \"price\": 10.00, \"sku\": \"DUPLICATE-SKU\" }";
+        given()
+            .contentType(ContentType.JSON)
+            .body(firstProduct)
+        .when()
+            .post("/api/products")
+        .then()
+            .statusCode(201);
+
+        // Attempt to create second product with same SKU
+        String secondProduct = "{ \"name\": \"Product B\", \"description\": \"Desc B\", \"price\": 20.00, \"sku\": \"DUPLICATE-SKU\" }";
+        given()
+            .contentType(ContentType.JSON)
+            .body(secondProduct)
+        .when()
+            .post("/api/products")
+        .then()
+            .statusCode(409) // Conflict
+            .body("message", containsString("Product with SKU DUPLICATE-SKU already exists"));
+    }
+
+    @Test
+    @DisplayName("Should not create product with invalid data (missing name)")
+    void shouldNotCreateProductWithInvalidData() {
+        String requestBody = "{ \"description\": \"Invalid product\", \"price\": 50.00, \"sku\": \"INV-001\" }";
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .post("/api/products")
+        .then()
+            .statusCode(400) // Bad Request
+            .body("message", containsString("Name cannot be empty"));
+    }
+
+    @Test
+    @DisplayName("Should retrieve product by ID")
+    void shouldRetrieveProductById() {
+        // Create a product first
+        String requestBody = "{ \"name\": \"Retrieve Product\", \"description\": \"To be retrieved\", \"price\": 123.45, \"sku\": \"RET-001\" }";
+        String productId = given()
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .post("/api/products")
+        .then()
+            .statusCode(201)
+            .extract().path("id");
+
+        // Retrieve the product
+        given()
+        .when()
+            .get("/api/products/{id}", productId)
+        .then()
+            .statusCode(200)
+            .body("id", equalTo(productId))
+            .body("name", equalTo("Retrieve Product"))
+            .body("sku", equalTo("RET-001"));
+    }
+
+    @Test
+    @DisplayName("Should return 404 for non-existent product ID")
+    void shouldReturn404ForNonExistentProductId() {
+        String nonExistentId = "non-existent-id-123";
+        given()
+        .when()
+            .get("/api/products/{id}", nonExistentId)
+        .then()
+            .statusCode(404)
+            .body("message", containsString("Product not found with ID: " + nonExistentId));
+    }
+}
