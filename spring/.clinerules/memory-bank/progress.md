@@ -6,15 +6,16 @@
 - **Database Environment**: The PostgreSQL database runs in Docker.
 - **JPA Entity**: The `Product` entity is defined.
 - **Database Schema**: The initial database schema is created and managed by Flyway.
+- **Comprehensive Testing**: A full suite of unit, repository, and integration tests are in place.
 
 ## What's Left to Build
 The rest of the application layers need to be implemented:
-1.  Comprehensive testing.
+1.  Containerize the application with Docker.
 2.  Final documentation and deployment preparation.
 
 ## Current Status
 - **Phase**: Development.
-- **Next Task**: `task-11 - Add-Unit,-Repository,-and-Integration-Tests.md`.
+- **Next Task**: `task-12 - Create-and-Verify-Application-Dockerfile.md`.
 
 ## Known Issues
 - No known issues.
