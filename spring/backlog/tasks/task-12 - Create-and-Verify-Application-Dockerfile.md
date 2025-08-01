@@ -20,11 +20,9 @@ Create a multi-stage Dockerfile with a HEALTHCHECK and verification process.
 
 ## Acceptance Criteria
 
-- [ ] - [x] 'Dockerfile' with multi-stage build and HEALTHCHECK exists.
+- [x] 'Dockerfile' with multi-stage build and HEALTHCHECK exists.
 - [x] 'docker build' completes successfully.
-- [x] The verification process (run
-- [ ] check health
-- [ ] stop) completes successfully.
+- [x] The verification process (run, check, health, stop) completes successfully.
 - [x] Human review and approval.
 ## Implementation Plan
 
