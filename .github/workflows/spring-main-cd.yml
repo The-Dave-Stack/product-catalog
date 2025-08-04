@@ -118,12 +118,12 @@ jobs:
         git push
 
     - name: Send success notification
-      uses: dawidd6/action-send-mail@v3
+      uses: dawidd6/action-send-mail@v6
       with:
-        server_address: smtp.gmail.com
+        server_address: smtp.eu.mailgun.org
         server_port: 587
-        username: ${{ secrets.EMAIL_USERNAME }}
-        password: ${{ secrets.EMAIL_PASSWORD }}
+        username: ${{ secrets.SMTP_USERNAME }}
+        password: ${{ secrets.SMTP_PASSWORD }}
         subject: "✅ Spring Production Deployment Successful - v${{ steps.version.outputs.version }}"
         to: david@thedavestack.com
         from: GitHub Actions <noreply@github.com>
