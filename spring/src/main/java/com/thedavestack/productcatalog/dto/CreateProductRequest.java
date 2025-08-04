@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
 public record CreateProductRequest(
-        @NotBlank(message = "Product name cannot be blank") String name,
+        @NotBlank(message = "Name cannot be empty") String name,
         String description,
-        @Positive(message = "Product price must be positive") BigDecimal price) {}
+        @Positive(message = "Product price must be positive") BigDecimal price,
+        String sku) {}

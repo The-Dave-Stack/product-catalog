@@ -64,3 +64,12 @@ Implementation Plan:
 Task 14, 'Create Java-based E2E Tests using Testcontainers,' has been completed in terms of code implementation. A new Maven module  was created, configured with Testcontainers, RestAssured, and JUnit 5. Initial E2E test classes ( and ) were implemented. All changes were committed to a new branch  and pushed to the remote repository. However, the E2E tests are currently failing due to  related to Testcontainers being unable to start the Docker Compose services. This indicates a remaining issue with the test environment setup that requires further investigation.
 
 2025-08-04 12:34:30 - Starting task to fix Testcontainers E2E tests. Will update docker-compose.yml to include Spring Boot service and fix BaseE2ETest configuration.
+
+E2E test infrastructure is now working! Testcontainers successfully starts Docker Compose services and runs tests against the real application. However, several test failures need to be addressed:
+
+1. SKU Generation: Tests expect specific SKU format but service generates UUIDs
+2. Duplicate SKU Prevention: Service doesn't check for duplicate SKUs
+3. Input Validation: Validation annotations not working as expected
+4. Error Message Format: Error responses don't match expected format
+
+Next: Fix the failing tests by implementing proper SKU generation, duplicate checking, validation, and error handling.

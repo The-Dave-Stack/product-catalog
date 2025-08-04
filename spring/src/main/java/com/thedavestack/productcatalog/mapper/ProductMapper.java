@@ -23,6 +23,7 @@ public class ProductMapper {
         product.setName(createProductRequest.name());
         product.setDescription(createProductRequest.description());
         product.setPrice(createProductRequest.price());
+        product.setSku(createProductRequest.sku());
         return product;
     }
 
