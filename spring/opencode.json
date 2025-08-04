@@ -1,0 +1,63 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "github.com/modelcontextprotocol/servers/tree/main/src/git": {
+      "type": "local",
+      "command": ["python", "-m", "mcp_server_git"],
+      "enabled": true
+    },
+    "github.com/github/github-mcp-server": {
+      "type": "local",
+      "command": ["docker", "run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "-e", "GITHUB_TOOLSETS", "ghcr.io/github/github-mcp-server"],
+      "environment": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "",
+        "GITHUB_TOOLSETS": "repos,issues,pull_requests,actions,users,notifications"
+      },
+      "enabled": true
+    },
+    "github.com/upstash/context7-mcp": {
+      "type": "local",
+      "command": ["npx", "-y", "@upstash/context7-mcp@latest"],
+      "enabled": true
+    },
+    "github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking": {
+      "type": "local",
+      "command": ["node", "/home/kratos/Documents/Cline/MCP/sequential-thinking/build/index.js"],
+      "enabled": true
+    },
+    "github.com/browserbase/mcp-server-browserbase": {
+      "type": "local",
+      "command": ["node", "/home/kratos/Documents/Cline/MCP/browserbase-mcp-server/browserbase/cli.js"],
+      "environment": {
+        "BROWSERBASE_API_KEY": "",
+        "BROWSERBASE_PROJECT_ID": "ece86017-9158-4c46-95e7-0e82909b2ae2"
+      },
+      "enabled": true
+    },
+    "github.com/modelcontextprotocol/servers/tree/main/src/filesystem": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-filesystem", "/"],
+      "enabled": true
+    },
+    "mcp-backlog-md": {
+      "type": "local",
+      "command": ["npx", "-y", "mcp-backlog-md"],
+      "enabled": true
+    },
+    "time-mcp": {
+      "type": "local",
+      "command": ["npx", "-y", "time-mcp"],
+      "enabled": true
+    },
+    "repomix": {
+      "type": "local",
+      "command": ["npx", "-y", "repomix", "--mcp"],
+      "enabled": true
+    },
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "@playwright/mcp@latest"],
+      "enabled": true
+    }
+  }
+}
