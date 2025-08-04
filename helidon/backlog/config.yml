@@ -1,4 +1,4 @@
-project_name: "product-catalog-spring"
+project_name: "product-catalog-helidon"
 default_status: "To Do"
 statuses: ["To Do", "In Progress", "Blocked", "Done"]
 labels: []

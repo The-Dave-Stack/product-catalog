@@ -70,10 +70,52 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- RestAssured for E2E API testing -->
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>com.diffplug.spotless</groupId>
+				<artifactId>spotless-maven-plugin</artifactId>
+				<version>2.46.1</version>
+				<configuration>
+					<java>
+						<googleJavaFormat>
+							<version>1.17.0</version>
+							<style>AOSP</style>
+						</googleJavaFormat>
+						<importOrder>
+							<order>java,javax,org,com</order>
+						</importOrder>
+						<removeUnusedImports />
+						<removeWildcardImports />
+					</java>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<phase>verify</phase>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -98,6 +140,54 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<!-- Surefire Plugin for Unit Tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+					</includes>
+					<excludes>
+						<exclude>**/*IT.java</exclude>
+						<exclude>**/*E2ETest.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<!-- Failsafe Plugin for Integration and E2E Tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>integration-tests</id>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include>**/*IT.java</include>
+							</includes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>e2e-tests</id>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include>**/*E2ETest.java</include>
+							</includes>
+							<systemPropertyVariables>
+								<spring.profiles.active>test-e2e</spring.profiles.active>
+							</systemPropertyVariables>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
