@@ -1,0 +1,79 @@
+name: Pull Request Validation
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  validate-spring:
+    name: Validate Spring Boot Implementation
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./spring
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Java 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Cache Maven dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('spring/**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
+    - name: Run code formatting check
+      run: mvn spotless:check
+
+    - name: Run unit tests
+      run: mvn clean test
+
+    - name: Run integration tests
+      run: mvn failsafe:integration-test failsafe:verify -Dtest=none -DfailIfNoTests=false
+
+    - name: Build application
+      run: mvn clean package -DskipTests
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: spring-test-results
+        path: |
+          spring/target/surefire-reports/
+          spring/target/failsafe-reports/
+
+  validate-helidon:
+    name: Validate Helidon Implementation
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./helidon
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Java 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Cache Maven dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('helidon/**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
+    # Note: Helidon validation steps will be added when Helidon implementation is ready
+    - name: Placeholder for Helidon validation
+      run: echo "Helidon validation will be implemented when the project is ready"

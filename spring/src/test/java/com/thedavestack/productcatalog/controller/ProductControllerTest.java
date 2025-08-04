@@ -47,7 +47,8 @@ class ProductControllerTest {
     @Test
     void createProduct_shouldReturnCreatedProduct() throws Exception {
         CreateProductRequest request =
-                new CreateProductRequest("Test Product", "Description", new BigDecimal("10.00"));
+                new CreateProductRequest(
+                        "Test Product", "Description", new BigDecimal("10.00"), null);
         Product product = new Product();
         product.setId("1");
         product.setName("Test Product");

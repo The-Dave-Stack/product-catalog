@@ -15,5 +15,19 @@ The application follows a classic three-layer architecture, ensuring a clean sep
 - **Comprehensive Testing Strategy**:
     - **Unit Tests**: The service layer is tested in isolation using Mockito to mock repository dependencies.
     - **Repository Tests**: The data access layer is tested using `@DataJpaTest`, which provides an in-memory database to verify JPA queries.
-    - **Integration & E2E Tests**: The full application is tested using **Testcontainers**, which spins up the entire `docker-compose` stack (including the real PostgreSQL database) to validate the interactions between all layers, from the API endpoints down to the database.
+    - **Integration Tests**: The full application is tested using **Testcontainers** with PostgreSQL to validate the interactions between all layers.
+    - **E2E Tests**: Complete end-to-end testing using **Testcontainers** with PostgreSQL and **RestAssured** for API testing, integrated directly into the main project structure for better maintainability.
 - **Automated Code Formatting**: Code quality and consistency are enforced automatically by the **Spotless Maven Plugin**. It is configured to use `google-java-format` and enforce a standard import order, ensuring all code adheres to the project's style guide without manual intervention.
+
+## Component Relationships
+- **Controllers** depend on **Services** for business logic
+- **Services** depend on **Repositories** for data access
+- **Mappers** handle conversion between **Entities** and **DTOs**
+- **Exception Handlers** provide centralized error management
+- **Testcontainers** provide isolated database environments for testing
+
+## Critical Implementation Paths
+- **Product Creation**: Controller → Service (SKU generation) → Repository → Database
+- **Error Handling**: Exception → GlobalExceptionHandler → Standardized HTTP Response
+- **Data Validation**: DTO Validation → Service Business Rules → Database Constraints
+- **Testing Flow**: E2E Tests → Testcontainers PostgreSQL → Real Application → API Validation

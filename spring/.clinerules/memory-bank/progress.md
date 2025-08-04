@@ -7,17 +7,25 @@
 - **JPA Entity**: The `Product` entity is defined.
 - **Database Schema**: The initial database schema is created and managed by Flyway.
 - **Comprehensive Testing**: A full suite of unit, repository, and integration tests are in place.
+- **E2E Testing**: Fully integrated E2E tests using Testcontainers and RestAssured with 6 comprehensive test scenarios.
+- **Complete API Implementation**: All CRUD operations are implemented and tested.
+- **Error Handling**: Comprehensive error handling with proper HTTP status codes.
+- **Data Validation**: Input validation and business rule enforcement.
+- **Containerization**: Docker and Docker Compose setup for deployment.
 
 ## What's Left to Build
-The rest of the application layers need to be implemented:
-1.  Final documentation and deployment preparation.
+1. **Final Documentation**: Update README.md with current project state and setup instructions.
+2. **Deployment Preparation**: Ensure all documentation is complete for production deployment.
 
 ## Current Status
-- **Phase**: Development.
-- **Next Task**: `task-13 - Update-Final-Project-Documentation-(README.md).md`.
+- **Phase**: Near completion - only documentation updates remaining.
+- **Next Task**: `task-13 - Update Final Project Documentation (README.md)`.
 
 ## Known Issues
-- No known issues.
+- None currently. All E2E tests pass successfully.
 
 ## Evolution of Project Decisions
-- The project will use Testcontainers with PostgreSQL for integration tests instead of an in-memory database like H2 to ensure the test environment closely mirrors production.
+- **E2E Testing Strategy**: Initially planned as separate module, but successfully integrated into main project structure for better maintainability.
+- **Testcontainers Approach**: Evolved from using full Docker Compose stack to using only PostgreSQL Testcontainer for better test isolation and performance.
+- **Testing Framework**: Added RestAssured for comprehensive API testing capabilities.
+- **Logging Strategy**: Implemented debug logging in tests for better traceability and troubleshooting.

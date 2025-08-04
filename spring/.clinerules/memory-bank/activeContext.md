@@ -1,24 +1,31 @@
 # Active Context: Current Focus and Next Steps
 
 ## Current Work Focus
-With the application now containerized, the next priority is to update the final project documentation.
+The project has successfully completed the E2E testing integration. The focus is now on finalizing project documentation and preparing for deployment.
 
 ## Recent Changes
-- **Completed `task-12`**: Created and verified the application Dockerfile.
-- **Completed `task-11`**: Added a comprehensive test suite, including unit, repository, and integration tests.
-- **Completed `task-10`**: Implemented REST Endpoints in 'ProductController'.
-- **Completed `task-8`**: Created the `ProductRepository` interface and added integration tests.
-- **Completed `task-7`**: Created the initial database schema with a Flyway migration script.
-- **Completed `task-6`**: Defined the `Product` JPA Entity.
-- Added Testcontainers to the project for robust integration testing against a real PostgreSQL database.
+- **Completed `task-14` (fully)**: Successfully integrated E2E tests into the main project structure, eliminating the separate `e2e-tests` module.
+- **E2E Test Integration**: Moved E2E tests from separate module to `src/test/java/com/thedavestack/productcatalog/e2e/` within the main project.
+- **Testcontainers Implementation**: Configured E2E tests to use only PostgreSQL Testcontainer (not full Docker Compose stack) for better isolation and performance.
+- **RestAssured Integration**: Added RestAssured dependency to main `pom.xml` for comprehensive API testing.
+- **Debug Logging**: Implemented comprehensive debug logging throughout E2E tests for full traceability.
+- **Test Coverage**: Created 6 comprehensive E2E test scenarios covering all CRUD operations, error handling, and business logic validation.
+- **GitHub Workflows**: Moved GitHub Actions workflows to repository root for multi-framework support.
 
 ## Next Steps
-1.  **Proceed with `task-13`**: Update Final Project Documentation (README.md).
+1. **Complete `task-13`**: Update Final Project Documentation (README.md) to reflect the current state and setup instructions.
+2. **Project Finalization**: Ensure all documentation is up-to-date and the project is ready for deployment.
 
 ## Active Decisions and Considerations
-- The project will strictly follow the Git Flow branching model. All new work will be done on feature branches off of `develop`.
-- All database schema changes will be managed via Flyway migrations. No manual database changes are permitted.
-- All integration tests will run against a Testcontainers-managed PostgreSQL instance to ensure consistency with the production environment.
+- The project follows Git Flow branching model with all work done on feature branches off of `develop`.
+- All database schema changes are managed via Flyway migrations with no manual database changes permitted.
+- E2E tests run against Testcontainers-managed PostgreSQL instance for consistency with production environment.
+- E2E tests are now integrated into the main project structure for simplified maintenance and execution.
+- GitHub workflows are positioned at repository root to support future multi-framework implementations.
 
 ## Learnings and Project Insights
-- The project's success is heavily dependent on the correct setup of the Dockerized environment. A failure in the Docker setup will halt all development progress.
+- Integrating E2E tests directly into the main project structure provides better maintainability than separate modules.
+- Using only PostgreSQL Testcontainer (instead of full Docker Compose) for E2E tests provides better isolation and faster test execution.
+- RestAssured provides excellent API testing capabilities with clear, readable test syntax.
+- Debug logging in tests is crucial for troubleshooting and understanding test execution flow.
+- Repository-level GitHub workflows enable better CI/CD management for multi-framework projects.

@@ -46,7 +46,8 @@ class ProductControllerIT extends BaseIntegrationTest {
     @Test
     void createProduct_shouldReturnCreatedProduct() throws Exception {
         CreateProductRequest request =
-                new CreateProductRequest("Test Product", "Description", new BigDecimal("10.00"));
+                new CreateProductRequest(
+                        "Test Product", "Description", new BigDecimal("10.00"), null);
 
         mockMvc.perform(
                         post("/api/v1/products")

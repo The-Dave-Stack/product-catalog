@@ -1,0 +1,163 @@
+name: Helidon - Main Branch CI/CD
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'helidon/**'
+      - '.github/workflows/helidon-*.yml'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-deploy-helidon:
+    name: Build and Deploy Helidon to Production
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./helidon
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Java 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Cache Maven dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-helidon-m2-${{ hashFiles('helidon/**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-helidon-m2
+
+    - name: Check if Helidon project exists
+      id: check-helidon
+      run: |
+        if [ -f "pom.xml" ]; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Determine semantic version
+      if: steps.check-helidon.outputs.exists == 'true'
+      id: version
+      uses: paulhatch/semantic-version@v5.4.0
+      with:
+        tag_prefix: "helidon-v"
+        major_pattern: "BREAKING CHANGE:"
+        minor_pattern: "feat:"
+        version_format: "${major}.${minor}.${patch}"
+        bump_each_commit: false
+
+    - name: Update version in pom.xml
+      if: steps.check-helidon.outputs.exists == 'true'
+      run: |
+        mvn versions:set -DnewVersion=${{ steps.version.outputs.version }} -DgenerateBackupPoms=false
+
+    - name: Run tests
+      if: steps.check-helidon.outputs.exists == 'true'
+      run: |
+        mvn clean test
+        mvn failsafe:integration-test failsafe:verify -Dtest=none -DfailIfNoTests=false
+
+    - name: Build application
+      if: steps.check-helidon.outputs.exists == 'true'
+      run: mvn clean package -DskipTests
+
+    - name: Log in to Container Registry
+      if: steps.check-helidon.outputs.exists == 'true'
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata
+      if: steps.check-helidon.outputs.exists == 'true'
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-helidon
+        tags: |
+          type=raw,value=latest
+          type=raw,value=${{ steps.version.outputs.version }}
+
+    - name: Build and push Docker image
+      if: steps.check-helidon.outputs.exists == 'true'
+      uses: docker/build-push-action@v5
+      with:
+        context: ./helidon
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+
+    - name: Install conventional-changelog
+      if: steps.check-helidon.outputs.exists == 'true'
+      run: npm install -g conventional-changelog-cli
+
+    - name: Generate changelog
+      if: steps.check-helidon.outputs.exists == 'true'
+      id: changelog
+      run: |
+        conventional-changelog -p angular -i CHANGELOG.md -s -r 0
+        echo "changelog_updated=true" >> $GITHUB_OUTPUT
+
+    - name: Create GitHub Release
+      if: steps.check-helidon.outputs.exists == 'true'
+      uses: release-drafter/release-drafter@v5
+      with:
+        config-name: release-drafter.yml
+        version: ${{ steps.version.outputs.version }}
+        tag: helidon-v${{ steps.version.outputs.version }}
+        name: Helidon Release v${{ steps.version.outputs.version }}
+        publish: true
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Commit changelog
+      if: steps.check-helidon.outputs.exists == 'true' && steps.changelog.outputs.changelog_updated == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add CHANGELOG.md
+        git commit -m "docs: update CHANGELOG.md for helidon-v${{ steps.version.outputs.version }}" || exit 0
+        git push
+
+    - name: Send success notification
+      if: steps.check-helidon.outputs.exists == 'true'
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 587
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: "✅ Helidon Production Deployment Successful - v${{ steps.version.outputs.version }}"
+        to: david@thedavestack.com
+        from: GitHub Actions <noreply@github.com>
+        body: |
+          🎉 Successfully deployed Helidon version ${{ steps.version.outputs.version }} to production!
+          
+          Repository: ${{ github.repository }}
+          Commit: ${{ github.sha }}
+          Author: ${{ github.actor }}
+          
+          Docker Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-helidon:${{ steps.version.outputs.version }}
+          
+          Release Notes: ${{ github.server_url }}/${{ github.repository }}/releases/tag/helidon-v${{ steps.version.outputs.version }}
+
+    - name: Helidon not implemented yet
+      if: steps.check-helidon.outputs.exists == 'false'
+      run: echo "Helidon implementation not yet available - skipping deployment"

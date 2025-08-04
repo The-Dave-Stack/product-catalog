@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.thedavestack.productcatalog.exception.DuplicateSkuException;
 import com.thedavestack.productcatalog.exception.ProductNotFoundException;
 import com.thedavestack.productcatalog.model.Product;
 import com.thedavestack.productcatalog.repository.ProductRepository;
@@ -55,15 +56,24 @@ public class ProductService {
     }
 
     /**
-     * Creates a new product. A unique SKU is generated for the product before saving.
+     * Creates a new product. If no SKU is provided, a unique SKU is generated. If a SKU is
+     * provided, it must be unique.
      *
      * @param product the product to create.
      * @return the created product.
+     * @throws DuplicateSkuException if the provided SKU already exists.
      */
     @Transactional
     public Product createProduct(Product product) {
-        // Generate a unique SKU
-        product.setSku(UUID.randomUUID().toString());
+        // If no SKU is provided, generate a unique one
+        if (product.getSku() == null || product.getSku().trim().isEmpty()) {
+            product.setSku(UUID.randomUUID().toString());
+        } else {
+            // If SKU is provided, check for duplicates
+            if (productRepository.existsBySku(product.getSku())) {
+                throw new DuplicateSkuException(product.getSku());
+            }
+        }
         return productRepository.save(product);
     }
 
