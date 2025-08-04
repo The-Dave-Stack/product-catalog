@@ -80,6 +80,12 @@
 			<artifactId>postgresql</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- RestAssured for E2E API testing -->
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -134,6 +140,54 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<!-- Surefire Plugin for Unit Tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+					</includes>
+					<excludes>
+						<exclude>**/*IT.java</exclude>
+						<exclude>**/*E2ETest.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<!-- Failsafe Plugin for Integration and E2E Tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>integration-tests</id>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include>**/*IT.java</include>
+							</includes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>e2e-tests</id>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include>**/*E2ETest.java</include>
+							</includes>
+							<systemPropertyVariables>
+								<spring.profiles.active>test-e2e</spring.profiles.active>
+							</systemPropertyVariables>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
