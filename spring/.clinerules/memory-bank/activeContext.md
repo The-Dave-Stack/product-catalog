@@ -1,23 +1,28 @@
 # Active Context: Current Focus and Next Steps
 
 ## Current Work Focus
-The current focus is on resolving the Testcontainers container startup issues for the newly added E2E test module.
+The project has successfully completed the E2E testing integration. The focus is now on finalizing project documentation and preparing for deployment.
 
 ## Recent Changes
-- **Completed `task-14` (partially)**: Created a new Maven module `e2e-tests`, added necessary dependencies, and implemented `BaseE2ETest.java` and `ProductE2ETest.java`.
-- **Maven Project Structure**: Converted the main `product-catalog-spring` to a multi-module project (later reverted) and then made `e2e-tests` a standalone module to resolve build issues.
-- **Testcontainers Path**: Corrected the `docker-compose.yml` path in `BaseE2ETest.java` to use an absolute path.
-- **Tests are currently failing**: Testcontainers is unable to start the Docker Compose services, leading to `ContainerLaunchException`.
+- **Completed `task-14` (fully)**: Successfully integrated E2E tests into the main project structure, eliminating the separate `e2e-tests` module.
+- **E2E Test Integration**: Moved E2E tests from separate module to `src/test/java/com/thedavestack/productcatalog/e2e/` within the main project.
+- **Testcontainers Implementation**: Configured E2E tests to use only PostgreSQL Testcontainer (not full Docker Compose stack) for better isolation and performance.
+- **RestAssured Integration**: Added RestAssured dependency to main `pom.xml` for comprehensive API testing.
+- **Debug Logging**: Implemented comprehensive debug logging throughout E2E tests for full traceability.
+- **Test Coverage**: Created 6 comprehensive E2E test scenarios covering all CRUD operations, error handling, and business logic validation.
 
 ## Next Steps
-1.  **Troubleshoot Testcontainers**: Investigate and resolve the `ContainerLaunchException` preventing Docker Compose services from starting in the E2E tests. This might involve checking Docker daemon status, Testcontainers logs, or adjusting Docker Compose configuration.
-2.  **Proceed with `task-13`**: Update Final Project Documentation (README.md) once E2E tests are functional.
+1. **Complete `task-13`**: Update Final Project Documentation (README.md) to reflect the current state and setup instructions.
+2. **Project Finalization**: Ensure all documentation is up-to-date and the project is ready for deployment.
 
 ## Active Decisions and Considerations
-- The project will strictly follow the Git Flow branching model. All new work will be done on feature branches off of `develop`.
-- All database schema changes will be managed via Flyway migrations. No manual database changes are permitted.
-- All integration tests will run against a Testcontainers-managed PostgreSQL instance to ensure consistency with the production environment.
+- The project follows Git Flow branching model with all work done on feature branches off of `develop`.
+- All database schema changes are managed via Flyway migrations with no manual database changes permitted.
+- E2E tests run against Testcontainers-managed PostgreSQL instance for consistency with production environment.
+- E2E tests are now integrated into the main project structure for simplified maintenance and execution.
 
 ## Learnings and Project Insights
-- The project's success is heavily dependent on the correct setup of the Dockerized environment. A failure in the Docker setup will halt all development progress.
-- Setting up multi-module Maven projects with Spring Boot and Testcontainers requires careful path management and understanding of Maven's project aggregation.
+- Integrating E2E tests directly into the main project structure provides better maintainability than separate modules.
+- Using only PostgreSQL Testcontainer (instead of full Docker Compose) for E2E tests provides better isolation and faster test execution.
+- RestAssured provides excellent API testing capabilities with clear, readable test syntax.
+- Debug logging in tests is crucial for troubleshooting and understanding test execution flow.
