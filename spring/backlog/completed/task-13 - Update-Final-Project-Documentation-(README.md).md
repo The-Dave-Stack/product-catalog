@@ -1,9 +1,10 @@
 ---
 id: task-13
 title: Update Final Project Documentation (README.md)
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-07-28'
+updated_date: '2025-08-05 11:43'
 labels:
   - documentation
 dependencies:
@@ -43,3 +44,19 @@ Implementation Plan:
 2. Update 'docker-compose.yml' to include the application service, allowing the full stack to be run with 'docker-compose up'.
 3. Add a summary table of API Endpoints.
 4. Run 'backlog board export --readme' to embed the Kanban board.
+
+## Implementation Notes
+
+2025-08-05 13:41:10 - Completed task-13: Updated project documentation.
+
+**Approach Taken:**
+- Created new  in  with detailed sections (Overview, Tech, Features, Requirements, How to Run, API Endpoints).
+- Updated root  to link to the new Spring project's .
+- Temporarily moved completed tasks from  to  for Kanban board export.
+- Successfully exported Kanban board into the new .
+- Moved completed tasks back to .
+
+**Modified/Added Files:**
+- Added: 
+- Modified: 
+- Moved files within  directory temporarily for board export.
