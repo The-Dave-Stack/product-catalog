@@ -10,7 +10,8 @@
  * Implements SKU generation and validation for new products. - Ensures data integrity for batch
  * operations using transactions.
  *
- * <p>Last Updated: 2025-07-31 by Cline (Model: claude-3-opus, Task: Initial creation for task-9)
+ * <p>Last Updated: 2025-08-05 by Cline (Model: claude-3-opus, Task: Added update and delete product
+ * methods)
  */
 package com.thedavestack.productcatalog.service;
 
