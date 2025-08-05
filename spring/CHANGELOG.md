@@ -10,6 +10,7 @@
 
 * **api:** implement REST endpoints for products ([824c88c](https://github.com/The-Dave-Stack/product-catalog/commit/824c88c9d109d9fec96f464258af83d689e08295))
 * **ci:** move GitHub workflows to repository root ([38867f9](https://github.com/The-Dave-Stack/product-catalog/commit/38867f9155c24efa3018f60d2c1b5f3c6ba90336))
+* Complete product catalog API and documentation updates ([#17](https://github.com/The-Dave-Stack/product-catalog/issues/17)) ([3ab8603](https://github.com/The-Dave-Stack/product-catalog/commit/3ab86033924f6372ec52e2c05629d23ac473ba57)), closes [#task-15](https://github.com/The-Dave-Stack/product-catalog/issues/task-15)
 * **db:** create initial products table schema ([63dab91](https://github.com/The-Dave-Stack/product-catalog/commit/63dab91a51924b5a878a8a9a7cb0a0f3c35c021a))
 * **db:** define Product JPA entity ([4ecf29d](https://github.com/The-Dave-Stack/product-catalog/commit/4ecf29d418cd090067b56dc413c9ff68d61e8ff6))
 * **db:** set up postgresql with docker-compose ([6a77ff9](https://github.com/The-Dave-Stack/product-catalog/commit/6a77ff9f4e8e102bf943660f93876d89c8b7171f))
