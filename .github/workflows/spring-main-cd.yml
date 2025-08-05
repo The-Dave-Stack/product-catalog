@@ -125,7 +125,7 @@ jobs:
         username: ${{ secrets.SMTP_USERNAME }}
         password: ${{ secrets.SMTP_PASSWORD }}
         subject: "✅ Spring Production Deployment Successful - v${{ steps.version.outputs.version }}"
-        to: david@thedavestack.com
+        to: davidlopez.david@gmail.com
         from: GitHub Actions <noreply@github.com>
         body: |
           🎉 Successfully deployed Spring version ${{ steps.version.outputs.version }} to production!
