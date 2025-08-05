@@ -12,8 +12,8 @@
  * messages. 4. Covers happy path, duplicate SKU, and invalid data scenarios. 5. Includes debug
  * logging for test traceability.
  *
- * <p>Last Updated: 2025-08-04 by Cline (Model: claude-3-5-sonnet, Task: Migrate E2E tests to main
- * project)
+ * <p>Last Updated: 2025-08-05 by Cline (Model: claude-3-opus, Task: Added E2E tests for update and
+ * delete product endpoints)
  */
 package com.thedavestack.productcatalog.controller;
 
@@ -226,5 +226,144 @@ public class ProductControllerE2ETest extends BaseE2ETest {
 
         logApiResponse("GET", "/api/v1/products/" + nonExistentId, 404, errorResponse);
         logger.info("404 error handling working correctly for non-existent ID: {}", nonExistentId);
+    }
+
+    @Test
+    @DisplayName("Should update an existing product successfully")
+    void shouldUpdateProductSuccessfully() {
+        logger.info("=== Test: Update Product Successfully ===");
+
+        // Create a product first
+        String createRequestBody =
+                "{ \"name\": \"Original Product\", \"description\": \"Original description\", \"price\": 10.00, \"sku\": \"UPDATE-001\" }";
+        String productId =
+                given().contentType(ContentType.JSON)
+                        .body(createRequestBody)
+                        .when()
+                        .post("/api/v1/products")
+                        .then()
+                        .statusCode(201)
+                        .extract()
+                        .path("id");
+        logger.info("Product created with ID: {}", productId);
+
+        // Update the product
+        String updateRequestBody =
+                "{ \"name\": \"Updated Product\", \"description\": \"Updated description\", \"price\": 20.00 }";
+
+        logApiCall("PUT", "/api/v1/products/" + productId, 200);
+        String updateResponse =
+                given().contentType(ContentType.JSON)
+                        .body(updateRequestBody)
+                        .when()
+                        .put("/api/v1/products/{id}", productId)
+                        .then()
+                        .statusCode(200)
+                        .body("id", equalTo(productId))
+                        .body("name", equalTo("Updated Product"))
+                        .body("description", equalTo("Updated description"))
+                        .body("price", equalTo(20.00F))
+                        .body("sku", equalTo("UPDATE-001")) // SKU should remain unchanged
+                        .extract()
+                        .asString();
+
+        logApiResponse("PUT", "/api/v1/products/" + productId, 200, updateResponse);
+        logger.info("Product updated successfully. ID: {}", productId);
+
+        // Verify the update by retrieving the product
+        logApiCall("GET", "/api/v1/products/" + productId, 200);
+        given().when()
+                .get("/api/v1/products/{id}", productId)
+                .then()
+                .statusCode(200)
+                .body("name", equalTo("Updated Product"))
+                .body("description", equalTo("Updated description"))
+                .body("price", equalTo(20.00F));
+        logger.info("Product verified after update.");
+    }
+
+    @Test
+    @DisplayName("Should return 404 when updating a non-existent product")
+    void shouldReturn404WhenUpdatingNonExistentProduct() {
+        logger.info("=== Test: Update Non-Existent Product ===");
+
+        String nonExistentId = "non-existent-update-id";
+        String updateRequestBody =
+                "{ \"name\": \"Non Existent Update\", \"description\": \"Desc\", \"price\": 1.00 }";
+
+        logApiCall("PUT", "/api/v1/products/" + nonExistentId, 404);
+        String errorResponse =
+                given().contentType(ContentType.JSON)
+                        .body(updateRequestBody)
+                        .when()
+                        .put("/api/v1/products/{id}", nonExistentId)
+                        .then()
+                        .statusCode(404)
+                        .body(
+                                "message",
+                                containsString("Product not found with ID: " + nonExistentId))
+                        .extract()
+                        .asString();
+
+        logApiResponse("PUT", "/api/v1/products/" + nonExistentId, 404, errorResponse);
+        logger.info("404 error handling working correctly for updating non-existent product.");
+    }
+
+    @Test
+    @DisplayName("Should delete an existing product successfully")
+    void shouldDeleteProductSuccessfully() {
+        logger.info("=== Test: Delete Product Successfully ===");
+
+        // Create a product first
+        String createRequestBody =
+                "{ \"name\": \"Product to Delete\", \"description\": \"To be deleted\", \"price\": 100.00, \"sku\": \"DEL-001\" }";
+        String productId =
+                given().contentType(ContentType.JSON)
+                        .body(createRequestBody)
+                        .when()
+                        .post("/api/v1/products")
+                        .then()
+                        .statusCode(201)
+                        .extract()
+                        .path("id");
+        logger.info("Product created with ID: {}", productId);
+
+        // Delete the product
+        logApiCall("DELETE", "/api/v1/products/" + productId, 204);
+        given().when().delete("/api/v1/products/{id}", productId).then().statusCode(204);
+
+        logger.info("Product deleted successfully. ID: {}", productId);
+
+        // Verify deletion by attempting to retrieve
+        logApiCall("GET", "/api/v1/products/" + productId, 404);
+        given().when()
+                .get("/api/v1/products/{id}", productId)
+                .then()
+                .statusCode(404)
+                .body("message", containsString("Product not found with ID: " + productId));
+        logger.info("Product verified as deleted.");
+    }
+
+    @Test
+    @DisplayName("Should return 404 when deleting a non-existent product")
+    void shouldReturn404WhenDeletingNonExistentProduct() {
+        logger.info("=== Test: Delete Non-Existent Product ===");
+
+        String nonExistentId = "non-existent-delete-id";
+
+        logApiCall("DELETE", "/api/v1/products/" + nonExistentId, 404);
+        String errorResponse =
+                given().when()
+                        .delete("/api/v1/products/{id}", nonExistentId)
+                        .then()
+                        .statusCode(404)
+                        .body(
+                                "message",
+                                containsString("Product not found with ID: " + nonExistentId))
+                        .extract()
+                        .asString();
+
+        logApiResponse("DELETE", "/api/v1/products/" + nonExistentId, 404, errorResponse);
+        logger.info("404 error handling working correctly for deleting non-existent product.");
     }
 }

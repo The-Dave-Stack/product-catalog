@@ -12,6 +12,7 @@
 - **Error Handling**: Comprehensive error handling with proper HTTP status codes.
 - **Data Validation**: Input validation and business rule enforcement.
 - **Containerization**: Docker and Docker Compose setup for deployment.
+- **API Documentation**: Swagger UI is integrated and documenting the API.
 
 ## What's Left to Build
 1. **Final Documentation**: Update README.md with current project state and setup instructions.
@@ -29,3 +30,5 @@
 - **Testcontainers Approach**: Evolved from using full Docker Compose stack to using only PostgreSQL Testcontainer for better test isolation and performance.
 - **Testing Framework**: Added RestAssured for comprehensive API testing capabilities.
 - **Logging Strategy**: Implemented debug logging in tests for better traceability and troubleshooting.
+- **CRUD Endpoints**: Implemented missing PUT and DELETE endpoints for products, completing the core CRUD functionality.
+- **New Tasks**: Created `task-16 - Implement Product Update Endpoint` and `task-17 - Implement Product Delete Endpoint` to track the new functionality.

@@ -145,7 +145,7 @@ jobs:
         username: ${{ secrets.SMTP_USERNAME }}
         password: ${{ secrets.SMTP_PASSWORD }}
         subject: "✅ Helidon Production Deployment Successful - v${{ steps.version.outputs.version }}"
-        to: david@thedavestack.com
+        to: davidlopez.david@gmail.com
         from: GitHub Actions <noreply@github.com>
         body: |
           🎉 Successfully deployed Helidon version ${{ steps.version.outputs.version }} to production!
