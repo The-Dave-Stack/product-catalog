@@ -53,7 +53,10 @@ This simulation requires the AI to behave like a human developer, following a st
 
 ## ▶️ How to Run
 
-For detailed instructions on how to build, test, and run each service, please refer to the `README.md` file within each project's subdirectory.
+For detailed instructions on how to build, test, and run each service, please refer to the `README.md` file within its respective project subdirectory:
+
+*   [**product-catalog-spring**](./spring/README.md)
+*   [**product-catalog-helidon**](./helidon/README.md)
 
 ---
 
