@@ -1,9 +1,10 @@
 ---
 id: task-17
 title: Implement Product Delete Endpoint
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-05 13:20'
+updated_date: '2025-08-05 13:35'
 labels: []
 dependencies: []
 ---
@@ -19,3 +20,7 @@ Add a DELETE /api/v1/products/{id} endpoint to allow deleting existing products.
 - [x] Proper error handling for product not found (404).
 - [x] Swagger documentation for the delete endpoint is accurate and complete.
 - [x] E2E tests for product deletion (happy path and 404) are passing.
+
+## Implementation Notes
+
+Implemented DELETE /api/v1/products/{id} endpoint and added comprehensive E2E tests. Swagger documentation is also updated and verified.
