@@ -1,9 +1,10 @@
 # Active Context: Current Focus and Next Steps
 
 ## Current Work Focus
-The project has successfully completed the E2E testing integration. The focus is now on finalizing project documentation and preparing for deployment.
+The project has successfully integrated Swagger for API documentation. The focus is now on finalizing project documentation and preparing for deployment.
 
 ## Recent Changes
+- **Completed `task-15` (fully)**: Successfully integrated Swagger for API documentation.
 - **Completed `task-14` (fully)**: Successfully integrated E2E tests into the main project structure, eliminating the separate `e2e-tests` module.
 - **E2E Test Integration**: Moved E2E tests from separate module to `src/test/java/com/thedavestack/productcatalog/e2e/` within the main project.
 - **Testcontainers Implementation**: Configured E2E tests to use only PostgreSQL Testcontainer (not full Docker Compose stack) for better isolation and performance.

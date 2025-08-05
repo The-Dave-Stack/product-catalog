@@ -12,6 +12,7 @@
 - **Error Handling**: Comprehensive error handling with proper HTTP status codes.
 - **Data Validation**: Input validation and business rule enforcement.
 - **Containerization**: Docker and Docker Compose setup for deployment.
+- **API Documentation**: Swagger UI is integrated and documenting the API.
 
 ## What's Left to Build
 1. **Final Documentation**: Update README.md with current project state and setup instructions.
