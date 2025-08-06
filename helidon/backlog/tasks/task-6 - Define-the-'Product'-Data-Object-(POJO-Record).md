@@ -1,10 +1,10 @@
 ---
 id: task-6
 title: Define the 'Product' Data Object (POJO/Record)
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-07-30'
-updated_date: '2025-08-06 10:45'
+updated_date: '2025-08-06 10:46'
 labels:
   - model
   - helidon

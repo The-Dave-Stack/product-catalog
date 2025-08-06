@@ -7,13 +7,14 @@
 - PostgreSQL database is configured and running via Docker Compose.
 
 ## What's left to build
-- All remaining tasks in the backlog, starting with `task-6`.
+- All remaining tasks in the backlog, starting with `task-7`.
 
 ## Current status
 - `task-1` is completed.
 - `task-2` is completed.
 - `task-3` and `task-4` have been archived.
 - `task-5` is completed.
+- `task-6` is completed.
 - The local memory bank structure has been initialized and updated.
 
 ## Known issues
@@ -27,4 +28,4 @@
 - Successfully integrated Docker Compose for PostgreSQL, and updated Helidon configuration and dependencies for database connectivity.
 
 ## Last Updated
-2025-08-06 by Cline (Model: claude-3-opus, Task: Completed task-5 and updated memory bank)
+2025-08-06 by Cline (Model: claude-3-opus, Task: Completed task-6 and updated memory bank)
