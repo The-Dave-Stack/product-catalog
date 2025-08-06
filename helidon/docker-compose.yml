@@ -1,0 +1,33 @@
+# docker-compose.yml
+#
+# Design Doc: ./docs/api-design-product-catalog-helidon.md
+#
+# Purpose:
+# - Defines and runs the PostgreSQL database service for the Helidon product catalog application.
+#
+# Logic Overview:
+# 1. Defines a 'postgres-db' service using the official PostgreSQL image.
+# 2. Configures environment variables for database name, user, and password.
+# 3. Maps the default PostgreSQL port (5432) to the host.
+# 4. Sets up a named volume for persistent data storage.
+#
+# Last Updated:
+# 2025-08-06 by Cline (Model: claude-3-opus, Task: Initial creation for task-5)
+#
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:17.5-alpine
+    container_name: product-catalog-postgres
+    environment:
+      POSTGRES_DB: product_catalog_db
+      POSTGRES_USER: app_user
+      POSTGRES_PASSWORD: app_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
