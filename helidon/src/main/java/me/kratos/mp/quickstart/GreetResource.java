@@ -1,5 +1,11 @@
-
 package me.kratos.mp.quickstart;
+
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -12,39 +18,28 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
-import org.eclipse.microprofile.openapi.annotations.media.Content;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
-
 /**
  * A simple JAX-RS resource to greet you. Examples:
  *
- * Get default greeting message:
- * curl -X GET http://localhost:8080/greet
+ * <p>Get default greeting message: curl -X GET http://localhost:8080/greet
  *
- * Get greeting message for Joe:
- * curl -X GET http://localhost:8080/greet/Joe
+ * <p>Get greeting message for Joe: curl -X GET http://localhost:8080/greet/Joe
  *
- * Change greeting
- * curl -X PUT -H "Content-Type: application/json" -d '{"greeting" : "Howdy"}' http://localhost:8080/greet/greeting
+ * <p>Change greeting curl -X PUT -H "Content-Type: application/json" -d '{"greeting" : "Howdy"}'
+ * http://localhost:8080/greet/greeting
  *
- * The message is returned as a JSON object.
+ * <p>The message is returned as a JSON object.
  */
 @Path("/greet")
 @RequestScoped
 public class GreetResource {
 
-    /**
-     * The greeting message provider.
-     */
+    /** The greeting message provider. */
     private final GreetingProvider greetingProvider;
 
     /**
-     * Using constructor injection to get a configuration property.
-     * By default this gets the value from META-INF/microprofile-config
+     * Using constructor injection to get a configuration property. By default this gets the value
+     * from META-INF/microprofile-config
      *
      * @param greetingConfig the configured greeting message
      */
@@ -87,14 +82,23 @@ public class GreetResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RequestBody(name = "greeting",
+    @RequestBody(
+            name = "greeting",
             required = true,
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(type = SchemaType.OBJECT, requiredProperties = { "greeting" })))
+            content =
+                    @Content(
+                            mediaType = "application/json",
+                            schema =
+                                    @Schema(
+                                            type = SchemaType.OBJECT,
+                                            requiredProperties = {"greeting"})))
     @APIResponses({
-            @APIResponse(name = "normal", responseCode = "204", description = "Greeting updated"),
-            @APIResponse(name = "missing 'greeting'", responseCode = "400",
-                    description = "JSON did not contain setting for 'greeting'")})
+        @APIResponse(name = "normal", responseCode = "204", description = "Greeting updated"),
+        @APIResponse(
+                name = "missing 'greeting'",
+                responseCode = "400",
+                description = "JSON did not contain setting for 'greeting'")
+    })
     public Response updateGreeting(Message message) {
 
         if (message.getGreeting() == null || message.getGreeting().isEmpty()) {

@@ -1,16 +1,13 @@
-
 package me.kratos.mp.quickstart;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
-/**
- * Provider for greeting message.
- */
+/** Provider for greeting message. */
 @ApplicationScoped
 public class GreetingProvider {
     private final AtomicReference<String> message = new AtomicReference<>();
