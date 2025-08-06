@@ -5,9 +5,10 @@
 - The API design document (`./docs/api-design-product-catalog-helidon.md`) has been created and committed.
 - The initial Helidon MP project has been set up and builds successfully.
 - PostgreSQL database is configured and running via Docker Compose.
+- `task-7` (Create Initial DB Schema Script) is completed.
 
 ## What's left to build
-- All remaining tasks in the backlog, starting with `task-7`.
+- All remaining tasks in the backlog, starting with `task-8`.
 
 ## Current status
 - `task-1` is completed.
@@ -15,6 +16,7 @@
 - `task-3` and `task-4` have been archived.
 - `task-5` is completed.
 - `task-6` is completed.
+- `task-7` is completed.
 - The local memory bank structure has been initialized and updated.
 
 ## Known issues
@@ -28,4 +30,4 @@
 - Successfully integrated Docker Compose for PostgreSQL, and updated Helidon configuration and dependencies for database connectivity.
 
 ## Last Updated
-2025-08-06 by Cline (Model: claude-3-opus, Task: Completed task-6 and updated memory bank)
+2025-08-06 by Cline (Model: claude-3-opus, Task: Completed task-7 and updated memory bank)
