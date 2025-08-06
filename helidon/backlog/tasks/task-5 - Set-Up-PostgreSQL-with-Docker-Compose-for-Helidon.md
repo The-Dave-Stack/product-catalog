@@ -1,10 +1,10 @@
 ---
 id: task-5
 title: Set Up PostgreSQL with Docker Compose for Helidon
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-07-30'
-updated_date: '2025-08-06 10:28'
+updated_date: '2025-08-06 10:29'
 labels:
   - db
   - docker
