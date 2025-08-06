@@ -15,10 +15,9 @@ package com.thedavestack.productcatalog.model;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.UUID;
 
 public record Product(
-        UUID id,
+        String id,
         String sku,
         String name,
         String description,
