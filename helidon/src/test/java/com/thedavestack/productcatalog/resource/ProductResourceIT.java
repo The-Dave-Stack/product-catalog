@@ -151,7 +151,11 @@ class ProductResourceIT {
     void shouldReturn400WhenNameIsMissing() {
         CreateProductRequest request =
                 new CreateProductRequest(
-                        "ELC-123456", null, "Test Description", new BigDecimal("99.99"), "Electronics");
+                        "ELC-123456",
+                        null,
+                        "Test Description",
+                        new BigDecimal("99.99"),
+                        "Electronics");
 
         Response response =
                 webTarget
