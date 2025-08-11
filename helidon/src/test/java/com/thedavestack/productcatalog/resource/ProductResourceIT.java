@@ -9,16 +9,13 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.Statement;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -28,6 +25,7 @@ import com.thedavestack.productcatalog.dto.CreateProductRequest;
 import com.thedavestack.productcatalog.dto.ProductListResponse;
 import com.thedavestack.productcatalog.dto.ProductResponse;
 
+import io.helidon.microprofile.testing.junit5.AddConfig;
 import io.helidon.microprofile.testing.junit5.HelidonTest;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.client.Entity;
@@ -37,37 +35,33 @@ import jakarta.ws.rs.core.Response;
 
 @HelidonTest
 @Testcontainers
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("ProductResource Integration Tests")
 class ProductResourceIT {
 
     @Container
-    static PostgreSQLContainer<?> postgres =
-            new PostgreSQLContainer<>("postgres:17.5")
-                    .withDatabaseName("product_catalog_test")
-                    .withUsername("test_user")
-                    .withPassword("test_pass");
+    static PostgreSQLContainer<?> postgres;
+    
+    static {
+        // Initialize and start container before any CDI processing
+        postgres = new PostgreSQLContainer<>("postgres:17.5")
+                .withDatabaseName("product_catalog_test")
+                .withUsername("test_user")
+                .withPassword("test_pass")
+                .withInitScript("schema-test.sql");
+        postgres.start();
+        
+        // Set system properties that MicroProfile Config will pick up
+        System.setProperty("db.connection.url", postgres.getJdbcUrl());
+        System.setProperty("db.connection.username", postgres.getUsername());
+        System.setProperty("db.connection.password", postgres.getPassword());
+    }
 
     @Inject private WebTarget webTarget;
 
     @BeforeAll
     static void beforeAll() {
-        System.setProperty(
-                "javax.sql.DataSource.product-catalog.dataSource.url", postgres.getJdbcUrl());
-        System.setProperty(
-                "javax.sql.DataSource.product-catalog.dataSource.username", postgres.getUsername());
-        System.setProperty(
-                "javax.sql.DataSource.product-catalog.dataSource.password", postgres.getPassword());
-
-        // Initialize database schema
-        try (Connection connection = postgres.createConnection("");
-                Statement statement = connection.createStatement()) {
-
-            String schema = Files.readString(Paths.get("src/test/resources/schema-test.sql"));
-            statement.execute(schema);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize database schema", e);
-        }
+        // Container already started in static block
     }
 
     @AfterEach
