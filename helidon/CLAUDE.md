@@ -59,8 +59,8 @@ This is a **Product Catalog Service** built with Helidon MP as a direct comparis
 ## Architecture Overview
 
 ### Clean Architecture Layers
-- **Resource Layer (REST Controllers)**: HTTP request handling and input validation
-- **Service Layer**: Business logic and orchestration (planned - task-9)
+- **Resource Layer (REST Controllers)**: HTTP request handling and input validation ✅ **COMPLETED**
+- **Service Layer**: Business logic and orchestration ✅ **COMPLETED**
 - **Repository Layer**: Data access abstraction with Helidon DB Client ✅ **COMPLETED**
 
 ### Framework Stack
@@ -74,6 +74,10 @@ This is a **Product Catalog Service** built with Helidon MP as a direct comparis
 - `src/main/java/com/thedavestack/productcatalog/`
   - `model/`: Data objects (Product record) ✅ **COMPLETED**
   - `repository/`: Data access layer using Helidon DB Client ✅ **COMPLETED**  
+  - `service/`: Business logic and orchestration ✅ **COMPLETED**
+  - `resource/`: JAX-RS REST endpoints ✅ **COMPLETED**
+  - `dto/`: Data Transfer Objects for API requests/responses ✅ **COMPLETED**
+  - `exception/`: Exception mappers for structured error handling ✅ **COMPLETED**
   - `config/`: CDI configuration for database connectivity ✅ **COMPLETED**
 - `db-init/schema.sql`: PostgreSQL schema initialization ✅ **COMPLETED**
 - `docs/api-design-product-catalog-helidon.md`: Complete API specification ✅ **COMPLETED**
@@ -83,9 +87,12 @@ This is a **Product Catalog Service** built with Helidon MP as a direct comparis
 1. **Data Model**: Java Records for immutable Product objects with String UUIDs
 2. **Database Access**: Helidon DB Client with manual SQL (lightweight alternative to JPA)
 3. **Async Operations**: CompletableFuture-based repository methods for reactive programming
-4. **Schema Management**: Idempotent SQL scripts with `IF NOT EXISTS` 
-5. **Containerization**: Supports both JVM and GraalVM native images for cloud deployment
-6. **Clean Architecture**: Strict separation of concerns across layers
+4. **REST API**: JAX-RS with async CompletionStage pattern and structured error responses
+5. **Input Validation**: Jakarta Bean Validation with custom validation messages
+6. **Exception Handling**: Dedicated exception mappers for all error scenarios
+7. **Schema Management**: Idempotent SQL scripts with `IF NOT EXISTS` 
+8. **Containerization**: Supports both JVM and GraalVM native images for cloud deployment
+9. **Clean Architecture**: Strict separation of concerns across layers
 
 ### Database Configuration
 - Connection details configured in `microprofile-config.properties`
@@ -97,14 +104,22 @@ This is a **Product Catalog Service** built with Helidon MP as a direct comparis
 - Import ordering: java, javax, org, com
 - Wildcard imports removed automatically
 
-### API Endpoints (Planned)
+### API Endpoints ✅ **IMPLEMENTED**
 - `POST /api/v1/products` - Create single product
-- `POST /api/v1/products/batch-create` - Batch create products
+- `POST /api/v1/products/batch-create` - Batch create products  
 - `GET /api/v1/products/{id}` - Get product by ID
-- `GET /api/v1/products` - List products with pagination
+- `GET /api/v1/products` - List products with pagination and category filtering
 - `PUT /api/v1/products/{id}` - Update product
 - `DELETE /api/v1/products/{id}` - Delete product
 - `GET /api/v1/products/export?format=json` - Export products
+
+### API Features
+- **Async Processing**: All endpoints use CompletionStage for non-blocking operations
+- **Input Validation**: Jakarta Bean Validation with custom error messages
+- **Structured Errors**: Comprehensive error responses with timestamps and request paths
+- **Pagination Support**: Page/size parameters with total counts and metadata
+- **Category Filtering**: Filter products by category in list endpoint
+- **Export Functionality**: JSON export with download headers
 
 ### Health and Monitoring
 - Health checks available at `/health`
@@ -127,19 +142,31 @@ This is a **Product Catalog Service** built with Helidon MP as a direct comparis
   - Type-safe field queries with enum
   - Batch operations with transactional integrity
   - Pagination support
+- **Service Layer (ProductService)**: Complete business logic implementation
+  - SKU auto-generation with category-based prefixes
+  - Input validation and business rules
+  - Exception handling for domain-specific errors
+  - Async operations throughout
+- **REST Layer (ProductResource)**: Complete JAX-RS endpoints implementation
+  - All MVP endpoints (create, read, update, delete, batch, export)
+  - Async CompletionStage pattern
+  - Input validation with Jakarta Bean Validation
+  - Comprehensive error handling with exception mappers
+- **DTO Architecture**: Clean API contracts
+  - ProductResponse, CreateProductRequest, BatchCreateProductRequest, ProductListResponse
+  - JSON-B annotations for proper serialization
+  - Validation annotations with custom messages
+- **Exception Handling**: Comprehensive error management
+  - 6 dedicated exception mappers covering all error scenarios
+  - Structured error responses with timestamps and paths
+  - Proper HTTP status code mapping
 - **Database Configuration**: CDI-managed connection pooling
 - **Schema Management**: Idempotent PostgreSQL table creation
-- **Project Structure**: Clean architecture foundation
+- **Project Structure**: Complete clean architecture implementation
 
-### 🚧 In Progress (Next: task-9)
-- **Service Layer (ProductService)**: Business logic implementation
-- **SKU Generation**: Auto-generation logic for products without SKUs
-
-### 📋 Planned Components  
-- **REST Layer (ProductResource)**: JAX-RS endpoints implementation
-- **Input Validation**: Request validation and error handling
+### 📋 Remaining Components (Next Priority: task-11)
 - **Unit Tests**: JUnit 5 with Mockito for all layers
-- **Integration Tests**: Testcontainers with PostgreSQL
+- **Integration Tests**: Helidon MP Testing framework with Testcontainers
 - **E2E Tests**: RestAssured with full Docker stack
 - **OpenAPI Documentation**: Swagger/OpenAPI 3.0 specification
 - **Health Checks**: Custom health indicators
