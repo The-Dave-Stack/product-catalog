@@ -32,28 +32,37 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@HelidonTest
 @Testcontainers
+@HelidonTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("ProductResource Integration Tests")
 class ProductResourceIT {
 
-    @Container static PostgreSQLContainer<?> postgres;
+    @Container
+    static PostgreSQLContainer<?> postgres =
+            new PostgreSQLContainer<>("postgres:17.5")
+                    .withDatabaseName("product_catalog_test")
+                    .withUsername("test_user")
+                    .withPassword("test_pass")
+                    .withInitScript("schema-test.sql");
 
     static {
-        // Initialize and start container before any CDI processing
-        postgres =
-                new PostgreSQLContainer<>("postgres:17.5")
-                        .withDatabaseName("product_catalog_test")
-                        .withUsername("test_user")
-                        .withPassword("test_pass")
-                        .withInitScript("schema-test.sql");
+        // Start container and configure properties before Helidon initialization
+        // This ensures properties are available during CDI bootstrap
         postgres.start();
+        configureHelidonDatabase();
+    }
 
-        // Set system properties that MicroProfile Config will pick up
+    private static void configureHelidonDatabase() {
+        // Set system properties for MicroProfile Config
         System.setProperty("db.connection.url", postgres.getJdbcUrl());
         System.setProperty("db.connection.username", postgres.getUsername());
         System.setProperty("db.connection.password", postgres.getPassword());
+
+        // Also set as environment-style properties that MP Config can pick up
+        System.setProperty("MP_CONFIG_PROPERTY_db_connection_url", postgres.getJdbcUrl());
+        System.setProperty("MP_CONFIG_PROPERTY_db_connection_username", postgres.getUsername());
+        System.setProperty("MP_CONFIG_PROPERTY_db_connection_password", postgres.getPassword());
     }
 
     @Inject private WebTarget webTarget;
