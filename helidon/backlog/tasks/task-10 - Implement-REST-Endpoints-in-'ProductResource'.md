@@ -1,9 +1,10 @@
 ---
 id: task-10
 title: Implement REST Endpoints in 'ProductResource'
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2025-07-30'
+updated_date: '2025-08-11 08:35'
 labels:
   - api
   - resource
@@ -44,3 +45,7 @@ Implementation Plan:
 2. Create the 'ProductResource.java' class as a JAX-RS resource (@Path(\"/products\"), @ApplicationScoped).
 3. Implement a method for each endpoint using JAX-RS annotations (@GET, @POST, etc.).
 4. Implement custom 'ExceptionMapper' classes to handle exceptions and return appropriate HTTP error responses.
+
+## Implementation Notes
+
+[2025-08-11 10:35:02] - Starting task implementation - creating REST endpoints for ProductResource
