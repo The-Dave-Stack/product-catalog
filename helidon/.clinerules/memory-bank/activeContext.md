@@ -1,19 +1,20 @@
 # Active Context
 
 ## Current work focus
-Currently focused on building the core components of the Helidon product catalog service. The business logic layer is now complete with comprehensive ProductService implementation.
+The Helidon product catalog service now has a complete REST layer implementation. All MVP endpoints are functional with comprehensive request/response DTOs, validation, and exception handling.
 
 ## Recent changes
-- Completed `task-9`: Implement Business Logic in 'ProductService'.
-- Implemented ProductService as @ApplicationScoped CDI bean with complete business logic.
-- Added SKU auto-generation in [NNN]-###### format with category-based prefixes.
-- Created custom domain exceptions: ProductNotFoundException and DuplicateSkuException.
-- Implemented comprehensive validation for product creation, updates, and pagination.
-- Added batch operations with transactional integrity and uniqueness validation.
+- Completed `task-10`: Implement REST Endpoints in 'ProductResource'.
+- Created comprehensive DTO package with ProductResponse, CreateProductRequest, BatchCreateProductRequest, and ProductListResponse.
+- Implemented ProductResource with all MVP endpoints using JAX-RS annotations and async CompletionStage patterns.
+- Added complete exception handling infrastructure with 6 dedicated exception mappers for structured error responses.
+- Integrated Jakarta Bean Validation with custom validation messages throughout the request DTOs.
+- Added pagination support, category filtering, and export functionality.
 - All compilation and code formatting checks pass successfully.
 
 ## Next steps
-- Continue with `task-10`: Implement REST Endpoints in 'ProductResource'.
+- Consider `task-11`: Unit and Integration Testing implementation.
+- Alternative: Continue with additional endpoint implementations (task-15, task-16).
 
 ## Active decisions and considerations
 - Ensuring all documentation is precise and up-to-date.
@@ -38,6 +39,11 @@ Currently focused on building the core components of the Helidon product catalog
 - Custom domain exceptions provide clean error handling and better debugging capabilities.
 - SKU auto-generation with category prefixes creates meaningful, readable product identifiers.
 - CDI @ApplicationScoped beans work seamlessly with Helidon MP for dependency injection.
+- JAX-RS with async CompletionStage provides excellent non-blocking REST endpoint performance.
+- Jakarta Bean Validation integrates seamlessly with JAX-RS for automatic request validation.
+- Exception mappers provide clean, structured error responses with proper HTTP status codes.
+- DTO pattern separation keeps request/response models clean and provides validation boundaries.
+- Pagination with metadata responses provides scalable list operations.
 
 ## Last Updated
-2025-08-10 by Claude (Model: claude-sonnet-4, Task: Completed task-9 ProductService implementation)
+2025-08-11 by Claude (Model: claude-sonnet-4, Task: Completed task-10 ProductResource REST endpoints implementation)
