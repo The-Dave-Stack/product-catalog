@@ -24,8 +24,17 @@ mvn spotless:check
 # Apply code formatting
 mvn spotless:apply
 
-# Run tests
+# Run tests (unit tests only)
 mvn test
+
+# Run all tests (unit + integration)
+mvn verify
+
+# Run only unit tests
+mvn test -Dtest="*Test"
+
+# Run only integration tests
+mvn test -Dtest="*IT"
 ```
 
 ### Database Setup
@@ -128,10 +137,32 @@ This is a **Product Catalog Service** built with Helidon MP as a direct comparis
 
 ## Development Notes
 
-### Testing Strategy
-- JUnit 5 with Hamcrest matchers
-- Helidon MP Testing framework for integration tests
-- Planned: Testcontainers for E2E testing with full Docker stack
+### Testing Strategy ✅ **IMPLEMENTED**
+- **Unit Tests**: JUnit 5 with Hamcrest matchers and Mockito framework
+- **Integration Tests**: Helidon MP Testing framework with Testcontainers PostgreSQL
+- **Test Coverage**: 38 unit tests + 13 integration tests covering all functionality
+- **Database Testing**: Testcontainers for real PostgreSQL integration testing
+- **Test Isolation**: Proper cleanup and isolation between test runs
+
+### Test Structure
+```
+src/test/java/com/thedavestack/productcatalog/
+├── service/
+│   └── ProductServiceTest.java           # Unit tests (38 methods)
+└── resource/  
+    └── ProductResourceIT.java            # Integration tests (13 methods)
+
+src/test/resources/
+├── META-INF/
+│   └── microprofile-config.properties   # Test configuration
+└── schema-test.sql                       # Test database schema
+```
+
+### Test Dependencies
+- **mockito-core & mockito-junit-jupiter** (v5.7.0): Unit testing with mocks
+- **testcontainers-junit-jupiter & testcontainers-postgresql** (v1.19.3): Integration testing
+- **hamcrest-all**: Readable assertions and pattern matching
+- **helidon-microprofile-testing-junit5**: Helidon test framework
 
 ## Implementation Progress
 
@@ -163,11 +194,23 @@ This is a **Product Catalog Service** built with Helidon MP as a direct comparis
 - **Database Configuration**: CDI-managed connection pooling
 - **Schema Management**: Idempotent PostgreSQL table creation
 - **Project Structure**: Complete clean architecture implementation
+- **Unit Tests**: Complete JUnit 5 test suite with Mockito ✅ **COMPLETED**
+  - ProductServiceTest: 38 comprehensive test methods
+  - Complete business logic coverage with mocked dependencies
+  - Validation, error scenarios, and SKU generation testing
+  - Pattern matching for SKU format validation
+- **Integration Tests**: Helidon MP Testing with Testcontainers ✅ **COMPLETED**
+  - ProductResourceIT: 13 end-to-end integration tests
+  - Real PostgreSQL database testing with Testcontainers
+  - All REST endpoints tested with HTTP clients
+  - Database persistence and cleanup verification
+- **Test Configuration**: Complete test infrastructure ✅ **COMPLETED**
+  - Test-specific microprofile configuration
+  - Database schema initialization for tests
+  - Proper test isolation and cleanup mechanisms
 
-### 📋 Remaining Components (Next Priority: task-11)
-- **Unit Tests**: JUnit 5 with Mockito for all layers
-- **Integration Tests**: Helidon MP Testing framework with Testcontainers
-- **E2E Tests**: RestAssured with full Docker stack
+### 📋 Remaining Components (Next Priority: task-12/14)
+- **E2E Tests**: RestAssured with full Docker stack (task-14)
 - **OpenAPI Documentation**: Swagger/OpenAPI 3.0 specification
 - **Health Checks**: Custom health indicators
 - **Native Image**: GraalVM compilation optimizations
