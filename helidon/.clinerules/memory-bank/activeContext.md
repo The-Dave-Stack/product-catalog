@@ -1,17 +1,19 @@
 # Active Context
 
 ## Current work focus
-Currently focused on building the core components of the Helidon product catalog service. The repository layer is now complete with full CRUD operations using Helidon DB Client.
+Currently focused on building the core components of the Helidon product catalog service. The business logic layer is now complete with comprehensive ProductService implementation.
 
 ## Recent changes
-- Completed `task-8`: Implement the 'ProductRepository' using Helidon DB Client.
-- Implemented ProductRepository interface and ProductRepositoryImpl with comprehensive CRUD operations.
-- Added DatabaseConfig for Helidon DB Client configuration.
-- Removed unnecessary quickstart template files to clean up the project structure.
-- All tests pass and the build is successful.
+- Completed `task-9`: Implement Business Logic in 'ProductService'.
+- Implemented ProductService as @ApplicationScoped CDI bean with complete business logic.
+- Added SKU auto-generation in [NNN]-###### format with category-based prefixes.
+- Created custom domain exceptions: ProductNotFoundException and DuplicateSkuException.
+- Implemented comprehensive validation for product creation, updates, and pagination.
+- Added batch operations with transactional integrity and uniqueness validation.
+- All compilation and code formatting checks pass successfully.
 
 ## Next steps
-- Continue with `task-9`: Implement Business Logic in 'ProductService'.
+- Continue with `task-10`: Implement REST Endpoints in 'ProductResource'.
 
 ## Active decisions and considerations
 - Ensuring all documentation is precise and up-to-date.
@@ -32,6 +34,10 @@ Currently focused on building the core components of the Helidon product catalog
 - Helidon DB Client provides a lightweight alternative to JPA with excellent performance characteristics.
 - Proper error handling and logging are crucial for repository layer implementations.
 - UUID generation for primary keys works well with PostgreSQL and provides good distribution.
+- Business logic layer benefits from CompletableFuture-based reactive patterns for async operations.
+- Custom domain exceptions provide clean error handling and better debugging capabilities.
+- SKU auto-generation with category prefixes creates meaningful, readable product identifiers.
+- CDI @ApplicationScoped beans work seamlessly with Helidon MP for dependency injection.
 
 ## Last Updated
-2025-08-06 by Cline (Model: claude-3-opus, Task: Completed task-8 ProductRepository implementation)
+2025-08-10 by Claude (Model: claude-sonnet-4, Task: Completed task-9 ProductService implementation)
