@@ -1,10 +1,10 @@
 ---
 id: task-11
 title: Add Unit and Integration Tests for Helidon Service
-status: Done
+status: blocked
 assignee: []
 created_date: '2025-07-30'
-updated_date: '2025-08-11 09:12'
+updated_date: '2025-08-11 09:47'
 labels:
   - test
   - junit
@@ -49,6 +49,13 @@ Implementation Plan:
 
 [2025-08-11 11:15:00] - COMPLETED: Added comprehensive unit and integration tests for Helidon Service
 
+COMPLETED: Unit Tests (38 comprehensive tests with Mockito), Integration Test Infrastructure (Helidon MP + Testcontainers), Dependencies & Maven Configuration, Code Formatting Standards.
+
+BLOCKED ISSUE: Integration Tests Database Connectivity Timing Problem - Helidon CDI container cannot reliably access dynamic Testcontainers database properties during bootstrap. Results in HTTP 500 errors due to configuration timing mismatch between Testcontainers dynamic properties and Helidon MP eager CDI initialization.
+
+ACTIONS NEEDED: Research Helidon-specific Testcontainers patterns, investigate CDI extension approach, consider Docker Compose for CI, or explore Helidon SE alternative for integration tests.
+
+FILES IMPLEMENTED: src/test/java/com/thedavestack/productcatalog/service/ProductServiceTest.java (38 unit tests), src/test/java/com/thedavestack/productcatalog/resource/ProductResourceIT.java (integration test infrastructure), pom.xml (test dependencies), test resources.
 ## Implementation Summary:
 ✅ **Dependencies Added:**
 - mockito-core & mockito-junit-jupiter (v5.7.0) for unit testing
