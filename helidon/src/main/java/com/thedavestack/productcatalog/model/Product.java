@@ -16,6 +16,8 @@ package com.thedavestack.productcatalog.model;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+import com.thedavestack.productcatalog.dto.CreateProductRequest;
+
 public record Product(
         String id,
         String sku,
@@ -24,4 +26,39 @@ public record Product(
         BigDecimal price,
         String category,
         Instant createdAt,
-        Instant updatedAt) {}
+        Instant updatedAt) {
+
+    public static Product forCreation(
+            String sku, String name, String description, BigDecimal price, String category) {
+        return new Product(null, sku, name, description, price, category, null, null);
+    }
+
+    public static Product forUpdate(
+            String id,
+            String sku,
+            String name,
+            String description,
+            BigDecimal price,
+            String category) {
+        return new Product(id, sku, name, description, price, category, null, null);
+    }
+
+    public static Product fromRequest(CreateProductRequest request) {
+        return forCreation(
+                request.sku(),
+                request.name(),
+                request.description(),
+                request.price(),
+                request.category());
+    }
+
+    public static Product fromRequestForUpdate(String id, CreateProductRequest request) {
+        return forUpdate(
+                id,
+                request.sku(),
+                request.name(),
+                request.description(),
+                request.price(),
+                request.category());
+    }
+}

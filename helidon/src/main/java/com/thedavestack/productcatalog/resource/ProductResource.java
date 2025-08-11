@@ -39,16 +39,7 @@ public class ProductResource {
 
     @POST
     public CompletionStage<Response> createProduct(@Valid CreateProductRequest request) {
-        Product product =
-                new Product(
-                        null,
-                        request.sku(),
-                        request.name(),
-                        request.description(),
-                        request.price(),
-                        request.category(),
-                        null,
-                        null);
+        Product product = Product.fromRequest(request);
 
         return productService
                 .createProduct(product)
@@ -62,20 +53,7 @@ public class ProductResource {
     @POST
     @Path("/batch-create")
     public CompletionStage<Response> createProductsBatch(@Valid BatchCreateProductRequest request) {
-        List<Product> products =
-                request.products().stream()
-                        .map(
-                                req ->
-                                        new Product(
-                                                null,
-                                                req.sku(),
-                                                req.name(),
-                                                req.description(),
-                                                req.price(),
-                                                req.category(),
-                                                null,
-                                                null))
-                        .toList();
+        List<Product> products = request.products().stream().map(Product::fromRequest).toList();
 
         return productService
                 .createProductsBatch(products)
@@ -140,16 +118,7 @@ public class ProductResource {
     @Path("/{id}")
     public CompletionStage<Response> updateProduct(
             @PathParam("id") String id, @Valid CreateProductRequest request) {
-        Product product =
-                new Product(
-                        id,
-                        request.sku(),
-                        request.name(),
-                        request.description(),
-                        request.price(),
-                        request.category(),
-                        null,
-                        null);
+        Product product = Product.fromRequestForUpdate(id, request);
 
         return productService
                 .updateProduct(product)
