@@ -25,7 +25,6 @@ import com.thedavestack.productcatalog.dto.CreateProductRequest;
 import com.thedavestack.productcatalog.dto.ProductListResponse;
 import com.thedavestack.productcatalog.dto.ProductResponse;
 
-import io.helidon.microprofile.testing.junit5.AddConfig;
 import io.helidon.microprofile.testing.junit5.HelidonTest;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.client.Entity;
@@ -39,18 +38,18 @@ import jakarta.ws.rs.core.Response;
 @DisplayName("ProductResource Integration Tests")
 class ProductResourceIT {
 
-    @Container
-    static PostgreSQLContainer<?> postgres;
-    
+    @Container static PostgreSQLContainer<?> postgres;
+
     static {
         // Initialize and start container before any CDI processing
-        postgres = new PostgreSQLContainer<>("postgres:17.5")
-                .withDatabaseName("product_catalog_test")
-                .withUsername("test_user")
-                .withPassword("test_pass")
-                .withInitScript("schema-test.sql");
+        postgres =
+                new PostgreSQLContainer<>("postgres:17.5")
+                        .withDatabaseName("product_catalog_test")
+                        .withUsername("test_user")
+                        .withPassword("test_pass")
+                        .withInitScript("schema-test.sql");
         postgres.start();
-        
+
         // Set system properties that MicroProfile Config will pick up
         System.setProperty("db.connection.url", postgres.getJdbcUrl());
         System.setProperty("db.connection.username", postgres.getUsername());
