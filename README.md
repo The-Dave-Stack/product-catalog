@@ -40,6 +40,7 @@ This project implements a **comprehensive, enterprise-grade RESTful API** for pr
 *   **Batch Operations**: Create multiple products in single requests
 *   **Enhanced Error Handling**: Standardized error responses with Swagger UI guidance
 *   **Developer-Friendly 404s**: All not-found errors include links to API documentation
+*   **Developer-Friendly 401s**: Authentication errors include automatic links to login documentation
 
 ### 🏗️ **Database & Performance**
 *   **Strategic Indexing**: Optimized queries for SKU, category, and stock levels  
@@ -206,8 +207,9 @@ src/main/java/com/thedavestack/productcatalog/
 - **Role-Based Access Control**: ADMIN vs USER permissions  
 - **Protected Endpoints**: All product APIs require authentication
 - **Input Validation**: Multi-layer validation (annotation + custom)
-- **Enhanced Error Handling**: Consistent error responses with developer guidance
+- **Enhanced Error Handling**: Consistent error responses with developer guidance  
 - **Developer-Friendly 404s**: Automatic Swagger UI links for invalid endpoints
+- **Developer-Friendly 401s**: Authentication errors include automatic login guidance
 
 ## 🚀 Deployment & Production
 
@@ -288,8 +290,9 @@ The application follows a comprehensive 3-tier testing approach:
 - Audit logging and change tracking
 - Docker containerization and deployment
 - Interactive API documentation
-- Enhanced error handling with developer guidance
-- Developer-friendly 404 errors with automatic Swagger UI links
+- Enhanced error handling with comprehensive developer guidance
+- Developer-friendly 404 errors with automatic Swagger UI links  
+- Developer-friendly 401 errors with automatic authentication guidance
 
 ### 🎯 **Ready for Production**
 This Spring Boot application demonstrates enterprise-grade development practices and is production-ready with:

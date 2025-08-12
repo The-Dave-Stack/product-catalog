@@ -83,10 +83,13 @@ This is an **enterprise-grade Spring Boot 3.5.4 REST API** for product catalog m
 - **Custom Exceptions**: `ProductNotFoundException`, `DuplicateSkuException`
 - **Enhanced Global Handler**: Consistent error responses with developer guidance
 - **Developer-Friendly 404s**: All not-found errors include automatic Swagger UI links
+- **Developer-Friendly 401s**: Authentication errors include automatic login guidance
 - **Comprehensive Coverage**: Handles both `NoHandlerFoundException` and `NoResourceFoundException`
-- **Help Links**: Automatic links to `/swagger-ui/index.html` and `/v3/api-docs` for guidance
+- **JWT Authentication Errors**: Enhanced `JwtAuthenticationEntryPoint` with help links
+- **Login Errors**: Enhanced `AuthController` with credential examples and documentation links
+- **Help Links**: Automatic links to `/swagger-ui/index.html#/Authentication`, `/swagger-ui/index.html`, and `/v3/api-docs`
 - **Validation Errors**: Detailed field-level validation messages
-- **Security Errors**: Proper 401/403 responses without sensitive information
+- **Security Errors**: Proper 401/403 responses with developer guidance
 - **Error Codes**: Standardized error codes for client integration
 
 ### API Features - Advanced
@@ -136,8 +139,41 @@ All error responses follow a standardized format with optional developer guidanc
 ```
 
 ### Error Types with Help Links
+
+#### 404 Not Found Errors
 - **Product Not Found**: When requesting non-existent product IDs
-- **Invalid Endpoints**: When accessing non-existent API endpoints
+- **Invalid Endpoints**: When accessing non-existent API endpoints  
 - **Missing Static Resources**: When Spring Boot treats invalid endpoints as static resources
 
-This enhances developer experience by automatically providing navigation to API documentation when errors occur.
+#### 401 Unauthorized Errors
+- **Missing Authorization Header**: When accessing protected endpoints without authentication
+- **Invalid JWT Token**: When providing malformed or invalid JWT tokens
+- **Invalid Login Credentials**: When providing incorrect username/password combinations
+
+**Example 401 Error Response:**
+```json
+{
+  "timestamp": 1754995483.436609546,
+  "status": 401,
+  "error": "Unauthorized", 
+  "message": "Authentication required to access this resource. Please provide a valid JWT token in the Authorization header.",
+  "path": "/api/v1/products",
+  "errorCode": "AUTHENTICATION_REQUIRED",
+  "helpLinks": [
+    {
+      "description": "Login Endpoint",
+      "url": "/swagger-ui/index.html#/Authentication"
+    },
+    {
+      "description": "API Documentation", 
+      "url": "/swagger-ui/index.html"
+    },
+    {
+      "description": "OpenAPI Specification",
+      "url": "/v3/api-docs"
+    }
+  ]
+}
+```
+
+This enhances developer experience by automatically providing navigation to authentication documentation when errors occur.

@@ -1,5 +1,7 @@
 package com.thedavestack.productcatalog.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,13 +54,19 @@ public class AuthController {
         String role = authenticateUser(loginRequest.username(), loginRequest.password());
 
         if (role == null) {
+            List<ErrorResponse.HelpLink> helpLinks = createLoginHelpLinks();
+
+            String message =
+                    "Invalid username or password. Use 'admin/admin123' for admin access or 'user/user123' for user access.";
+
             ErrorResponse errorResponse =
                     ErrorResponse.of(
                             401,
                             "Unauthorized",
-                            "Invalid username or password",
+                            message,
                             "/api/v1/auth/login",
-                            "INVALID_CREDENTIALS");
+                            "INVALID_CREDENTIALS",
+                            helpLinks);
             return ResponseEntity.status(401).body(errorResponse);
         }
 
@@ -78,5 +86,13 @@ public class AuthController {
             return "USER";
         }
         return null;
+    }
+
+    private List<ErrorResponse.HelpLink> createLoginHelpLinks() {
+        return List.of(
+                new ErrorResponse.HelpLink(
+                        "Authentication Guide", "/swagger-ui/index.html#/Authentication"),
+                new ErrorResponse.HelpLink("API Documentation", "/swagger-ui/index.html"),
+                new ErrorResponse.HelpLink("OpenAPI Specification", "/v3/api-docs"));
     }
 }
