@@ -47,10 +47,9 @@ public class SecurityConfig {
                                         // health which is public)
                                         .requestMatchers(
                                                 "/actuator/info",
-                                                "/actuator/metrics",
+                                                "/actuator/metrics", 
                                                 "/actuator/productmetrics",
-                                                "/actuator/audit",
-                                                "/actuator/**")
+                                                "/actuator/audit")
                                         .hasAnyRole("USER", "ADMIN")
 
                                         // Read-only endpoints - require USER or ADMIN role
