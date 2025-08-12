@@ -16,8 +16,11 @@ The project has successfully integrated Swagger for API documentation and now in
 - **Implemented Product Delete Endpoint**: Added `DELETE /api/v1/products/{id}` endpoint and corresponding E2E tests (`task-17`).
 
 ## Next Steps
-1. **Complete `task-13`**: Update Final Project Documentation (README.md) to reflect the current state and setup instructions.
-2. **Project Finalization**: Ensure all documentation is up-to-date and the project is ready for deployment.
+1. **Project Finalization**: Ensure all documentation is up-to-date and the project is ready for deployment.
+
+## Recent Changes
+- **Completed `task-13` (fully)**: Updated Final Project Documentation (README.md) to reflect the current state and setup instructions.
+- **GitHub Actions Update**: Renamed and updated GitHub Actions workflows (`pr-validation.yml`, `develop-cd.yml`, `main-cd.yml`) to align with the new project structure (Spring project moved to root).
 
 ## Active Decisions and Considerations
 - The project follows Git Flow branching model with all work done on feature branches off of `develop`.

@@ -1,23 +1,24 @@
-name: Spring - Develop Branch CI/CD
+name: Develop Branch CI/CD
 
 on:
   push:
     branches: [ develop ]
     paths:
-      - 'spring/**'
-      - '.github/workflows/spring-*.yml'
+      - 'src/**'
+      - 'pom.xml'
+      - '.github/workflows/*.yml'
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-deploy-spring:
-    name: Build and Deploy Spring to Staging
+  build-and-deploy:
+    name: Build and Deploy to Staging
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./spring
+        working-directory: ./
     permissions:
       contents: read
       packages: write
@@ -38,8 +39,8 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.m2
-        key: ${{ runner.os }}-spring-m2-${{ hashFiles('spring/**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-spring-m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
 
     - name: Generate RC version
       id: version
@@ -73,7 +74,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-spring
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         tags: |
           type=raw,value=develop
           type=raw,value=${{ steps.version.outputs.version }}
@@ -81,7 +82,7 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
-        context: ./spring
+        context: .
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
@@ -91,7 +92,7 @@ jobs:
       with:
         config-name: release-drafter.yml
         version: ${{ steps.version.outputs.version }}
-        tag: spring-${{ steps.version.outputs.version }}
+        tag: v${{ steps.version.outputs.version }}
         prerelease: true
         publish: true
       env:

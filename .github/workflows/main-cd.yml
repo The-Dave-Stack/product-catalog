@@ -1,23 +1,24 @@
-name: Spring - Main Branch CI/CD
+name: Main Branch CI/CD
 
 on:
   push:
     branches: [ main ]
     paths:
-      - 'spring/**'
-      - '.github/workflows/spring-*.yml'
+      - 'src/**'
+      - 'pom.xml'
+      - '.github/workflows/*.yml'
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-deploy-spring:
-    name: Build and Deploy Spring to Production
+  build-and-deploy:
+    name: Build and Deploy to Production
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./spring
+        working-directory: ./
     permissions:
       contents: write
       packages: write
@@ -38,14 +39,14 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.m2
-        key: ${{ runner.os }}-spring-m2-${{ hashFiles('spring/**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-spring-m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
 
     - name: Determine semantic version
       id: version
       uses: paulhatch/semantic-version@v5.4.0
       with:
-        tag_prefix: "spring-v"
+        tag_prefix: "v"
         major_pattern: "BREAKING CHANGE:"
         minor_pattern: "feat:"
         version_format: "${major}.${minor}.${patch}"
@@ -74,7 +75,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-spring
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         tags: |
           type=raw,value=latest
           type=raw,value=${{ steps.version.outputs.version }}
@@ -82,7 +83,7 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
-        context: ./spring
+        context: .
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
@@ -101,8 +102,8 @@ jobs:
       with:
         config-name: release-drafter.yml
         version: ${{ steps.version.outputs.version }}
-        tag: spring-v${{ steps.version.outputs.version }}
-        name: Spring Release v${{ steps.version.outputs.version }}
+        tag: v${{ steps.version.outputs.version }}
+        name: Release v${{ steps.version.outputs.version }}
         publish: true
         prerelease: false
       env:
@@ -114,7 +115,7 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add CHANGELOG.md
-        git commit -m "docs: update CHANGELOG.md for spring-v${{ steps.version.outputs.version }}" || exit 0
+        git commit -m "docs: update CHANGELOG.md for v${{ steps.version.outputs.version }}" || exit 0
         git push
 
     - name: Send success notification
@@ -124,16 +125,16 @@ jobs:
         server_port: 587
         username: ${{ secrets.SMTP_USERNAME }}
         password: ${{ secrets.SMTP_PASSWORD }}
-        subject: "✅ Spring Production Deployment Successful - v${{ steps.version.outputs.version }}"
+        subject: "✅ Production Deployment Successful - v${{ steps.version.outputs.version }}"
         to: davidlopez.david@gmail.com
         from: GitHub Actions <noreply@github.com>
         body: |
-          🎉 Successfully deployed Spring version ${{ steps.version.outputs.version }} to production!
+          🎉 Successfully deployed version ${{ steps.version.outputs.version }} to production!
           
           Repository: ${{ github.repository }}
           Commit: ${{ github.sha }}
           Author: ${{ github.actor }}
           
-          Docker Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-spring:${{ steps.version.outputs.version }}
+          Docker Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version }}
           
-          Release Notes: ${{ github.server_url }}/${{ github.repository }}/releases/tag/spring-v${{ steps.version.outputs.version }}
+          Release Notes: ${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ steps.version.outputs.version }}

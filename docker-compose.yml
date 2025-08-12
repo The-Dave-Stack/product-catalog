@@ -16,7 +16,7 @@ services:
       timeout: 5s
       retries: 5
 
-  product-catalog-spring:
+  product-catalog:
     build: 
       context: .
       dockerfile: Dockerfile

@@ -1,19 +1,20 @@
-name: Spring - Pull Request Validation
+name: Pull Request Validation
 
 on:
   pull_request:
     branches: [ main, develop ]
     paths:
-      - 'spring/**'
-      - '.github/workflows/spring-*.yml'
+      - 'src/**'
+      - 'pom.xml'
+      - '.github/workflows/*.yml'
 
 jobs:
-  validate-spring:
+  validate:
     name: Validate Spring Boot Implementation
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./spring
+        working-directory: ./
 
     steps:
     - name: Checkout code
@@ -29,8 +30,8 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.m2
-        key: ${{ runner.os }}-spring-m2-${{ hashFiles('spring/**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-spring-m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
 
     - name: Run code formatting check
       run: mvn spotless:check
@@ -48,7 +49,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: spring-test-results
+        name: test-results
         path: |
-          spring/target/surefire-reports/
-          spring/target/failsafe-reports/
+          target/surefire-reports/
+          target/failsafe-reports/

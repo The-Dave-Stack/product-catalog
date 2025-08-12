@@ -36,7 +36,7 @@ This project implements a comprehensive, enterprise-grade RESTful API for produc
 
 ### Using Docker Compose (Recommended for Development)
 
-To run the entire Product Catalog API stack (Spring Boot application and PostgreSQL database) using Docker Compose, navigate to this directory (`product-catalog/spring`) and execute the following command:
+To run the entire Product Catalog API stack (Spring Boot application and PostgreSQL database) using Docker Compose, navigate to this project's root directory and execute the following command:
 
 ```bash
 docker compose up
@@ -56,7 +56,7 @@ docker compose down
 
 ### Using Maven (Local Development)
 
-Ensure you have Java 21 and Maven installed. Navigate to this directory (`product-catalog/spring`).
+Ensure you have Java 21 and Maven installed. Navigate to this project's root directory.
 
 #### Build the Project
 To compile the project and package it into an executable JAR:
@@ -126,5 +126,8 @@ Generated on: 2025-08-05 11:40:47
 |  | **TASK-3** - Initialize Git Repository and Branches<br>*#setup #git* |
 |  | **TASK-2** - Set Up Initial Spring Boot Project using MCP Tool<br>*#setup #spring-boot #mcp* |
 |  | **TASK-1** - Create and Detail the API Design Document<br>*#documentation #design* |
+|  | **TASK-15** - Add Swagger for API Documentation<br>*#documentation #api* |
+|  | **TASK-16** - Implement Product Update Endpoint<br>*#api #controller #rest* |
+|  | **TASK-17** - Implement Product Delete Endpoint<br>*#api #controller #rest* |
 
 <!-- BOARD_END -->
