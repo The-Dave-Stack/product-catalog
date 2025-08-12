@@ -1,12 +1,11 @@
 package com.thedavestack.productcatalog.actuator;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.springframework.boot.actuator.endpoint.annotation.Endpoint;
-import org.springframework.boot.actuator.endpoint.annotation.ReadOperation;
-import org.springframework.boot.actuator.endpoint.annotation.Selector;
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+import org.springframework.boot.actuate.endpoint.annotation.Selector;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

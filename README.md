@@ -153,11 +153,16 @@ mvn spring-boot:run
 - `name` - Search by product name (partial match)
 
 ### 📊 Health & Documentation  
-| Method | Path                           | Description                           |
-|--------|--------------------------------|---------------------------------------|
-| `GET`  | `/actuator/health`             | Application health status             |
-| `GET`  | `/swagger-ui/index.html`       | Interactive API documentation         |
-| `GET`  | `/v3/api-docs`                 | OpenAPI specification (JSON)         |
+| Method | Path                           | Description                           | Authorization |
+|--------|--------------------------------|---------------------------------------|---------------|
+| `GET`  | `/actuator/health`             | Application health status with custom product health | Public |
+| `GET`  | `/actuator/info`               | Enhanced application information with features | USER/ADMIN |
+| `GET`  | `/actuator/metrics`            | Standard Spring Boot metrics          | USER/ADMIN |
+| `GET`  | `/actuator/product-metrics`    | Custom product catalog metrics        | USER/ADMIN |
+| `GET`  | `/actuator/audit`              | Audit log summary and recent entries  | USER/ADMIN |
+| `GET`  | `/actuator/audit/{entityId}`   | Audit logs for specific entity        | USER/ADMIN |
+| `GET`  | `/swagger-ui/index.html`       | Interactive API documentation         | Public |
+| `GET`  | `/v3/api-docs`                 | OpenAPI specification (JSON)         | Public |
 
 ### 💡 Example Usage
 ```bash
@@ -175,6 +180,21 @@ curl -X POST http://localhost:8080/api/v1/products \
 # Get products with filtering (requires USER/ADMIN token)  
 curl "http://localhost:8080/api/v1/products?category=ELECTRONICS&minPrice=500&page=0&size=10" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Check application health (public endpoint)
+curl http://localhost:8080/actuator/health
+
+# Get custom product metrics (requires USER/ADMIN token)
+curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  http://localhost:8080/actuator/product-metrics
+
+# Get application info with features (requires USER/ADMIN token)
+curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  http://localhost:8080/actuator/info
+
+# Get audit log summary (requires USER/ADMIN token)
+curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  http://localhost:8080/actuator/audit
 ```
 
 ## 🏗️ Architecture Overview
@@ -299,12 +319,14 @@ The Docker configuration implements security best practices:
 
 ### 📊 Monitoring & Observability
 
-- **Health Checks**: `/actuator/health` for load balancer integration
+- **Enhanced Health Checks**: `/actuator/health` with custom product database monitoring
+- **Custom Metrics**: `/actuator/product-metrics` provides business metrics (products by category, stock levels, average prices)
+- **Audit Trail Access**: `/actuator/audit` and `/actuator/audit/{entityId}` for complete CRUD history
+- **Application Info**: `/actuator/info` with feature flags and runtime statistics
 - **Container Health**: Docker health checks with proper timeouts and retries
-- **Application Metrics**: Spring Boot Actuator endpoints
+- **Standard Metrics**: `/actuator/metrics` for JVM and application performance
 - **Database Connection Pool**: HikariCP with connection monitoring and leak detection
 - **Structured Logging**: Container-optimized logging with configurable levels
-- **Audit Trail**: Complete CRUD operation history in `audit_logs` table
 - **Performance Monitoring**: JVM metrics optimized for container environments
 
 ## 🧪 Testing Strategy

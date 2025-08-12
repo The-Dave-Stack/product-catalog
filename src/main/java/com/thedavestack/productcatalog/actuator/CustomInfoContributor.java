@@ -4,8 +4,8 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.boot.actuator.info.Info;
-import org.springframework.boot.actuator.info.InfoContributor;
+import org.springframework.boot.actuate.info.Info;
+import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.stereotype.Component;
 
 import com.thedavestack.productcatalog.repository.ProductRepository;

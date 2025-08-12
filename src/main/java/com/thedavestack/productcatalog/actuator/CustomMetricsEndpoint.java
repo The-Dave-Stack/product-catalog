@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.boot.actuator.endpoint.annotation.Endpoint;
-import org.springframework.boot.actuator.endpoint.annotation.ReadOperation;
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 

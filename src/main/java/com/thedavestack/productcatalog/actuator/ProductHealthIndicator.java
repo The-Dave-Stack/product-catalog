@@ -1,7 +1,7 @@
 package com.thedavestack.productcatalog.actuator;
 
-import org.springframework.boot.actuator.health.Health;
-import org.springframework.boot.actuator.health.HealthIndicator;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.stereotype.Component;
 
 import com.thedavestack.productcatalog.repository.ProductRepository;
