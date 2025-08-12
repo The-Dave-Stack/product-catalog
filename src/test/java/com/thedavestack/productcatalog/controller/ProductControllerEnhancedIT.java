@@ -32,7 +32,7 @@ import com.thedavestack.productcatalog.repository.ProductRepository;
 import com.thedavestack.productcatalog.security.JwtUtil;
 
 @SpringBootTest
-@AutoConfigureWebMvc 
+@AutoConfigureWebMvc
 @ActiveProfiles("test")
 @Transactional
 class ProductControllerEnhancedIT extends BaseIntegrationTest {

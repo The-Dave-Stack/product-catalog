@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.thedavestack.productcatalog.dto.ErrorResponse;
 
@@ -38,13 +40,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         log.error("Product not found: {}", ex.getMessage());
 
+        List<ErrorResponse.HelpLink> helpLinks = createSwaggerHelpLinks();
+
         ErrorResponse errorResponse =
                 ErrorResponse.of(
                         HttpStatus.NOT_FOUND.value(),
                         "Not Found",
                         ex.getMessage(),
                         getPath(request),
-                        "PRODUCT_NOT_FOUND");
+                        "PRODUCT_NOT_FOUND",
+                        helpLinks);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
@@ -123,6 +128,62 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(
+            NoHandlerFoundException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+
+        log.warn("No handler found for {} {}", ex.getHttpMethod(), ex.getRequestURL());
+
+        List<ErrorResponse.HelpLink> helpLinks = createSwaggerHelpLinks();
+
+        String message =
+                String.format(
+                        "No endpoint found for %s %s. Please check the URL and HTTP method.",
+                        ex.getHttpMethod(), ex.getRequestURL());
+
+        ErrorResponse errorResponse =
+                ErrorResponse.of(
+                        HttpStatus.NOT_FOUND.value(),
+                        "Not Found",
+                        message,
+                        getPath(request),
+                        "ENDPOINT_NOT_FOUND",
+                        helpLinks);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleNoResourceFoundException(
+            NoResourceFoundException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+
+        log.warn("No resource found for path: {}", ex.getResourcePath());
+
+        List<ErrorResponse.HelpLink> helpLinks = createSwaggerHelpLinks();
+
+        String message =
+                String.format(
+                        "No endpoint found for the requested path '%s'. Please check the URL and HTTP method.",
+                        ex.getResourcePath());
+
+        ErrorResponse errorResponse =
+                ErrorResponse.of(
+                        HttpStatus.NOT_FOUND.value(),
+                        "Not Found",
+                        message,
+                        getPath(request),
+                        "ENDPOINT_NOT_FOUND",
+                        helpLinks);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, WebRequest request) {
 
@@ -144,5 +205,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             return servletRequest.getRequest().getRequestURI();
         }
         return request.getDescription(false);
+    }
+
+    private List<ErrorResponse.HelpLink> createSwaggerHelpLinks() {
+        return List.of(
+                new ErrorResponse.HelpLink("API Documentation", "/swagger-ui/index.html"),
+                new ErrorResponse.HelpLink("OpenAPI Specification", "/v3/api-docs"));
     }
 }

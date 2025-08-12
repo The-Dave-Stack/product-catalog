@@ -54,6 +54,7 @@ This is an **enterprise-grade Spring Boot 3.5.4 REST API** for product catalog m
 - **Database**: Optimized connection pooling with HikariCP
 - **Actuator**: Health checks and metrics for production monitoring
 - **Async Processing**: Background audit logging and change tracking
+- **Enhanced 404 Handling**: `spring.mvc.throw-exception-if-no-handler-found=true` for comprehensive error coverage
 
 ## Development Notes - Enterprise Features
 
@@ -78,9 +79,12 @@ This is an **enterprise-grade Spring Boot 3.5.4 REST API** for product catalog m
 - **Database Tests**: Testcontainers with PostgreSQL for repository layer
 - **Authentication Flow**: Complete JWT login and API access testing
 
-### Error Handling - Standardized
+### Error Handling - Enhanced with Developer Guidance
 - **Custom Exceptions**: `ProductNotFoundException`, `DuplicateSkuException`
-- **Global Handler**: Consistent error responses with HTTP status codes
+- **Enhanced Global Handler**: Consistent error responses with developer guidance
+- **Developer-Friendly 404s**: All not-found errors include automatic Swagger UI links
+- **Comprehensive Coverage**: Handles both `NoHandlerFoundException` and `NoResourceFoundException`
+- **Help Links**: Automatic links to `/swagger-ui/index.html` and `/v3/api-docs` for guidance
 - **Validation Errors**: Detailed field-level validation messages
 - **Security Errors**: Proper 401/403 responses without sensitive information
 - **Error Codes**: Standardized error codes for client integration
@@ -105,3 +109,35 @@ This is an **enterprise-grade Spring Boot 3.5.4 REST API** for product catalog m
 - **Monitoring**: Actuator endpoints for application health and metrics
 - **Security Headers**: CORS and security headers configured
 - **Logging**: Structured logging ready for centralized log aggregation
+
+## Enhanced Error Response Format
+
+All error responses follow a standardized format with optional developer guidance:
+
+```json
+{
+  "timestamp": "2025-08-12T10:31:36.844264303Z",
+  "status": 404,
+  "error": "Not Found", 
+  "message": "No endpoint found for the requested path 'api/v1/invalid-endpoint'. Please check the URL and HTTP method.",
+  "path": "/api/v1/invalid-endpoint",
+  "errorCode": "ENDPOINT_NOT_FOUND",
+  "helpLinks": [
+    {
+      "description": "API Documentation",
+      "url": "/swagger-ui/index.html"
+    },
+    {
+      "description": "OpenAPI Specification", 
+      "url": "/v3/api-docs"
+    }
+  ]
+}
+```
+
+### Error Types with Help Links
+- **Product Not Found**: When requesting non-existent product IDs
+- **Invalid Endpoints**: When accessing non-existent API endpoints
+- **Missing Static Resources**: When Spring Boot treats invalid endpoints as static resources
+
+This enhances developer experience by automatically providing navigation to API documentation when errors occur.
