@@ -47,7 +47,7 @@ public class SecurityConfig {
                                         // health which is public)
                                         .requestMatchers(
                                                 "/actuator/info",
-                                                "/actuator/metrics", 
+                                                "/actuator/metrics",
                                                 "/actuator/productmetrics",
                                                 "/actuator/audit")
                                         .hasAnyRole("USER", "ADMIN")
