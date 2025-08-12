@@ -95,5 +95,5 @@ public interface ProductRepository extends JpaRepository<Product, String> {
      * @return A page of products.
      */
     @Query("SELECT p FROM Product p WHERE p.stockQuantity <= p.minStockLevel")
-    Page<Product> findLowStockProducts(Pageable pageable);}
+    Page<Product> findLowStockProducts(Pageable pageable);
 }
