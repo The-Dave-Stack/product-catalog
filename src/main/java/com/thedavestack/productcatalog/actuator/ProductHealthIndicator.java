@@ -21,25 +21,23 @@ public class ProductHealthIndicator implements HealthIndicator {
         try {
             long totalProducts = productRepository.count();
             long activeProducts = productRepository.findByActive(true, null).getTotalElements();
-            
+
             if (totalProducts == 0) {
                 return Health.down()
-                    .withDetail("message", "No products found in database")
-                    .withDetail("totalProducts", totalProducts)
-                    .build();
+                        .withDetail("message", "No products found in database")
+                        .withDetail("totalProducts", totalProducts)
+                        .build();
             }
-            
+
             return Health.up()
-                .withDetail("totalProducts", totalProducts)
-                .withDetail("activeProducts", activeProducts)
-                .withDetail("inactiveProducts", totalProducts - activeProducts)
-                .build();
-                
+                    .withDetail("totalProducts", totalProducts)
+                    .withDetail("activeProducts", activeProducts)
+                    .withDetail("inactiveProducts", totalProducts - activeProducts)
+                    .build();
+
         } catch (Exception e) {
             log.error("Product health check failed", e);
-            return Health.down()
-                .withDetail("error", e.getMessage())
-                .build();
+            return Health.down().withDetail("error", e.getMessage()).build();
         }
     }
 }

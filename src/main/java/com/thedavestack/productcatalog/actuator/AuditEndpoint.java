@@ -26,27 +26,27 @@ public class AuditEndpoint {
     @ReadOperation
     public Map<String, Object> auditSummary() {
         Map<String, Object> summary = new HashMap<>();
-        
+
         Pageable pageable = PageRequest.of(0, 10);
         Page<AuditLog> recentAudits = auditService.findAuditLogs(null, null, null, null, pageable);
-        
+
         summary.put("totalAuditLogs", recentAudits.getTotalElements());
         summary.put("recentAudits", recentAudits.getContent());
-        
+
         return summary;
     }
 
     @ReadOperation
     public Map<String, Object> auditByEntity(@Selector String entityId) {
         Map<String, Object> result = new HashMap<>();
-        
+
         Pageable pageable = PageRequest.of(0, 20);
         Page<AuditLog> audits = auditService.findByEntityId(entityId, pageable);
-        
+
         result.put("entityId", entityId);
         result.put("totalLogs", audits.getTotalElements());
         result.put("auditLogs", audits.getContent());
-        
+
         return result;
     }
 }

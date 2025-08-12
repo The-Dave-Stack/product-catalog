@@ -21,17 +21,18 @@ public class CustomInfoContributor implements InfoContributor {
     @Override
     public void contribute(Info.Builder builder) {
         Map<String, Object> productCatalogInfo = new HashMap<>();
-        
+
         // Application info
         productCatalogInfo.put("name", "Product Catalog Service");
         productCatalogInfo.put("version", "1.0.0-ENHANCED");
-        productCatalogInfo.put("description", "Enhanced Spring Boot REST API for product catalog management");
+        productCatalogInfo.put(
+                "description", "Enhanced Spring Boot REST API for product catalog management");
         productCatalogInfo.put("lastUpdated", Instant.now().toString());
-        
+
         // Runtime stats
         long totalProducts = productRepository.count();
         productCatalogInfo.put("totalProducts", totalProducts);
-        
+
         // Features
         Map<String, Boolean> features = new HashMap<>();
         features.put("jwtAuthentication", true);
@@ -41,7 +42,7 @@ public class CustomInfoContributor implements InfoContributor {
         features.put("filtering", true);
         features.put("validation", true);
         productCatalogInfo.put("features", features);
-        
+
         builder.withDetail("productCatalog", productCatalogInfo);
     }
 }

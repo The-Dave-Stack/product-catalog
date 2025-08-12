@@ -42,9 +42,15 @@ public class SecurityConfig {
                                         .permitAll()
                                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
                                         .permitAll()
-                                        
-                                        // Actuator endpoints - require USER or ADMIN role (except health which is public)
-                                        .requestMatchers("/actuator/info", "/actuator/metrics", "/actuator/product-metrics", "/actuator/audit", "/actuator/**")
+
+                                        // Actuator endpoints - require USER or ADMIN role (except
+                                        // health which is public)
+                                        .requestMatchers(
+                                                "/actuator/info",
+                                                "/actuator/metrics",
+                                                "/actuator/product-metrics",
+                                                "/actuator/audit",
+                                                "/actuator/**")
                                         .hasAnyRole("USER", "ADMIN")
 
                                         // Read-only endpoints - require USER or ADMIN role
