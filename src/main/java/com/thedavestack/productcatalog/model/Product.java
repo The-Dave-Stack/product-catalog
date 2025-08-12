@@ -18,14 +18,19 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,6 +40,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "products")
+@SQLDelete(sql = "UPDATE products SET deleted = true WHERE id = ? AND version = ?")
+@Where(clause = "deleted = false")
 public class Product {
 
     @Id
@@ -52,11 +59,37 @@ public class Product {
     @Column(nullable = false)
     private BigDecimal price;
 
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private Category category;
+    
+    @Column(name = "stock_quantity", nullable = false)
+    private Integer stockQuantity = 0;
+    
+    @Column(name = "min_stock_level")
+    private Integer minStockLevel = 0;
+    
+    @Column(name = "image_url")
+    private String imageUrl;
+    
+    @Column(name = "weight")
+    private BigDecimal weight;
+    
+    @Column(name = "dimensions")
+    private String dimensions;
+    
+    @Column(name = "active", nullable = false)
+    private Boolean active = true;
 
     @CreationTimestamp
     @Column(updatable = false)
     private Instant createdAt;
 
-    @UpdateTimestamp private Instant updatedAt;
+    @UpdateTimestamp
+    private Instant updatedAt;
+    
+    @Column(name = "deleted", nullable = false)
+    private Boolean deleted = false;
+    
+    @Version
+    private Long version;
 }

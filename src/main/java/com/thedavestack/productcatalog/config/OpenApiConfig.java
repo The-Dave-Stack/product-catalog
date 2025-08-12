@@ -14,8 +14,11 @@ package com.thedavestack.productcatalog.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
 public class OpenApiConfig {
@@ -27,6 +30,17 @@ public class OpenApiConfig {
                         new Info()
                                 .title("Product Catalog API")
                                 .version("1.0")
-                                .description("A RESTful API for managing a product catalog."));
+                                .description("A RESTful API for managing a product catalog with JWT authentication."))
+                .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
+                .components(
+                        new Components()
+                                .addSecuritySchemes(
+                                        "Bearer Authentication",
+                                        new SecurityScheme()
+                                                .name("Bearer Authentication")
+                                                .type(SecurityScheme.Type.HTTP)
+                                                .scheme("bearer")
+                                                .bearerFormat("JWT")
+                                                .description("Enter JWT token")));
     }
 }

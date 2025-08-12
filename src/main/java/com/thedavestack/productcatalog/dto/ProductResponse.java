@@ -10,6 +10,23 @@
 package com.thedavestack.productcatalog.dto;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+
+import com.thedavestack.productcatalog.model.Category;
 
 public record ProductResponse(
-        String id, String sku, String name, String description, BigDecimal price) {}
+        String id, 
+        String sku, 
+        String name, 
+        String description, 
+        BigDecimal price,
+        Category category,
+        Integer stockQuantity,
+        Integer minStockLevel,
+        String imageUrl,
+        BigDecimal weight,
+        String dimensions,
+        Boolean active,
+        Instant createdAt,
+        Instant updatedAt,
+        Long version) {}

@@ -20,11 +20,15 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.thedavestack.productcatalog.exception.DuplicateSkuException;
 import com.thedavestack.productcatalog.exception.ProductNotFoundException;
+import com.thedavestack.productcatalog.model.AuditLog;
+import com.thedavestack.productcatalog.model.Category;
 import com.thedavestack.productcatalog.model.Product;
 import com.thedavestack.productcatalog.repository.ProductRepository;
 
@@ -32,9 +36,11 @@ import com.thedavestack.productcatalog.repository.ProductRepository;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final AuditService auditService;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, AuditService auditService) {
         this.productRepository = productRepository;
+        this.auditService = auditService;
     }
 
     /**
@@ -75,7 +81,12 @@ public class ProductService {
                 throw new DuplicateSkuException(product.getSku());
             }
         }
-        return productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
+        
+        // Audit log
+        auditService.logAction("Product", savedProduct.getId(), AuditLog.AuditAction.CREATE, null, savedProduct);
+        
+        return savedProduct;
     }
 
     /**
@@ -102,15 +113,47 @@ public class ProductService {
         Product product =
                 productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
 
-        product.setName(productDetails.getName());
-        product.setDescription(productDetails.getDescription());
-        product.setPrice(productDetails.getPrice());
+        if (productDetails.getName() != null) {
+            product.setName(productDetails.getName());
+        }
+        if (productDetails.getDescription() != null) {
+            product.setDescription(productDetails.getDescription());
+        }
+        if (productDetails.getPrice() != null) {
+            product.setPrice(productDetails.getPrice());
+        }
+        if (productDetails.getCategory() != null) {
+            product.setCategory(productDetails.getCategory());
+        }
+        if (productDetails.getStockQuantity() != null) {
+            product.setStockQuantity(productDetails.getStockQuantity());
+        }
+        if (productDetails.getMinStockLevel() != null) {
+            product.setMinStockLevel(productDetails.getMinStockLevel());
+        }
+        if (productDetails.getImageUrl() != null) {
+            product.setImageUrl(productDetails.getImageUrl());
+        }
+        if (productDetails.getWeight() != null) {
+            product.setWeight(productDetails.getWeight());
+        }
+        if (productDetails.getDimensions() != null) {
+            product.setDimensions(productDetails.getDimensions());
+        }
+        if (productDetails.getActive() != null) {
+            product.setActive(productDetails.getActive());
+        }
 
-        return productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
+        
+        // Audit log
+        auditService.logAction("Product", savedProduct.getId(), AuditLog.AuditAction.UPDATE, product, savedProduct);
+        
+        return savedProduct;
     }
 
     /**
-     * Deletes a product by its ID.
+     * Deletes a product by its ID (soft delete).
      *
      * @param id the ID of the product to delete.
      * @throws ProductNotFoundException if the product with the given ID is not found.
@@ -119,6 +162,43 @@ public class ProductService {
     public void deleteProduct(String id) {
         Product product =
                 productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+        
+        // Audit log before deletion
+        auditService.logAction("Product", product.getId(), AuditLog.AuditAction.DELETE, product, null);
+        
         productRepository.delete(product);
+    }
+    
+    /**
+     * Retrieves all products with pagination.
+     *
+     * @param pageable the pagination information.
+     * @return a page of products.
+     */
+    public Page<Product> findAll(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
+    
+    /**
+     * Retrieves products with filtering and pagination.
+     *
+     * @param name optional name filter.
+     * @param category optional category filter.
+     * @param active optional active status filter.
+     * @param pageable the pagination information.
+     * @return a page of products.
+     */
+    public Page<Product> findWithFilters(String name, Category category, Boolean active, Pageable pageable) {
+        return productRepository.findWithFilters(name, category, active, pageable);
+    }
+    
+    /**
+     * Retrieves products with low stock.
+     *
+     * @param pageable the pagination information.
+     * @return a page of products with low stock.
+     */
+    public Page<Product> findLowStockProducts(Pageable pageable) {
+        return productRepository.findLowStockProducts(pageable);
     }
 }

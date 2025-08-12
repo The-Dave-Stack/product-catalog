@@ -26,6 +26,13 @@ public class ProductMapper {
         product.setDescription(createProductRequest.description());
         product.setPrice(createProductRequest.price());
         product.setSku(createProductRequest.sku());
+        product.setCategory(createProductRequest.category());
+        product.setStockQuantity(createProductRequest.stockQuantity() != null ? createProductRequest.stockQuantity() : 0);
+        product.setMinStockLevel(createProductRequest.minStockLevel() != null ? createProductRequest.minStockLevel() : 0);
+        product.setImageUrl(createProductRequest.imageUrl());
+        product.setWeight(createProductRequest.weight());
+        product.setDimensions(createProductRequest.dimensions());
+        product.setActive(createProductRequest.active() != null ? createProductRequest.active() : true);
         return product;
     }
 
@@ -34,6 +41,13 @@ public class ProductMapper {
         product.setName(updateProductRequest.getName());
         product.setDescription(updateProductRequest.getDescription());
         product.setPrice(updateProductRequest.getPrice());
+        product.setCategory(updateProductRequest.getCategory());
+        product.setStockQuantity(updateProductRequest.getStockQuantity());
+        product.setMinStockLevel(updateProductRequest.getMinStockLevel());
+        product.setImageUrl(updateProductRequest.getImageUrl());
+        product.setWeight(updateProductRequest.getWeight());
+        product.setDimensions(updateProductRequest.getDimensions());
+        product.setActive(updateProductRequest.getActive());
         return product;
     }
 
@@ -43,6 +57,16 @@ public class ProductMapper {
                 product.getSku(),
                 product.getName(),
                 product.getDescription(),
-                product.getPrice());
+                product.getPrice(),
+                product.getCategory(),
+                product.getStockQuantity(),
+                product.getMinStockLevel(),
+                product.getImageUrl(),
+                product.getWeight(),
+                product.getDimensions(),
+                product.getActive(),
+                product.getCreatedAt(),
+                product.getUpdatedAt(),
+                product.getVersion());
     }
 }

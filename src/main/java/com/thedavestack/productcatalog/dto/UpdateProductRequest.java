@@ -14,9 +14,14 @@ package com.thedavestack.productcatalog.dto;
 
 import java.math.BigDecimal;
 
+import com.thedavestack.productcatalog.model.Category;
+
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 
@@ -25,12 +30,32 @@ import lombok.Data;
 public class UpdateProductRequest {
 
     @NotBlank(message = "Product name cannot be blank")
+    @Size(max = 255, message = "Name cannot exceed 255 characters")
     private String name;
 
-    @NotBlank(message = "Product description cannot be blank")
+    @Size(max = 1000, message = "Description cannot exceed 1000 characters")
     private String description;
 
     @NotNull(message = "Product price cannot be null")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Product price must be greater than 0")
+    @Positive(message = "Product price must be positive")
     private BigDecimal price;
+    
+    private Category category;
+    
+    @PositiveOrZero(message = "Stock quantity must be zero or positive")
+    private Integer stockQuantity;
+    
+    @PositiveOrZero(message = "Minimum stock level must be zero or positive")
+    private Integer minStockLevel;
+    
+    @Size(max = 500, message = "Image URL cannot exceed 500 characters")
+    private String imageUrl;
+    
+    @Positive(message = "Weight must be positive")
+    private BigDecimal weight;
+    
+    @Size(max = 255, message = "Dimensions cannot exceed 255 characters")
+    private String dimensions;
+    
+    private Boolean active;
 }
