@@ -1,0 +1,72 @@
+# Maven build artifacts
+target/
+!target/*.jar
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Documentation and config files not needed in container
+README.md
+IMPROVEMENTS.md
+*.md
+docs/
+.clinerules/
+
+# Test files
+src/test/
+
+# Maven wrapper (already in base image)
+.mvn/
+mvnw
+mvnw.cmd
+
+# Spring Boot development tools
+spring-boot-devtools.properties
+
+# Temporary files
+*.tmp
+*.log
+*.swp
+*.bak
+
+# Node modules (if any)
+node_modules/
+
+# Docker files (avoid recursion)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Backup and temporary directories
+backlog/
+temp_*/
+*.backup
+
+# IDE and editor configs
+.editorconfig
+.gitattributes
+
+# Java specific
+*.class
+*.jar
+!target/*.jar
+*.war
+*.ear
+hs_err_pid*
+
+# Application logs
+logs/
+*.log
+application-*.log
