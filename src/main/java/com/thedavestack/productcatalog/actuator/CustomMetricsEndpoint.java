@@ -15,7 +15,7 @@ import com.thedavestack.productcatalog.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 
 @Component
-@Endpoint(id = "product-metrics")
+@Endpoint(id = "productmetrics")
 @RequiredArgsConstructor
 public class CustomMetricsEndpoint {
 

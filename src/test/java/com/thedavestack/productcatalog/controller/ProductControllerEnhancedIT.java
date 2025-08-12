@@ -13,7 +13,8 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -31,13 +32,14 @@ import com.thedavestack.productcatalog.model.Product;
 import com.thedavestack.productcatalog.repository.ProductRepository;
 import com.thedavestack.productcatalog.security.JwtUtil;
 
-@SpringBootTest
-@AutoConfigureWebMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @ActiveProfiles("test")
 @Transactional
 class ProductControllerEnhancedIT extends BaseIntegrationTest {
 
-    @Autowired private MockMvc mockMvc;
+    private MockMvc mockMvc;
+    
+    @Autowired private WebApplicationContext webApplicationContext;
 
     @Autowired private ObjectMapper objectMapper;
 
@@ -50,6 +52,7 @@ class ProductControllerEnhancedIT extends BaseIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         adminToken = "Bearer " + jwtUtil.generateToken("admin", "ADMIN");
         userToken = "Bearer " + jwtUtil.generateToken("user", "USER");
         productRepository.deleteAll();

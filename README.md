@@ -158,7 +158,7 @@ mvn spring-boot:run
 | `GET`  | `/actuator/health`             | Application health status with custom product health | Public |
 | `GET`  | `/actuator/info`               | Enhanced application information with features | USER/ADMIN |
 | `GET`  | `/actuator/metrics`            | Standard Spring Boot metrics          | USER/ADMIN |
-| `GET`  | `/actuator/product-metrics`    | Custom product catalog metrics        | USER/ADMIN |
+| `GET`  | `/actuator/productmetrics`     | Custom product catalog metrics        | USER/ADMIN |
 | `GET`  | `/actuator/audit`              | Audit log summary and recent entries  | USER/ADMIN |
 | `GET`  | `/actuator/audit/{entityId}`   | Audit logs for specific entity        | USER/ADMIN |
 | `GET`  | `/swagger-ui/index.html`       | Interactive API documentation         | Public |
@@ -186,7 +186,7 @@ curl http://localhost:8080/actuator/health
 
 # Get custom product metrics (requires USER/ADMIN token)
 curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  http://localhost:8080/actuator/product-metrics
+  http://localhost:8080/actuator/productmetrics
 
 # Get application info with features (requires USER/ADMIN token)
 curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
@@ -320,7 +320,7 @@ The Docker configuration implements security best practices:
 ### 📊 Monitoring & Observability
 
 - **Enhanced Health Checks**: `/actuator/health` with custom product database monitoring
-- **Custom Metrics**: `/actuator/product-metrics` provides business metrics (products by category, stock levels, average prices)
+- **Custom Metrics**: `/actuator/productmetrics` provides business metrics (products by category, stock levels, average prices)
 - **Audit Trail Access**: `/actuator/audit` and `/actuator/audit/{entityId}` for complete CRUD history
 - **Application Info**: `/actuator/info` with feature flags and runtime statistics
 - **Container Health**: Docker health checks with proper timeouts and retries

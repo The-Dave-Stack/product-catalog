@@ -48,7 +48,7 @@ public class SecurityConfig {
                                         .requestMatchers(
                                                 "/actuator/info",
                                                 "/actuator/metrics",
-                                                "/actuator/product-metrics",
+                                                "/actuator/productmetrics",
                                                 "/actuator/audit",
                                                 "/actuator/**")
                                         .hasAnyRole("USER", "ADMIN")
