@@ -24,6 +24,7 @@ import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -32,10 +33,49 @@ import org.slf4j.LoggerFactory;
 import com.thedavestack.productcatalog.BaseE2ETest;
 
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 
 public class ProductControllerE2ETest extends BaseE2ETest {
 
     private static final Logger logger = LoggerFactory.getLogger(ProductControllerE2ETest.class);
+
+    private String adminToken;
+    private String userToken;
+
+    @BeforeEach
+    void authenticateUsers() {
+        logger.info("=== Setting up authentication tokens ===");
+
+        // Get admin token
+        String adminLoginBody = "{ \"username\": \"admin\", \"password\": \"admin123\" }";
+        Response adminResponse =
+                given().contentType(ContentType.JSON)
+                        .body(adminLoginBody)
+                        .when()
+                        .post("/api/v1/auth/login")
+                        .then()
+                        .statusCode(200)
+                        .extract()
+                        .response();
+
+        adminToken = "Bearer " + adminResponse.path("token");
+        logger.info("Admin token obtained");
+
+        // Get user token
+        String userLoginBody = "{ \"username\": \"user\", \"password\": \"user123\" }";
+        Response userResponse =
+                given().contentType(ContentType.JSON)
+                        .body(userLoginBody)
+                        .when()
+                        .post("/api/v1/auth/login")
+                        .then()
+                        .statusCode(200)
+                        .extract()
+                        .response();
+
+        userToken = "Bearer " + userResponse.path("token");
+        logger.info("User token obtained");
+    }
 
     @Test
     @DisplayName("Should create a product successfully with provided SKU")
@@ -49,6 +89,7 @@ public class ProductControllerE2ETest extends BaseE2ETest {
 
         String response =
                 given().contentType(ContentType.JSON)
+                        .header("Authorization", adminToken)
                         .body(requestBody)
                         .when()
                         .post("/api/v1/products")
@@ -78,6 +119,7 @@ public class ProductControllerE2ETest extends BaseE2ETest {
 
         String response =
                 given().contentType(ContentType.JSON)
+                        .header("Authorization", adminToken)
                         .body(requestBody)
                         .when()
                         .post("/api/v1/products")
@@ -108,6 +150,7 @@ public class ProductControllerE2ETest extends BaseE2ETest {
         logApiCall("POST", "/api/v1/products", 201);
         String firstResponse =
                 given().contentType(ContentType.JSON)
+                        .header("Authorization", adminToken)
                         .body(firstProduct)
                         .when()
                         .post("/api/v1/products")
@@ -126,6 +169,7 @@ public class ProductControllerE2ETest extends BaseE2ETest {
         logApiCall("POST", "/api/v1/products", 409);
         String errorResponse =
                 given().contentType(ContentType.JSON)
+                        .header("Authorization", adminToken)
                         .body(secondProduct)
                         .when()
                         .post("/api/v1/products")
@@ -153,12 +197,15 @@ public class ProductControllerE2ETest extends BaseE2ETest {
 
         String errorResponse =
                 given().contentType(ContentType.JSON)
+                        .header("Authorization", adminToken)
                         .body(requestBody)
                         .when()
                         .post("/api/v1/products")
                         .then()
                         .statusCode(400) // Bad Request
-                        .body("message", containsString("Name cannot be empty"))
+                        .body(
+                                "message",
+                                containsString("One or more fields have validation errors"))
                         .extract()
                         .asString();
 
@@ -178,6 +225,7 @@ public class ProductControllerE2ETest extends BaseE2ETest {
         logApiCall("POST", "/api/v1/products", 201);
         String productId =
                 given().contentType(ContentType.JSON)
+                        .header("Authorization", adminToken)
                         .body(requestBody)
                         .when()
                         .post("/api/v1/products")
@@ -191,7 +239,8 @@ public class ProductControllerE2ETest extends BaseE2ETest {
         // Retrieve the product
         logApiCall("GET", "/api/v1/products/" + productId, 200);
         String retrieveResponse =
-                given().when()
+                given().header("Authorization", userToken)
+                        .when()
                         .get("/api/v1/products/{id}", productId)
                         .then()
                         .statusCode(200)
@@ -214,7 +263,8 @@ public class ProductControllerE2ETest extends BaseE2ETest {
 
         logApiCall("GET", "/api/v1/products/" + nonExistentId, 404);
         String errorResponse =
-                given().when()
+                given().header("Authorization", userToken)
+                        .when()
                         .get("/api/v1/products/{id}", nonExistentId)
                         .then()
                         .statusCode(404)
@@ -238,6 +288,7 @@ public class ProductControllerE2ETest extends BaseE2ETest {
                 "{ \"name\": \"Original Product\", \"description\": \"Original description\", \"price\": 10.00, \"sku\": \"UPDATE-001\" }";
         String productId =
                 given().contentType(ContentType.JSON)
+                        .header("Authorization", adminToken)
                         .body(createRequestBody)
                         .when()
                         .post("/api/v1/products")
@@ -254,6 +305,7 @@ public class ProductControllerE2ETest extends BaseE2ETest {
         logApiCall("PUT", "/api/v1/products/" + productId, 200);
         String updateResponse =
                 given().contentType(ContentType.JSON)
+                        .header("Authorization", adminToken)
                         .body(updateRequestBody)
                         .when()
                         .put("/api/v1/products/{id}", productId)
@@ -272,7 +324,8 @@ public class ProductControllerE2ETest extends BaseE2ETest {
 
         // Verify the update by retrieving the product
         logApiCall("GET", "/api/v1/products/" + productId, 200);
-        given().when()
+        given().header("Authorization", userToken)
+                .when()
                 .get("/api/v1/products/{id}", productId)
                 .then()
                 .statusCode(200)
@@ -294,6 +347,7 @@ public class ProductControllerE2ETest extends BaseE2ETest {
         logApiCall("PUT", "/api/v1/products/" + nonExistentId, 404);
         String errorResponse =
                 given().contentType(ContentType.JSON)
+                        .header("Authorization", adminToken)
                         .body(updateRequestBody)
                         .when()
                         .put("/api/v1/products/{id}", nonExistentId)
@@ -319,6 +373,7 @@ public class ProductControllerE2ETest extends BaseE2ETest {
                 "{ \"name\": \"Product to Delete\", \"description\": \"To be deleted\", \"price\": 100.00, \"sku\": \"DEL-001\" }";
         String productId =
                 given().contentType(ContentType.JSON)
+                        .header("Authorization", adminToken)
                         .body(createRequestBody)
                         .when()
                         .post("/api/v1/products")
@@ -330,13 +385,18 @@ public class ProductControllerE2ETest extends BaseE2ETest {
 
         // Delete the product
         logApiCall("DELETE", "/api/v1/products/" + productId, 204);
-        given().when().delete("/api/v1/products/{id}", productId).then().statusCode(204);
+        given().header("Authorization", adminToken)
+                .when()
+                .delete("/api/v1/products/{id}", productId)
+                .then()
+                .statusCode(204);
 
         logger.info("Product deleted successfully. ID: {}", productId);
 
         // Verify deletion by attempting to retrieve
         logApiCall("GET", "/api/v1/products/" + productId, 404);
-        given().when()
+        given().header("Authorization", userToken)
+                .when()
                 .get("/api/v1/products/{id}", productId)
                 .then()
                 .statusCode(404)
@@ -353,7 +413,8 @@ public class ProductControllerE2ETest extends BaseE2ETest {
 
         logApiCall("DELETE", "/api/v1/products/" + nonExistentId, 404);
         String errorResponse =
-                given().when()
+                given().header("Authorization", adminToken)
+                        .when()
                         .delete("/api/v1/products/{id}", nonExistentId)
                         .then()
                         .statusCode(404)
