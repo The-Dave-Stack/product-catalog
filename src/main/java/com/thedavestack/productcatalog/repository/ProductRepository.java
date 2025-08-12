@@ -42,7 +42,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
      * @return true if a product with the given SKU exists, false otherwise.
      */
     boolean existsBySku(String sku);
-    
+
     /**
      * Finds products by category with pagination.
      *
@@ -51,7 +51,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
      * @return A page of products.
      */
     Page<Product> findByCategory(Category category, Pageable pageable);
-    
+
     /**
      * Finds products by active status with pagination.
      *
@@ -60,7 +60,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
      * @return A page of products.
      */
     Page<Product> findByActive(Boolean active, Pageable pageable);
-    
+
     /**
      * Finds products with name containing the search term (case-insensitive).
      *
@@ -69,7 +69,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
      * @return A page of products.
      */
     Page<Product> findByNameContainingIgnoreCase(String name, Pageable pageable);
-    
+
     /**
      * Finds products with advanced filtering.
      *
@@ -79,15 +79,17 @@ public interface ProductRepository extends JpaRepository<Product, String> {
      * @param pageable Pagination information.
      * @return A page of products.
      */
-    @Query("SELECT p FROM Product p WHERE " +
-           "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
-           "(:category IS NULL OR p.category = :category) AND " +
-           "(:active IS NULL OR p.active = :active)")
-    Page<Product> findWithFilters(@Param("name") String name,
-                                 @Param("category") Category category,
-                                 @Param("active") Boolean active,
-                                 Pageable pageable);
-    
+    @Query(
+            "SELECT p FROM Product p WHERE "
+                    + "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND "
+                    + "(:category IS NULL OR p.category = :category) AND "
+                    + "(:active IS NULL OR p.active = :active)")
+    Page<Product> findWithFilters(
+            @Param("name") String name,
+            @Param("category") Category category,
+            @Param("active") Boolean active,
+            Pageable pageable);
+
     /**
      * Finds products with low stock (stock quantity <= min stock level).
      *

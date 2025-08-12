@@ -11,7 +11,7 @@ import com.thedavestack.productcatalog.model.AuditLog;
 
 @Repository
 public interface AuditLogRepository extends JpaRepository<AuditLog, String> {
-    
+
     /**
      * Finds audit logs by entity ID with pagination.
      *
@@ -20,7 +20,7 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, String> {
      * @return A page of audit logs.
      */
     Page<AuditLog> findByEntityIdOrderByCreatedAtDesc(String entityId, Pageable pageable);
-    
+
     /**
      * Finds audit logs by entity type with pagination.
      *
@@ -29,7 +29,7 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, String> {
      * @return A page of audit logs.
      */
     Page<AuditLog> findByEntityTypeOrderByCreatedAtDesc(String entityType, Pageable pageable);
-    
+
     /**
      * Finds audit logs by username with pagination.
      *
@@ -38,7 +38,7 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, String> {
      * @return A page of audit logs.
      */
     Page<AuditLog> findByUsernameOrderByCreatedAtDesc(String username, Pageable pageable);
-    
+
     /**
      * Finds audit logs with filters.
      *
@@ -49,15 +49,17 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, String> {
      * @param pageable Pagination information.
      * @return A page of audit logs.
      */
-    @Query("SELECT a FROM AuditLog a WHERE " +
-           "(:entityType IS NULL OR a.entityType = :entityType) AND " +
-           "(:entityId IS NULL OR a.entityId = :entityId) AND " +
-           "(:username IS NULL OR a.username = :username) AND " +
-           "(:action IS NULL OR a.action = :action) " +
-           "ORDER BY a.createdAt DESC")
-    Page<AuditLog> findWithFilters(@Param("entityType") String entityType,
-                                   @Param("entityId") String entityId,
-                                   @Param("username") String username,
-                                   @Param("action") AuditLog.AuditAction action,
-                                   Pageable pageable);
+    @Query(
+            "SELECT a FROM AuditLog a WHERE "
+                    + "(:entityType IS NULL OR a.entityType = :entityType) AND "
+                    + "(:entityId IS NULL OR a.entityId = :entityId) AND "
+                    + "(:username IS NULL OR a.username = :username) AND "
+                    + "(:action IS NULL OR a.action = :action) "
+                    + "ORDER BY a.createdAt DESC")
+    Page<AuditLog> findWithFilters(
+            @Param("entityType") String entityType,
+            @Param("entityId") String entityId,
+            @Param("username") String username,
+            @Param("action") AuditLog.AuditAction action,
+            Pageable pageable);
 }

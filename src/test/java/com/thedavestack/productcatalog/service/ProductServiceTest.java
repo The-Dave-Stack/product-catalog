@@ -43,7 +43,7 @@ import com.thedavestack.productcatalog.repository.ProductRepository;
 class ProductServiceTest {
 
     @Mock private ProductRepository productRepository;
-    
+
     @Mock private AuditService auditService;
 
     @InjectMocks private ProductService productService;

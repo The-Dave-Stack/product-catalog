@@ -15,10 +15,10 @@ import java.time.Instant;
 import com.thedavestack.productcatalog.model.Category;
 
 public record ProductResponse(
-        String id, 
-        String sku, 
-        String name, 
-        String description, 
+        String id,
+        String sku,
+        String name,
+        String description,
         BigDecimal price,
         Category category,
         Integer stockQuantity,

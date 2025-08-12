@@ -61,22 +61,22 @@ public class Product {
 
     @Enumerated(EnumType.STRING)
     private Category category;
-    
+
     @Column(name = "stock_quantity", nullable = false)
     private Integer stockQuantity = 0;
-    
+
     @Column(name = "min_stock_level")
     private Integer minStockLevel = 0;
-    
+
     @Column(name = "image_url")
     private String imageUrl;
-    
+
     @Column(name = "weight")
     private BigDecimal weight;
-    
+
     @Column(name = "dimensions")
     private String dimensions;
-    
+
     @Column(name = "active", nullable = false)
     private Boolean active = true;
 
@@ -84,12 +84,10 @@ public class Product {
     @Column(updatable = false)
     private Instant createdAt;
 
-    @UpdateTimestamp
-    private Instant updatedAt;
-    
+    @UpdateTimestamp private Instant updatedAt;
+
     @Column(name = "deleted", nullable = false)
     private Boolean deleted = false;
-    
-    @Version
-    private Long version;
+
+    @Version private Long version;
 }

@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 
 import com.thedavestack.productcatalog.model.Category;
 
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -39,23 +38,23 @@ public class UpdateProductRequest {
     @NotNull(message = "Product price cannot be null")
     @Positive(message = "Product price must be positive")
     private BigDecimal price;
-    
+
     private Category category;
-    
+
     @PositiveOrZero(message = "Stock quantity must be zero or positive")
     private Integer stockQuantity;
-    
+
     @PositiveOrZero(message = "Minimum stock level must be zero or positive")
     private Integer minStockLevel;
-    
+
     @Size(max = 500, message = "Image URL cannot exceed 500 characters")
     private String imageUrl;
-    
+
     @Positive(message = "Weight must be positive")
     private BigDecimal weight;
-    
+
     @Size(max = 255, message = "Dimensions cannot exceed 255 characters")
     private String dimensions;
-    
+
     private Boolean active;
 }

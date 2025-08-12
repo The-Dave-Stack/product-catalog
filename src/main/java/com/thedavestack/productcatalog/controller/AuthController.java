@@ -27,20 +27,21 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
     private final JwtUtil jwtUtil;
-    
+
     @Value("${app.jwt.expiration:86400}")
     private int jwtExpirationInSeconds;
 
     @Operation(
             summary = "User login",
-            description = "Authenticate user and return JWT token. Use 'admin/admin123' for admin access or 'user/user123' for user access.",
+            description =
+                    "Authenticate user and return JWT token. Use 'admin/admin123' for admin access or 'user/user123' for user access.",
             responses = {
                 @ApiResponse(
                         responseCode = "200",
                         description = "Login successful",
                         content = @Content(schema = @Schema(implementation = AuthResponse.class))),
                 @ApiResponse(
-                        responseCode = "401", 
+                        responseCode = "401",
                         description = "Invalid credentials",
                         content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
@@ -49,27 +50,23 @@ public class AuthController {
         // Simple hardcoded authentication for demo purposes
         // In production, this would authenticate against a database
         String role = authenticateUser(loginRequest.username(), loginRequest.password());
-        
+
         if (role == null) {
-            ErrorResponse errorResponse = ErrorResponse.of(
-                401,
-                "Unauthorized",
-                "Invalid username or password",
-                "/api/v1/auth/login",
-                "INVALID_CREDENTIALS"
-            );
+            ErrorResponse errorResponse =
+                    ErrorResponse.of(
+                            401,
+                            "Unauthorized",
+                            "Invalid username or password",
+                            "/api/v1/auth/login",
+                            "INVALID_CREDENTIALS");
             return ResponseEntity.status(401).body(errorResponse);
         }
 
         String token = jwtUtil.generateToken(loginRequest.username(), role);
-        
-        AuthResponse authResponse = AuthResponse.of(
-            token, 
-            loginRequest.username(), 
-            role, 
-            jwtExpirationInSeconds
-        );
-        
+
+        AuthResponse authResponse =
+                AuthResponse.of(token, loginRequest.username(), role, jwtExpirationInSeconds);
+
         return ResponseEntity.ok(authResponse);
     }
 

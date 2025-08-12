@@ -89,7 +89,11 @@ public class ProductController {
                         responseCode = "200",
                         description = "Products retrieved successfully",
                         content =
-                                @Content(schema = @Schema(implementation = ProductPageResponse.class))),
+                                @Content(
+                                        schema =
+                                                @Schema(
+                                                        implementation =
+                                                                ProductPageResponse.class))),
                 @ApiResponse(responseCode = "400", description = "Invalid parameters")
             })
     @GetMapping
@@ -101,27 +105,26 @@ public class ProductController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Category category,
             @RequestParam(required = false) Boolean active) {
-        
-        Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? 
-            Sort.Direction.DESC : Sort.Direction.ASC;
+
+        Sort.Direction direction =
+                sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(page, Math.min(size, 100), Sort.by(direction, sortBy));
-        
-        Page<Product> productPage = productService.findWithFilters(name, category, active, pageable);
-        
+
+        Page<Product> productPage =
+                productService.findWithFilters(name, category, active, pageable);
+
         return new ProductPageResponse(
-            productPage.getContent().stream()
-                .map(productMapper::toResponse)
-                .toList(),
-            productPage.getNumber(),
-            productPage.getSize(),
-            productPage.getTotalElements(),
-            productPage.getTotalPages(),
-            productPage.isFirst(),
-            productPage.isLast(),
-            productPage.hasNext(),
-            productPage.hasPrevious());
+                productPage.getContent().stream().map(productMapper::toResponse).toList(),
+                productPage.getNumber(),
+                productPage.getSize(),
+                productPage.getTotalElements(),
+                productPage.getTotalPages(),
+                productPage.isFirst(),
+                productPage.isLast(),
+                productPage.hasNext(),
+                productPage.hasPrevious());
     }
-    
+
     @Operation(
             summary = "Get low stock products",
             description = "Retrieve products with stock quantity at or below minimum stock level.",
@@ -130,7 +133,11 @@ public class ProductController {
                         responseCode = "200",
                         description = "Low stock products retrieved successfully",
                         content =
-                                @Content(schema = @Schema(implementation = ProductPageResponse.class)))
+                                @Content(
+                                        schema =
+                                                @Schema(
+                                                        implementation =
+                                                                ProductPageResponse.class)))
             })
     @GetMapping("/low-stock")
     public ProductPageResponse getLowStockProducts(
@@ -138,25 +145,23 @@ public class ProductController {
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "stockQuantity") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
-        
-        Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? 
-            Sort.Direction.DESC : Sort.Direction.ASC;
+
+        Sort.Direction direction =
+                sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(page, Math.min(size, 100), Sort.by(direction, sortBy));
-        
+
         Page<Product> productPage = productService.findLowStockProducts(pageable);
-        
+
         return new ProductPageResponse(
-            productPage.getContent().stream()
-                .map(productMapper::toResponse)
-                .toList(),
-            productPage.getNumber(),
-            productPage.getSize(),
-            productPage.getTotalElements(),
-            productPage.getTotalPages(),
-            productPage.isFirst(),
-            productPage.isLast(),
-            productPage.hasNext(),
-            productPage.hasPrevious());
+                productPage.getContent().stream().map(productMapper::toResponse).toList(),
+                productPage.getNumber(),
+                productPage.getSize(),
+                productPage.getTotalElements(),
+                productPage.getTotalPages(),
+                productPage.isFirst(),
+                productPage.isLast(),
+                productPage.hasNext(),
+                productPage.hasPrevious());
     }
 
     @Operation(

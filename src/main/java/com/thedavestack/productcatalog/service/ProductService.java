@@ -82,10 +82,11 @@ public class ProductService {
             }
         }
         Product savedProduct = productRepository.save(product);
-        
+
         // Audit log
-        auditService.logAction("Product", savedProduct.getId(), AuditLog.AuditAction.CREATE, null, savedProduct);
-        
+        auditService.logAction(
+                "Product", savedProduct.getId(), AuditLog.AuditAction.CREATE, null, savedProduct);
+
         return savedProduct;
     }
 
@@ -145,10 +146,15 @@ public class ProductService {
         }
 
         Product savedProduct = productRepository.save(product);
-        
+
         // Audit log
-        auditService.logAction("Product", savedProduct.getId(), AuditLog.AuditAction.UPDATE, product, savedProduct);
-        
+        auditService.logAction(
+                "Product",
+                savedProduct.getId(),
+                AuditLog.AuditAction.UPDATE,
+                product,
+                savedProduct);
+
         return savedProduct;
     }
 
@@ -162,13 +168,14 @@ public class ProductService {
     public void deleteProduct(String id) {
         Product product =
                 productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
-        
+
         // Audit log before deletion
-        auditService.logAction("Product", product.getId(), AuditLog.AuditAction.DELETE, product, null);
-        
+        auditService.logAction(
+                "Product", product.getId(), AuditLog.AuditAction.DELETE, product, null);
+
         productRepository.delete(product);
     }
-    
+
     /**
      * Retrieves all products with pagination.
      *
@@ -178,7 +185,7 @@ public class ProductService {
     public Page<Product> findAll(Pageable pageable) {
         return productRepository.findAll(pageable);
     }
-    
+
     /**
      * Retrieves products with filtering and pagination.
      *
@@ -188,10 +195,11 @@ public class ProductService {
      * @param pageable the pagination information.
      * @return a page of products.
      */
-    public Page<Product> findWithFilters(String name, Category category, Boolean active, Pageable pageable) {
+    public Page<Product> findWithFilters(
+            String name, Category category, Boolean active, Pageable pageable) {
         return productRepository.findWithFilters(name, category, active, pageable);
     }
-    
+
     /**
      * Retrieves products with low stock.
      *

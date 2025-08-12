@@ -14,7 +14,10 @@ import jakarta.validation.Payload;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidSku {
-    String message() default "SKU must be 3-20 characters, contain only alphanumeric characters, hyphens, and underscores";
+    String message() default
+            "SKU must be 3-20 characters, contain only alphanumeric characters, hyphens, and underscores";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

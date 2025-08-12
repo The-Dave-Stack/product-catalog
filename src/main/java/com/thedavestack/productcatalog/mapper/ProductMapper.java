@@ -27,12 +27,19 @@ public class ProductMapper {
         product.setPrice(createProductRequest.price());
         product.setSku(createProductRequest.sku());
         product.setCategory(createProductRequest.category());
-        product.setStockQuantity(createProductRequest.stockQuantity() != null ? createProductRequest.stockQuantity() : 0);
-        product.setMinStockLevel(createProductRequest.minStockLevel() != null ? createProductRequest.minStockLevel() : 0);
+        product.setStockQuantity(
+                createProductRequest.stockQuantity() != null
+                        ? createProductRequest.stockQuantity()
+                        : 0);
+        product.setMinStockLevel(
+                createProductRequest.minStockLevel() != null
+                        ? createProductRequest.minStockLevel()
+                        : 0);
         product.setImageUrl(createProductRequest.imageUrl());
         product.setWeight(createProductRequest.weight());
         product.setDimensions(createProductRequest.dimensions());
-        product.setActive(createProductRequest.active() != null ? createProductRequest.active() : true);
+        product.setActive(
+                createProductRequest.active() != null ? createProductRequest.active() : true);
         return product;
     }
 

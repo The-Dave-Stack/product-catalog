@@ -35,32 +35,34 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleProductNotFoundException(
             ProductNotFoundException ex, WebRequest request) {
-        
+
         log.error("Product not found: {}", ex.getMessage());
-        
-        ErrorResponse errorResponse = ErrorResponse.of(
-            HttpStatus.NOT_FOUND.value(),
-            "Not Found",
-            ex.getMessage(),
-            getPath(request),
-            "PRODUCT_NOT_FOUND");
-            
+
+        ErrorResponse errorResponse =
+                ErrorResponse.of(
+                        HttpStatus.NOT_FOUND.value(),
+                        "Not Found",
+                        ex.getMessage(),
+                        getPath(request),
+                        "PRODUCT_NOT_FOUND");
+
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(DuplicateSkuException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateSkuException(
             DuplicateSkuException ex, WebRequest request) {
-        
+
         log.error("Duplicate SKU: {}", ex.getMessage());
-        
-        ErrorResponse errorResponse = ErrorResponse.of(
-            HttpStatus.CONFLICT.value(),
-            "Conflict",
-            ex.getMessage(),
-            getPath(request),
-            "DUPLICATE_SKU");
-            
+
+        ErrorResponse errorResponse =
+                ErrorResponse.of(
+                        HttpStatus.CONFLICT.value(),
+                        "Conflict",
+                        ex.getMessage(),
+                        getPath(request),
+                        "DUPLICATE_SKU");
+
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
@@ -70,68 +72,73 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             HttpHeaders headers,
             HttpStatusCode status,
             WebRequest request) {
-        
+
         log.error("Validation failed: {}", ex.getMessage());
-        
-        List<ErrorResponse.ValidationError> validationErrors = ex.getBindingResult()
-            .getFieldErrors()
-            .stream()
-            .map(error -> new ErrorResponse.ValidationError(
-                error.getField(),
-                error.getRejectedValue(),
-                error.getDefaultMessage()))
-            .collect(Collectors.toList());
-        
-        ErrorResponse errorResponse = ErrorResponse.withValidationErrors(
-            HttpStatus.BAD_REQUEST.value(),
-            "Validation Failed",
-            "One or more fields have validation errors",
-            getPath(request),
-            validationErrors);
-            
+
+        List<ErrorResponse.ValidationError> validationErrors =
+                ex.getBindingResult().getFieldErrors().stream()
+                        .map(
+                                error ->
+                                        new ErrorResponse.ValidationError(
+                                                error.getField(),
+                                                error.getRejectedValue(),
+                                                error.getDefaultMessage()))
+                        .collect(Collectors.toList());
+
+        ErrorResponse errorResponse =
+                ErrorResponse.withValidationErrors(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Validation Failed",
+                        "One or more fields have validation errors",
+                        getPath(request),
+                        validationErrors);
+
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
-    
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleConstraintViolationException(
             ConstraintViolationException ex, WebRequest request) {
-        
+
         log.error("Constraint violation: {}", ex.getMessage());
-        
-        List<ErrorResponse.ValidationError> validationErrors = ex.getConstraintViolations()
-            .stream()
-            .map(violation -> new ErrorResponse.ValidationError(
-                violation.getPropertyPath().toString(),
-                violation.getInvalidValue(),
-                violation.getMessage()))
-            .collect(Collectors.toList());
-        
-        ErrorResponse errorResponse = ErrorResponse.withValidationErrors(
-            HttpStatus.BAD_REQUEST.value(),
-            "Constraint Violation",
-            "One or more constraints were violated",
-            getPath(request),
-            validationErrors);
-            
+
+        List<ErrorResponse.ValidationError> validationErrors =
+                ex.getConstraintViolations().stream()
+                        .map(
+                                violation ->
+                                        new ErrorResponse.ValidationError(
+                                                violation.getPropertyPath().toString(),
+                                                violation.getInvalidValue(),
+                                                violation.getMessage()))
+                        .collect(Collectors.toList());
+
+        ErrorResponse errorResponse =
+                ErrorResponse.withValidationErrors(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Constraint Violation",
+                        "One or more constraints were violated",
+                        getPath(request),
+                        validationErrors);
+
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
-    
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGenericException(
-            Exception ex, WebRequest request) {
-        
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, WebRequest request) {
+
         log.error("Unexpected error occurred", ex);
-        
-        ErrorResponse errorResponse = ErrorResponse.of(
-            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            "Internal Server Error",
-            "An unexpected error occurred",
-            getPath(request),
-            "INTERNAL_ERROR");
-            
+
+        ErrorResponse errorResponse =
+                ErrorResponse.of(
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        "Internal Server Error",
+                        "An unexpected error occurred",
+                        getPath(request),
+                        "INTERNAL_ERROR");
+
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    
+
     private String getPath(WebRequest request) {
         if (request instanceof ServletWebRequest servletRequest) {
             return servletRequest.getRequest().getRequestURI();

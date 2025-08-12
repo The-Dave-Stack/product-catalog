@@ -27,26 +27,42 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-            .authorizeHttpRequests(authz -> authz
-                // Public endpoints
-                .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/actuator/health").permitAll()
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                
-                // Read-only endpoints - require USER or ADMIN role
-                .requestMatchers(HttpMethod.GET, "/api/v1/products", "/api/v1/products/**").hasAnyRole("USER", "ADMIN")
-                
-                // Write endpoints - require ADMIN role
-                .requestMatchers(HttpMethod.POST, "/api/v1/products").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**").hasRole("ADMIN")
-                
-                // All other requests need authentication
-                .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(
+                        exception ->
+                                exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .authorizeHttpRequests(
+                        authz ->
+                                authz
+                                        // Public endpoints
+                                        .requestMatchers("/api/v1/auth/**")
+                                        .permitAll()
+                                        .requestMatchers("/actuator/health")
+                                        .permitAll()
+                                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
+                                        .permitAll()
+
+                                        // Read-only endpoints - require USER or ADMIN role
+                                        .requestMatchers(
+                                                HttpMethod.GET,
+                                                "/api/v1/products",
+                                                "/api/v1/products/**")
+                                        .hasAnyRole("USER", "ADMIN")
+
+                                        // Write endpoints - require ADMIN role
+                                        .requestMatchers(HttpMethod.POST, "/api/v1/products")
+                                        .hasRole("ADMIN")
+                                        .requestMatchers(HttpMethod.PUT, "/api/v1/products/**")
+                                        .hasRole("ADMIN")
+                                        .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**")
+                                        .hasRole("ADMIN")
+
+                                        // All other requests need authentication
+                                        .anyRequest()
+                                        .authenticated())
+                .addFilterBefore(
+                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

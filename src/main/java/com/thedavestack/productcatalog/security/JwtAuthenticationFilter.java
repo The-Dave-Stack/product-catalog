@@ -27,20 +27,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, 
-                                  HttpServletResponse response, 
-                                  FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
         String token = getTokenFromRequest(request);
 
-        if (StringUtils.hasText(token) && jwtUtil.isTokenValid(token) && !jwtUtil.isTokenExpired(token)) {
+        if (StringUtils.hasText(token)
+                && jwtUtil.isTokenValid(token)
+                && !jwtUtil.isTokenExpired(token)) {
             String username = jwtUtil.extractUsername(token);
             String role = jwtUtil.extractRole(token);
 
-            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+            List<GrantedAuthority> authorities =
+                    List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
-            UsernamePasswordAuthenticationToken authentication = 
-                new UsernamePasswordAuthenticationToken(username, null, authorities);
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(username, null, authorities);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -56,6 +56,9 @@ public class AuditLog {
     private Instant createdAt;
 
     public enum AuditAction {
-        CREATE, UPDATE, DELETE, VIEW
+        CREATE,
+        UPDATE,
+        DELETE,
+        VIEW
     }
 }

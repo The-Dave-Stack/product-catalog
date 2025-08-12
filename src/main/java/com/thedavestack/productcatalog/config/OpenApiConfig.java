@@ -30,7 +30,8 @@ public class OpenApiConfig {
                         new Info()
                                 .title("Product Catalog API")
                                 .version("1.0")
-                                .description("A RESTful API for managing a product catalog with JWT authentication."))
+                                .description(
+                                        "A RESTful API for managing a product catalog with JWT authentication."))
                 .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(
                         new Components()

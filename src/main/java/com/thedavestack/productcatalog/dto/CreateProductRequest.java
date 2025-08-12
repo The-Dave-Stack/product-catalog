@@ -21,35 +21,19 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 public record CreateProductRequest(
-        @NotBlank(message = "Name cannot be empty") 
-        @Size(max = 255, message = "Name cannot exceed 255 characters")
-        String name,
-        
-        @Size(max = 1000, message = "Description cannot exceed 1000 characters")
-        String description,
-        
+        @NotBlank(message = "Name cannot be empty")
+                @Size(max = 255, message = "Name cannot exceed 255 characters")
+                String name,
+        @Size(max = 1000, message = "Description cannot exceed 1000 characters") String description,
         @NotNull(message = "Price is required")
-        @Positive(message = "Product price must be positive") 
-        BigDecimal price,
-        
-        @ValidSku
-        String sku,
-        
+                @Positive(message = "Product price must be positive")
+                BigDecimal price,
+        @ValidSku String sku,
         Category category,
-        
-        @PositiveOrZero(message = "Stock quantity must be zero or positive")
-        Integer stockQuantity,
-        
+        @PositiveOrZero(message = "Stock quantity must be zero or positive") Integer stockQuantity,
         @PositiveOrZero(message = "Minimum stock level must be zero or positive")
-        Integer minStockLevel,
-        
-        @Size(max = 500, message = "Image URL cannot exceed 500 characters")
-        String imageUrl,
-        
-        @Positive(message = "Weight must be positive")
-        BigDecimal weight,
-        
-        @Size(max = 255, message = "Dimensions cannot exceed 255 characters")
-        String dimensions,
-        
+                Integer minStockLevel,
+        @Size(max = 500, message = "Image URL cannot exceed 500 characters") String imageUrl,
+        @Positive(message = "Weight must be positive") BigDecimal weight,
+        @Size(max = 255, message = "Dimensions cannot exceed 255 characters") String dimensions,
         Boolean active) {}

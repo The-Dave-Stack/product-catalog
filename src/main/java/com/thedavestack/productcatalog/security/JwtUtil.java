@@ -1,6 +1,5 @@
 package com.thedavestack.productcatalog.security;
 
-import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;

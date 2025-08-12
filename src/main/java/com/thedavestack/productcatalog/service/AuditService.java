@@ -25,29 +25,47 @@ public class AuditService {
     private final ObjectMapper objectMapper;
 
     @Async
-    public CompletableFuture<Void> logAction(String entityType, String entityId, AuditLog.AuditAction action, Object oldValue, Object newValue) {
+    public CompletableFuture<Void> logAction(
+            String entityType,
+            String entityId,
+            AuditLog.AuditAction action,
+            Object oldValue,
+            Object newValue) {
         try {
             String username = getCurrentUsername();
-            
-            AuditLog auditLog = AuditLog.builder()
-                .entityType(entityType)
-                .entityId(entityId)
-                .action(action)
-                .username(username)
-                .oldValues(oldValue != null ? objectMapper.writeValueAsString(oldValue) : null)
-                .newValues(newValue != null ? objectMapper.writeValueAsString(newValue) : null)
-                .changes(generateChanges(oldValue, newValue))
-                .build();
+
+            AuditLog auditLog =
+                    AuditLog.builder()
+                            .entityType(entityType)
+                            .entityId(entityId)
+                            .action(action)
+                            .username(username)
+                            .oldValues(
+                                    oldValue != null
+                                            ? objectMapper.writeValueAsString(oldValue)
+                                            : null)
+                            .newValues(
+                                    newValue != null
+                                            ? objectMapper.writeValueAsString(newValue)
+                                            : null)
+                            .changes(generateChanges(oldValue, newValue))
+                            .build();
 
             auditLogRepository.save(auditLog);
             log.info("Audit log created: {} {} by {}", action, entityType, username);
         } catch (Exception e) {
-            log.error("Failed to create audit log for {} {}: {}", action, entityType, e.getMessage());
+            log.error(
+                    "Failed to create audit log for {} {}: {}", action, entityType, e.getMessage());
         }
         return CompletableFuture.completedFuture(null);
     }
 
-    public Page<AuditLog> findAuditLogs(String entityType, String entityId, String username, AuditLog.AuditAction action, Pageable pageable) {
+    public Page<AuditLog> findAuditLogs(
+            String entityType,
+            String entityId,
+            String username,
+            AuditLog.AuditAction action,
+            Pageable pageable) {
         return auditLogRepository.findWithFilters(entityType, entityId, username, action, pageable);
     }
 
