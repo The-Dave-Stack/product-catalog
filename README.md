@@ -1,63 +1,130 @@
-# AI-Driven Development: A Spring Boot vs. Helidon Comparative Study
+# Product Catalog Spring Boot API
 
-## 🚀 Concept
+## Project Overview
+This project implements a comprehensive, enterprise-grade RESTful API for product catalog management using Spring Boot. It serves as a practical example of a modern Java application, demonstrating full CRUD (Create, Read, Update, Delete) operations for products, including efficient batch creation. The API is designed for robustness, with transactional operations, proper error handling, and comprehensive testing.
 
-This repository serves as a practical experiment in modern Java development and AI-assisted programming. It contains two functionally identical implementations of a **Product Catalog REST API**, each built with a different technology stack.
+## Technologies Used
+*   **Language**: Java 21
+*   **Framework**: Spring Boot 3.5.4
+*   **Build Tool**: Maven
+*   **Database**: PostgreSQL
+*   **Schema Migration**: Flyway
+*   **Containerization**: Docker
+*   **Testing**: JUnit 5, Mockito, Testcontainers, RestAssured
+*   **Code Quality**: Spotless (Google Java Format)
+*   **Lombok**: Boilerplate reduction
 
-The primary goals of this project are:
-1.  **To conduct a real-world comparison** between the developer experience, performance, and core philosophies of **Spring Boot** and **Helidon MP**.
-2.  **To serve as a testbed** for executing a complete development lifecycle using an **AI Developer Assistant**. The entire project, from setup to E2E testing, is broken down into a highly detailed backlog of tasks designed to be executed by an AI.
-3.  **To generate content and insights** for blog posts and portfolio pieces for **[The Dave Stack](https://www.thedavestack.com)**.
+## Key Features
+*   **RESTful API**: Full CRUD operations for products.
+*   **Data Persistence**: JPA with Spring Data for seamless database interaction.
+*   **Data Validation**: Robust input validation using Spring Boot Validation.
+*   **Health Checks**: Actuator endpoints for application monitoring.
+*   **Database Migrations**: Managed by Flyway for version-controlled schema evolution.
+*   **Comprehensive Testing**:
+    *   Unit tests for isolated business logic.
+    *   Integration tests for full application flow.
+    *   End-to-End (E2E) tests using Testcontainers and RestAssured for API validation against a real PostgreSQL instance.
+*   **Containerization**: Docker support for easy deployment and consistent environments.
+*   **Code Formatting**: Automated code formatting with Spotless to maintain consistent code style.
 
----
+## Requirements
+*   **Docker**: Ensure Docker Desktop or Docker Engine is installed and running.
+*   **Java 21**: Ensure Java Development Kit (JDK) 21 is installed and configured.
+*   **Maven**: Ensure Apache Maven is installed and configured.
 
-## 🔬 The Core Comparison
+## How to Run
 
-This repository contrasts two distinct approaches to building cloud-native Java applications.
+### Using Docker Compose (Recommended for Development)
 
-### Spring Boot Approach
-- **High Abstraction & Productivity**: Leverages the full Spring ecosystem, including **Spring Data JPA** for a highly abstracted data access layer.
-- **"Batteries-Included"**: Relies on Spring's auto-configuration and vast library support for rapid development.
-- **Runtime**: Packaged as a standard executable JAR running on the JVM.
+To run the entire Product Catalog API stack (Spring Boot application and PostgreSQL database) using Docker Compose, navigate to this directory (`product-catalog/spring`) and execute the following command:
 
-### Helidon MP Approach
-- **Low Abstraction & Control**: Uses the **Helidon DB Client**, which requires manual SQL query construction, offering fine-grained control and a reactive programming model.
-- **Standards-Based**: Adheres to Jakarta EE and MicroProfile standards, promoting interoperability.
-- **Runtime**: Packaged as a **GraalVM native executable**, resulting in an extremely small memory footprint and near-instantaneous startup times.
+```bash
+docker compose up
+```
 
----
+This command will:
+1.  Build the `product-catalog-spring` Docker image (if not already built or if changes are detected).
+2.  Start the `postgres-db` service.
+3.  Start the `product-catalog-spring` service, waiting for the database to be healthy.
 
-## 📂 Projects
+The Spring Boot application will be accessible at `http://localhost:8080`.
 
-This repository contains the following two projects:
+To stop and remove the Docker Compose services:
+```bash
+docker compose down
+```
 
-* ### [**product-catalog-spring**](./spring/)
-    The implementation of the Product Catalog service using the Spring Boot stack.
+### Using Maven (Local Development)
 
-* ### [**product-catalog-helidon**](./helidon/)
-    The implementation of the Product Catalog service using the Helidon MP stack.
+Ensure you have Java 21 and Maven installed. Navigate to this directory (`product-catalog/spring`).
 
----
+#### Build the Project
+To compile the project and package it into an executable JAR:
+```bash
+mvn clean install
+```
 
-## 🤖 The AI-Driven Workflow
+#### Run Unit Tests
+To run only the unit tests:
+```bash
+mvn test
+```
 
-A unique aspect of this project is its development process. The entire lifecycle is managed by a custom CLI tool, **`backlog.md`**, and is designed to be executed by an AI assistant.
+#### Run Integration Tests
+To run the integration tests (which require a running PostgreSQL database, typically managed by Testcontainers during the test phase):
+```bash
+mvn verify -Pintegration-tests
+```
 
-This simulation requires the AI to behave like a human developer, following a strict workflow for each task that includes:
-- **Task State Management**: Changing status from `To Do` -> `In Progress` -> `Done`.
-- **Time Tracking**: Logging the time spent on each task.
-- **Developer Journaling**: Keeping a timestamped log of progress, questions, and blockers.
-- **Git & PR Process**: Creating feature branches and preparing Pull Request templates upon completion.
+#### Run E2E Tests
+To run the end-to-end tests (which also require a running PostgreSQL database via Testcontainers):
+```bash
+mvn verify -Pe2e-tests
+```
 
----
+#### Run the Application Locally
+To run the Spring Boot application directly from Maven (ensure your PostgreSQL database is running, e.g., via `docker compose up` in a separate terminal):
+```bash
+mvn spring-boot:run
+```
 
-## ▶️ How to Run
+## API Endpoints
 
-For detailed instructions on how to build, test, and run each service, please refer to the `README.md` file within its respective project subdirectory:
+| Method | Path                               | Description                                  |
+|--------|------------------------------------|----------------------------------------------|
+| `POST` | `/api/v1/products`                 | Create a new product                         |
+| `GET`  | `/api/v1/products/{id}`            | Retrieve a product by ID                     |
+| `GET`  | `/api/v1/products`                 | Retrieve all products                        |
+| `PUT`  | `/api/v1/products/{id}`            | Update an existing product                   |
+| `DELETE`| `/api/v1/products/{id}`           | Delete a product by ID                       |
+| `POST` | `/api/v1/products/batch`           | Create multiple products in a single request |
 
-*   [**product-catalog-spring**](./spring/README.md)
-*   [**product-catalog-helidon**](./helidon/README.md)
+## Kanban Board
 
----
 
-Created by **David** for **The Dave Stack**.
+<!-- BOARD_START -->
+
+## 📊 product-catalog-spring Project Status (1.7.1)
+
+This board was automatically generated by [Backlog.md](https://backlog.md)
+
+Generated on: 2025-08-05 11:40:47
+
+| In Progress | Done |
+| --- | --- |
+|  | **TASK-13** - Update Final Project Documentation (README.md)<br>*#documentation* |
+|  | **TASK-14** - Create Java-based E2E Tests using Testcontainers<br>*#test #e2e #docker-compose #testcontainers* |
+|  | **TASK-12** - Create and Verify Application Dockerfile<br>*#docker #deployment #healthcheck* |
+|  | **TASK-11** - Add Unit, Repository, and Integration Tests<br>*#test #junit #mockito #testcontainers* |
+|  | **TASK-10** - Implement REST Endpoints in 'ProductController'<br>*#api #controller #rest* |
+|  | **TASK-9** - Implement Business Logic in 'ProductService'<br>*#service #business-logic* |
+|  | **TASK-8** - Create the 'ProductRepository' Interface<br>*#db #jpa #repository* |
+|  | **TASK-7** - Create Initial DB Schema with Flyway<br>*#db #migration #flyway* |
+|  | **TASK-6** - Define the 'Product' JPA Entity<br>*#db #jpa #entity* |
+|  | **TASK-5** - Set Up PostgreSQL with Docker Compose<br>*#db #docker #postgres* |
+|  | **TASK-4** - Create Remote GitHub Repository<br>*#setup #git #github* |
+|  | **TASK-3** - Initialize Git Repository and Branches<br>*#setup #git* |
+|  | **TASK-2** - Set Up Initial Spring Boot Project using MCP Tool<br>*#setup #spring-boot #mcp* |
+|  | **TASK-1** - Create and Detail the API Design Document<br>*#documentation #design* |
+
+<!-- BOARD_END -->
