@@ -14,6 +14,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
+    networks:
+      - app-network
 
   product-catalog:
     build: 
@@ -22,9 +25,12 @@ services:
     ports:
       - "8080:8080"
     environment:
+      - SPRING_PROFILES_ACTIVE=default,docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/product_catalog
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=password
+      - JWT_SECRET=dev-secret-key-1234567890123456789012345678901234567890
+      - JWT_EXPIRATION=86400
     depends_on:
       postgres-db:
         condition: service_healthy
@@ -33,7 +39,16 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 60s
+    networks:
+      - app-network
+    # Development: Mount source for hot reload (optional)
+    # volumes:
+    #   - ./target/classes:/application/classes
 
 volumes:
   postgres_data:
+
+networks:
+  app-network:
+    driver: bridge

@@ -49,12 +49,13 @@ This is an **enterprise-grade Spring Boot 3.5.4 REST API** for product catalog m
 - **Soft Delete Pattern**: Data preservation using `@SQLDelete` and `@Where`
 
 ### Configuration - Production Ready
-- **Profiles**: `default`, `test`, `test-e2e` with environment-specific configs
+- **Profiles**: `default`, `test`, `test-e2e`, `prod`, `docker` with environment-specific configs
 - **Security**: JWT configuration with configurable expiration and secret keys
-- **Database**: Optimized connection pooling with HikariCP
+- **Database**: Optimized connection pooling with HikariCP and leak detection
 - **Actuator**: Health checks and metrics for production monitoring
 - **Async Processing**: Background audit logging and change tracking
 - **Enhanced 404 Handling**: `spring.mvc.throw-exception-if-no-handler-found=true` for comprehensive error coverage
+- **Container Optimization**: JVM settings optimized for container environments
 
 ## Development Notes - Enterprise Features
 
@@ -177,3 +178,73 @@ All error responses follow a standardized format with optional developer guidanc
 ```
 
 This enhances developer experience by automatically providing navigation to authentication documentation when errors occur.
+
+## Docker Container Deployment
+
+### Container Architecture
+
+This application is fully containerized with production-ready Docker configuration:
+
+#### Multi-Stage Dockerfile
+- **Builder Stage**: Extracts Spring Boot jar layers for optimal caching
+- **Runtime Stage**: Liberica OpenJRE 21 with security hardening
+- **Non-Root User**: Runs as `appuser:appgroup` (UID/GID 1001) for security
+- **JVM Optimization**: Container-aware JVM settings with memory limits
+- **Health Checks**: Built-in health checks for container orchestration
+
+#### Container Configurations
+
+**Development** (`docker-compose.yml`):
+- Single-node setup with PostgreSQL
+- Development profile with extended logging
+- Port 8080 exposed for local development
+- Volume mounts for hot-reload (optional)
+
+**Production** (`docker-compose.prod.yml`):
+- Multi-service architecture with network isolation
+- Resource limits and restart policies
+- Environment-based configuration
+- Optional nginx reverse proxy with rate limiting
+- Horizontal scaling support
+
+#### Security Features
+- Non-root container execution
+- Network isolation via Docker networks
+- Secret management via environment variables
+- Security headers via nginx reverse proxy
+- Rate limiting (10 req/s with burst capacity)
+- Minimal attack surface with optimized base image
+
+### Environment Configuration
+
+**Container-Optimized Settings** (`application-docker.properties`):
+- Database connection pooling optimized for containers
+- JVM heap settings with container memory awareness
+- Structured logging for container log aggregation
+- Health check endpoints for Kubernetes/Docker Swarm
+- Prometheus metrics support (optional)
+
+### Deployment Commands
+
+```bash
+# Development
+docker compose up -d
+
+# Production
+docker compose -f docker-compose.prod.yml up -d
+
+# Scaling
+docker compose -f docker-compose.prod.yml up -d --scale product-catalog=3
+
+# With Reverse Proxy
+docker compose -f docker-compose.prod.yml --profile nginx up -d
+```
+
+### Container Monitoring
+- Health check endpoints: `/actuator/health`
+- Application metrics: `/actuator/metrics`
+- Database connection monitoring via HikariCP
+- Container resource usage monitoring
+- Log aggregation ready (structured JSON logs)
+
+The containerized setup ensures consistent deployments across development, staging, and production environments while maintaining security and performance best practices.

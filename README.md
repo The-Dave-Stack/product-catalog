@@ -213,31 +213,99 @@ src/main/java/com/thedavestack/productcatalog/
 
 ## 🚀 Deployment & Production
 
-### Docker Production Deployment
-```bash
-# Build and run with production profile
-docker compose -f docker-compose.prod.yml up -d
+### 🐳 Docker Container Deployment
 
-# Scale the application  
-docker compose up --scale product-catalog-spring=3
+#### Quick Start (Development)
+```bash
+# Start services for development
+docker compose up -d
+
+# View logs
+docker compose logs -f product-catalog
+
+# Stop services
+docker compose down
 ```
 
-### Environment Variables
+#### Production Deployment
+```bash
+# Copy environment configuration
+cp .env.example .env
+# Edit .env file with production values
+
+# Start production services
+docker compose -f docker-compose.prod.yml up -d
+
+# Scale the application (load balancing)
+docker compose -f docker-compose.prod.yml up -d --scale product-catalog=3
+
+# Start with reverse proxy (nginx)
+docker compose -f docker-compose.prod.yml --profile nginx up -d
+```
+
+#### Container Health Monitoring
+```bash
+# Check service health
+docker compose ps
+docker compose -f docker-compose.prod.yml ps
+
+# Monitor container logs
+docker compose logs -f product-catalog postgres-db
+
+# Health check endpoint
+curl http://localhost:8080/actuator/health
+```
+
+### 🔧 Environment Variables
+
+#### Core Configuration
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `DATABASE_NAME` | PostgreSQL database name | `product_catalog` | ✅ |
+| `DATABASE_USERNAME` | Database username | `user` | ✅ |
+| `DATABASE_PASSWORD` | Database password | `password` | ✅ |
+| `JWT_SECRET` | JWT signing key (256+ bits) | See .env.example | ✅ |
+| `JWT_EXPIRATION` | Token expiration (seconds) | `86400` | ❌ |
+| `APP_PORT` | Application port | `8080` | ❌ |
+
+#### Performance & Scaling
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `SPRING_PROFILES_ACTIVE` | Active profile | `default` |
-| `SPRING_DATASOURCE_URL` | Database URL | `jdbc:postgresql://localhost:5432/productcatalog` |
-| `SPRING_DATASOURCE_USERNAME` | DB Username | `productcatalog` |
-| `SPRING_DATASOURCE_PASSWORD` | DB Password | `productcatalog` |
-| `APP_JWT_SECRET` | JWT Secret Key | Auto-generated |
-| `APP_JWT_EXPIRATION` | Token expiration (seconds) | `86400` |
+| `HIKARI_MAX_POOL_SIZE` | Max database connections | `15` |
+| `HIKARI_MIN_IDLE` | Min idle connections | `5` |
+| `ASYNC_CORE_POOL_SIZE` | Async thread pool core size | `2` |
+| `ASYNC_MAX_POOL_SIZE` | Async thread pool max size | `5` |
+| `LOG_LEVEL` | Application log level | `INFO` |
+
+#### Security & Monitoring
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `COOKIE_SECURE` | Enable secure cookies | `true` |
+| `SESSION_TIMEOUT` | Session timeout | `30m` |
+| `ACTUATOR_ENDPOINTS` | Exposed actuator endpoints | `health,info,metrics` |
+| `PROMETHEUS_ENABLED` | Enable Prometheus metrics | `false` |
+
+### 🔐 Container Security Features
+
+The Docker configuration implements security best practices:
+
+- **Non-Root User**: Containers run as `appuser:appgroup` (UID/GID 1001)
+- **Minimal Image**: Uses distroless-style approach with only necessary packages
+- **Resource Limits**: Memory and CPU limits prevent resource exhaustion
+- **Network Isolation**: Services communicate via dedicated Docker network
+- **Secret Management**: JWT secrets via environment variables (not embedded)
+- **Security Headers**: Nginx reverse proxy adds security headers
+- **Rate Limiting**: API rate limiting via nginx (10 req/s with burst)
 
 ### 📊 Monitoring & Observability
+
 - **Health Checks**: `/actuator/health` for load balancer integration
+- **Container Health**: Docker health checks with proper timeouts and retries
 - **Application Metrics**: Spring Boot Actuator endpoints
-- **Database Connection Pool**: HikariCP with connection monitoring
-- **Structured Logging**: JSON logs with correlation IDs for distributed tracing
+- **Database Connection Pool**: HikariCP with connection monitoring and leak detection
+- **Structured Logging**: Container-optimized logging with configurable levels
 - **Audit Trail**: Complete CRUD operation history in `audit_logs` table
+- **Performance Monitoring**: JVM metrics optimized for container environments
 
 ## 🧪 Testing Strategy
 
