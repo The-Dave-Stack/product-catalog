@@ -76,6 +76,8 @@ This is an **enterprise-grade Spring Boot 3.5.4 REST API** for product catalog m
 - **Resources**: 20+ dynamic data access points for real-time business information
 - **Prompts**: 7 structured templates for guided AI interactions and complex operations
 - **Authentication**: JWT-secured SSE endpoint at `/sse` with role-based access control
+- **Enhanced JSON Compatibility**: Dual deserialization support for Category enum (MCP format + REST API format)
+- **Flexible Data Access**: Supports both programmatic MCP tool calls and human-readable API interactions
 
 ## Development Notes - Enterprise Features
 
@@ -269,3 +271,37 @@ docker compose -f docker-compose.prod.yml --profile nginx up -d
 - Log aggregation ready (structured JSON logs)
 
 The containerized setup ensures consistent deployments across development, staging, and production environments while maintaining security and performance best practices.
+
+## MCP Integration Features
+
+### Enhanced Category Enum Compatibility
+The `Category` enum has been enhanced with dual JSON deserialization support to ensure seamless integration between MCP server operations and REST API interactions:
+
+#### Supported Input Formats
+- **MCP Format**: `ELECTRONICS`, `HOME_GARDEN`, `SPORTS_OUTDOORS`, `TOYS_GAMES`, `HEALTH_BEAUTY`, `FOOD_BEVERAGES`
+- **REST API Format**: `Electronics`, `Home & Garden`, `Sports & Outdoors`, `Toys & Games`, `Health & Beauty`, `Food & Beverages`
+
+#### Implementation Details
+- **@JsonCreator Method**: Custom deserializer in `Category.java:47-70` handles both formats automatically
+- **Backward Compatibility**: Existing REST API clients continue to work without changes
+- **Error Handling**: Comprehensive validation with meaningful error messages for invalid categories
+- **Case Insensitive**: Automatically handles case variations in enum name format
+
+#### Usage Examples
+```java
+// MCP Server Tool Calls - these all work:
+Category.fromString("ELECTRONICS")     // → Category.ELECTRONICS
+Category.fromString("HOME_GARDEN")     // → Category.HOME_GARDEN
+Category.fromString("electronics")     // → Category.ELECTRONICS (case insensitive)
+
+// REST API Calls - these continue to work:
+Category.fromString("Electronics")     // → Category.ELECTRONICS
+Category.fromString("Home & Garden")   // → Category.HOME_GARDEN
+
+// Error handling:
+Category.fromString(null)             // → IllegalArgumentException
+Category.fromString("")               // → IllegalArgumentException
+Category.fromString("INVALID")        // → IllegalArgumentException
+```
+
+This enhancement ensures that Claude Code users can interact with the product catalog using natural MCP tool calls while maintaining full compatibility with existing REST API integrations.

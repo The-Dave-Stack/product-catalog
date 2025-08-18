@@ -70,6 +70,8 @@ This project implements a **comprehensive, enterprise-grade RESTful API** for pr
 *   **Dynamic Resources**: Real-time access to business data, documentation, and analytics
 *   **Structured Prompts**: Guided interaction templates for complex operations
 *   **Natural Language Interface**: Intuitive AI-driven product catalog management
+*   **Enhanced JSON Compatibility**: Dual deserialization support for seamless MCP and REST API interactions
+*   **Flexible Category Handling**: Supports both MCP enum format and REST API display names
 
 ## 🧠 Spring AI MCP Server v2.0
 
@@ -130,6 +132,32 @@ spring.ai.mcp.server.prompt-change-notification=true
 - **Endpoint**: Server-Sent Events (SSE) on `/sse` path
 - **Authentication**: JWT required (USER or ADMIN role)
 - **Security**: Full Spring Security integration with role-based access
+
+### ⚡ **Enhanced MCP Compatibility Features**
+
+#### Dual JSON Deserialization Support
+The latest update includes enhanced Category enum compatibility for seamless MCP server integration:
+
+**Supported Input Formats:**
+- **MCP Format**: `ELECTRONICS`, `HOME_GARDEN`, `SPORTS_OUTDOORS`, `TOYS_GAMES`, `HEALTH_BEAUTY`, `FOOD_BEVERAGES`
+- **REST API Format**: `Electronics`, `Home & Garden`, `Sports & Outdoors`, `Toys & Games`, `Health & Beauty`, `Food & Beverages`
+
+**Key Benefits:**
+- **Backward Compatibility**: Existing REST API clients continue to work without changes
+- **AI-Friendly**: Natural enum names for MCP tool calls and Claude Code interactions
+- **Error Handling**: Comprehensive validation with meaningful error messages
+- **Case Insensitive**: Automatically handles case variations in MCP format
+
+**Example Usage:**
+```bash
+# MCP Tool Call (works automatically)
+createProduct({"name": "Gaming Laptop", "category": "ELECTRONICS", "price": 1299.99})
+
+# REST API Call (continues to work)
+POST /api/v1/products {"name": "Gaming Laptop", "category": "Electronics", "price": 1299.99}
+```
+
+This enhancement ensures that Claude Code users can interact naturally with the product catalog while maintaining full compatibility with existing integrations.
 
 ## Requirements
 *   **Docker**: Ensure Docker Desktop or Docker Engine is installed and running.
