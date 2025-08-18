@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,7 @@ public class ProductService {
      *
      * @return a list of all products.
      */
+    @Tool(description = "Retrieves all products.")
     public List<Product> findAll() {
         return productRepository.findAll();
     }
@@ -58,6 +60,7 @@ public class ProductService {
      * @param id the ID of the product to retrieve.
      * @return an Optional containing the product if found, or empty otherwise.
      */
+    @Tool(description = "Retrieves a product by its ID.")
     public Optional<Product> findById(String id) {
         return productRepository.findById(id);
     }
@@ -70,6 +73,7 @@ public class ProductService {
      * @return the created product.
      * @throws DuplicateSkuException if the provided SKU already exists.
      */
+    @Tool(description = "Creates a new product. If no SKU is provided, a unique SKU is generated. If a SKU is provided, it must be unique.")
     @Transactional
     public Product createProduct(Product product) {
         // If no SKU is provided, generate a unique one
@@ -96,6 +100,7 @@ public class ProductService {
      * @param products the list of products to create.
      * @return the list of created products.
      */
+    @Tool(description = "Creates multiple products in a single transaction.")
     @Transactional
     public List<Product> createMultipleProducts(List<Product> products) {
         return products.stream().map(this::createProduct).collect(Collectors.toList());
@@ -109,6 +114,7 @@ public class ProductService {
      * @return the updated product.
      * @throws ProductNotFoundException if the product with the given ID is not found.
      */
+    @Tool(description = "Updates an existing product.")
     @Transactional
     public Product updateProduct(String id, Product productDetails) {
         Product product =
@@ -164,6 +170,7 @@ public class ProductService {
      * @param id the ID of the product to delete.
      * @throws ProductNotFoundException if the product with the given ID is not found.
      */
+    @Tool(description = "Updates an existing product.")
     @Transactional
     public void deleteProduct(String id) {
         Product product =
@@ -182,6 +189,7 @@ public class ProductService {
      * @param pageable the pagination information.
      * @return a page of products.
      */
+    @Tool(description = "Retrieves all products with pagination.")
     public Page<Product> findAll(Pageable pageable) {
         return productRepository.findAll(pageable);
     }
@@ -195,6 +203,7 @@ public class ProductService {
      * @param pageable the pagination information.
      * @return a page of products.
      */
+    @Tool(description = "Retrieves products with filtering and pagination.")
     public Page<Product> findWithFilters(
             String name, Category category, Boolean active, Pageable pageable) {
         return productRepository.findWithFilters(name, category, active, pageable);
@@ -206,6 +215,7 @@ public class ProductService {
      * @param pageable the pagination information.
      * @return a page of products with low stock.
      */
+    @Tool(description = "Retrieves products with low stock.")
     public Page<Product> findLowStockProducts(Pageable pageable) {
         return productRepository.findLowStockProducts(pageable);
     }

@@ -6,6 +6,7 @@ This project implements a **comprehensive, enterprise-grade RESTful API** for pr
 ## Technologies Used
 *   **Language**: Java 21
 *   **Framework**: Spring Boot 3.5.4 with Spring Security
+*   **AI Framework**: Spring AI
 *   **Build Tool**: Maven
 *   **Database**: PostgreSQL with advanced indexing
 *   **Schema Migration**: Flyway (3 migrations)
@@ -61,6 +62,24 @@ This project implements a **comprehensive, enterprise-grade RESTful API** for pr
 *   **Enhanced Actuator**: Custom health indicators, business metrics, and audit endpoints
 *   **Health Monitoring**: Database connectivity and product inventory monitoring
 *   **Environment Profiles**: Separate configurations for test, dev, prod
+
+### 🤖 AI-Powered Interaction
+*   **AI Tool Integration**: The application's `ProductService` is exposed as a set of tools for AI models.
+*   **Natural Language Interaction**: Allows for natural language queries and commands to manage the product catalog (e.g., "create a new product", "find all products with low stock").
+*   **Spring AI MCP Server**: Utilizes the Spring AI Model-Centric Programming (MCP) server to bridge the gap between the AI model and the application's business logic.
+
+## Spring AI MCP Server Configuration
+
+The Spring AI Model-Centric Programming (MCP) server is configured through the `application.properties` files. The following properties are available:
+
+| Property                             | Description                               |
+| ------------------------------------ | ----------------------------------------- |
+| `spring.ai.mcp.server.name`          | The name of the MCP server.               |
+| `spring.ai.mcp.server.version`       | The version of the MCP server.            |
+| `spring.ai.mcp.server.instructions`  | Instructions for the AI model.            |
+| `spring.ai.mcp.server.sse-endpoint`  | The Server-Sent Events (SSE) endpoint.    |
+
+The MCP server is exposed via SSE on the `/sse` path and requires authentication (USER or ADMIN role).
 
 ## Requirements
 *   **Docker**: Ensure Docker Desktop or Docker Engine is installed and running.
