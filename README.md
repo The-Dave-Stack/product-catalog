@@ -63,23 +63,73 @@ This project implements a **comprehensive, enterprise-grade RESTful API** for pr
 *   **Health Monitoring**: Database connectivity and product inventory monitoring
 *   **Environment Profiles**: Separate configurations for test, dev, prod
 
-### 🤖 AI-Powered Interaction
-*   **AI Tool Integration**: The application's `ProductService` is exposed as a set of tools for AI models.
-*   **Natural Language Interaction**: Allows for natural language queries and commands to manage the product catalog (e.g., "create a new product", "find all products with low stock").
-*   **Spring AI MCP Server**: Utilizes the Spring AI Model-Centric Programming (MCP) server to bridge the gap between the AI model and the application's business logic.
+### 🤖 Comprehensive AI Integration
 
-## Spring AI MCP Server Configuration
+*   **Advanced MCP Server**: Enterprise-grade Model-Centric Programming (MCP) server with full capabilities
+*   **AI Tools**: All ProductService operations exposed as intelligent tools with detailed descriptions
+*   **Dynamic Resources**: Real-time access to business data, documentation, and analytics
+*   **Structured Prompts**: Guided interaction templates for complex operations
+*   **Natural Language Interface**: Intuitive AI-driven product catalog management
 
-The Spring AI Model-Centric Programming (MCP) server is configured through the `application.properties` files. The following properties are available:
+## 🧠 Spring AI MCP Server v2.0
 
-| Property                             | Description                               |
-| ------------------------------------ | ----------------------------------------- |
-| `spring.ai.mcp.server.name`          | The name of the MCP server.               |
-| `spring.ai.mcp.server.version`       | The version of the MCP server.            |
-| `spring.ai.mcp.server.instructions`  | Instructions for the AI model.            |
-| `spring.ai.mcp.server.sse-endpoint`  | The Server-Sent Events (SSE) endpoint.    |
+The enhanced MCP server provides three core capabilities for comprehensive AI integration:
 
-The MCP server is exposed via SSE on the `/sse` path and requires authentication (USER or ADMIN role).
+### 🔧 **Tools** (9+ Available)
+Intelligent product management operations with enhanced descriptions:
+- **Product CRUD Operations**: Create, read, update, delete with validation and audit
+- **Advanced Search & Filtering**: Multi-criteria search with pagination support  
+- **Inventory Management**: Stock monitoring, low-stock alerts, reorder planning
+- **Bulk Operations**: Multi-product transactions with atomic rollback
+- **Business Intelligence**: Analytics and performance monitoring
+
+### 📊 **Resources** (20+ Available)
+Dynamic access to live business data and documentation:
+- **Product Catalog Data**: `product://catalog/all`, `product://catalog/category/{category}`
+- **Inventory Analytics**: `inventory://status/overview`, `inventory://alerts/critical`
+- **Category Information**: `categories://overview/all`, `categories://details/{category}`
+- **API Documentation**: `api://documentation/overview`, `api://documentation/endpoints/products`
+- **Business Rules**: `business://rules/sku-generation`, `business://rules/pricing`
+
+### 🎯 **Prompts** (7+ Available)
+Structured guidance templates for complex operations:
+- **Product Creation Guide**: `product-creation-guide` - Category-specific creation guidance
+- **Inventory Analysis**: `inventory-analysis` - Stock health and reorder recommendations
+- **Pricing Strategy**: `pricing-strategy` - Competitive, cost-plus, and value-based pricing
+- **Data Quality Audit**: `data-quality-audit` - Completeness, accuracy, consistency checks
+- **Troubleshooting Assistant**: `troubleshooting-assistant` - Issue resolution guidance
+- **Business Intelligence**: `business-intelligence` - Performance, trends, optimization analysis
+- **Bulk Operations**: `bulk-operations` - Import, update, export, cleanup planning
+
+### ⚙️ **Configuration**
+
+Enhanced MCP server configuration in `application.properties`:
+
+```properties
+# MCP Server Configuration  
+spring.ai.mcp.server.enabled=true
+spring.ai.mcp.server.name=product-catalog-mcp-server
+spring.ai.mcp.server.version=2.0.0
+spring.ai.mcp.server.type=SYNC
+spring.ai.mcp.server.instructions=Enterprise Product Catalog Management Server with AI-powered tools, resources, and prompts
+spring.ai.mcp.server.sse-endpoint=/sse
+
+# All Capabilities Enabled
+spring.ai.mcp.server.capabilities.tool=true
+spring.ai.mcp.server.capabilities.resource=true  
+spring.ai.mcp.server.capabilities.prompt=true
+spring.ai.mcp.server.capabilities.completion=true
+
+# Change Notifications
+spring.ai.mcp.server.tool-change-notification=true
+spring.ai.mcp.server.resource-change-notification=true
+spring.ai.mcp.server.prompt-change-notification=true
+```
+
+### 🔗 **Access & Authentication**
+- **Endpoint**: Server-Sent Events (SSE) on `/sse` path
+- **Authentication**: JWT required (USER or ADMIN role)
+- **Security**: Full Spring Security integration with role-based access
 
 ## Requirements
 *   **Docker**: Ensure Docker Desktop or Docker Engine is installed and running.

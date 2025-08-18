@@ -49,8 +49,11 @@ public class SecurityConfig {
                                                 "/actuator/info",
                                                 "/actuator/metrics",
                                                 "/actuator/productmetrics",
-                                                "/actuator/audit",
-                                                "/sse/**")
+                                                "/actuator/audit")
+                                        .hasAnyRole("USER", "ADMIN")
+
+                                        // SSE endpoints - require USER or ADMIN role
+                                        .requestMatchers("/sse/**")
                                         .hasAnyRole("USER", "ADMIN")
 
                                         // Read-only endpoints - require USER or ADMIN role
@@ -58,10 +61,6 @@ public class SecurityConfig {
                                                 HttpMethod.GET,
                                                 "/api/v1/products",
                                                 "/api/v1/products/**")
-                                        .hasAnyRole("USER", "ADMIN")
-
-                                        // SSE endpoints - require USER or ADMIN role
-                                        .requestMatchers("/sse/**")
                                         .hasAnyRole("USER", "ADMIN")
 
                                         // Write endpoints - require ADMIN role

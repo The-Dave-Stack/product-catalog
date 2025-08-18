@@ -63,12 +63,19 @@ This is an **enterprise-grade Spring Boot 3.5.4 REST API** for product catalog m
 - **Async Processing**: Background audit logging and change tracking
 - **Enhanced 404 Handling**: `spring.mvc.throw-exception-if-no-handler-found=true` for comprehensive error coverage
 - **Container Optimization**: JVM settings optimized for container environments
+- **Advanced AI Integration**: Full MCP server with tools, resources, and prompts capabilities
 
 ### Custom Actuator Endpoints
 - **Product Health Indicator**: Database connectivity and product count monitoring
 - **Custom Metrics**: Business metrics including products by category, stock levels, average prices
 - **Audit Endpoint**: Access to audit logs with entity-specific queries
 - **Enhanced Info**: Application information with feature flags and runtime statistics
+
+### AI-Powered MCP Server v2.0
+- **Tools**: 9 enhanced product management operations with detailed AI descriptions
+- **Resources**: 20+ dynamic data access points for real-time business information
+- **Prompts**: 7 structured templates for guided AI interactions and complex operations
+- **Authentication**: JWT-secured SSE endpoint at `/sse` with role-based access control
 
 ## Development Notes - Enterprise Features
 
