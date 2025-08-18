@@ -70,7 +70,7 @@ class ProductServiceTest {
     void findAll_shouldReturnAllProducts() {
         when(productRepository.findAll()).thenReturn(Arrays.asList(product1, product2));
 
-        List<Product> products = productService.findAll();
+        List<Product> products = productService.findAllProducts();
 
         assertThat(products).hasSize(2);
         assertThat(products).contains(product1, product2);

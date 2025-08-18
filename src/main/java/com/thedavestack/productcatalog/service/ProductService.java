@@ -50,7 +50,7 @@ public class ProductService {
      * @return a list of all products.
      */
     @Tool(description = "Retrieves all products.")
-    public List<Product> findAll() {
+    public List<Product> findAllProducts() {
         return productRepository.findAll();
     }
 
