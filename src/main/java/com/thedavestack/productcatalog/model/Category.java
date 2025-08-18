@@ -36,9 +36,9 @@ public enum Category {
     }
 
     /**
-     * Custom deserializer that handles both enum names (for MCP compatibility) 
-     * and display names (for REST API compatibility).
-     * 
+     * Custom deserializer that handles both enum names (for MCP compatibility) and display names
+     * (for REST API compatibility).
+     *
      * @param value the string value to convert to Category
      * @return the corresponding Category enum
      * @throws IllegalArgumentException if the value doesn't match any category
@@ -48,12 +48,13 @@ public enum Category {
         if (value == null || value.trim().isEmpty()) {
             throw new IllegalArgumentException("Category value cannot be null or empty");
         }
-        
+
         // First try enum name (MCP compatibility - handles "ELECTRONICS", "HOME_GARDEN", etc.)
         try {
             return Category.valueOf(value.toUpperCase());
         } catch (IllegalArgumentException e) {
-            // Fall back to display name (REST API compatibility - handles "Electronics", "Home & Garden", etc.)
+            // Fall back to display name (REST API compatibility - handles "Electronics", "Home &
+            // Garden", etc.)
             return fromDisplayName(value);
         }
     }
