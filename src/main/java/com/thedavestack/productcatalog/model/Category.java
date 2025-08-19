@@ -13,7 +13,7 @@ public enum Category {
     HEALTH_BEAUTY("Health & Beauty"),
     FOOD_BEVERAGES("Food & Beverages"),
     AUTOMOTIVE("Automotive"),
-    OTHER("Other");
+    NOT_CATEGORIZED("Not categorized");
 
     private final String displayName;
 

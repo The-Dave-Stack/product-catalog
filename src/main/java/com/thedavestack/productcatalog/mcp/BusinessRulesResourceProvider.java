@@ -807,7 +807,7 @@ public class BusinessRulesResourceProvider {
             case HEALTH_BEAUTY -> "HEALTH";
             case FOOD_BEVERAGES -> "FOOD";
             case AUTOMOTIVE -> "AUTO";
-            case OTHER -> "OTHER";
+            case NOT_CATEGORIZED -> "OTHER";
         };
     }
 

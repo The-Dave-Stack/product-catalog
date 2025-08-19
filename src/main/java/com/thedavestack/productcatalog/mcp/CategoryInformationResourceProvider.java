@@ -2,7 +2,6 @@ package com.thedavestack.productcatalog.mcp;
 
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -287,7 +286,7 @@ public class CategoryInformationResourceProvider {
             case HEALTH_BEAUTY -> Category.HEALTH_BEAUTY.getDisplayName();
             case FOOD_BEVERAGES -> Category.FOOD_BEVERAGES.getDisplayName();
             case AUTOMOTIVE -> Category.AUTOMOTIVE.getDisplayName();
-            case OTHER -> Category.OTHER.getDisplayName();
+            case NOT_CATEGORIZED -> Category.NOT_CATEGORIZED.getDisplayName();
         };
     }
 
@@ -300,9 +299,9 @@ public class CategoryInformationResourceProvider {
             case SPORTS_OUTDOORS -> "Sports equipment, fitness gear, and recreational activities";
             case TOYS_GAMES -> "Children's toys, games, and educational products";
             case HEALTH_BEAUTY -> "Personal care, cosmetics, and health products";
-            case FOOD_BEVERAGES -> "Food and beverages.";
+            case FOOD_BEVERAGES -> "Food and beverages";
             case AUTOMOTIVE -> "Vehicle parts, accessories, and maintenance products";
-            case OTHER -> "Others";
+            case NOT_CATEGORIZED -> "Product not categorized";
         };
     }
 
@@ -315,9 +314,9 @@ public class CategoryInformationResourceProvider {
             case SPORTS_OUTDOORS -> "Professional and recreational sports equipment for all activity levels. Includes fitness equipment, outdoor gear, team sports, and individual training products.";
             case TOYS_GAMES -> "Educational and entertaining toys for children of all ages. Emphasis on safety, development, and fun with both traditional and modern interactive options.";
             case HEALTH_BEAUTY -> "Personal wellness and beauty products including skincare, cosmetics, supplements, and health monitoring devices. Focus on quality ingredients and proven effectiveness.";
-            case FOOD_BEVERAGES -> "//TODO: full fill";
+            case FOOD_BEVERAGES -> "Diverse range of food and beverage products including snacks, beverages, and specialty items. Focus on quality ingredients and consumer preferences.";
             case AUTOMOTIVE -> "Comprehensive automotive solutions including replacement parts, accessories, maintenance supplies, and performance upgrades for various vehicle types and models.";
-            case OTHER -> "Others";
+            case NOT_CATEGORIZED -> "Products that do not fit into any specific category. This includes unique or specialized items that require individual handling.";
         };
     }
 
@@ -352,13 +351,20 @@ public class CategoryInformationResourceProvider {
                     "Personal preference",
                     "Skin type specific",
                     "Health benefits");
-            case FOOD_BEVERAGES -> Collections.emptyList(); // TODO: Add a valid list
+            case FOOD_BEVERAGES -> List.of(
+                    "Quality ingredients",
+                    "Shelf life considerations",
+                    "Dietary restrictions",
+                    "Flavor profiles");
             case AUTOMOTIVE -> List.of(
                     "Vehicle compatibility",
                     "Performance impact",
                     "Installation requirements",
                     "Regulatory compliance");
-            case OTHER -> Collections.emptyList(); // TODO: Add a valid list
+            case NOT_CATEGORIZED -> List.of(
+                    "Unique characteristics",
+                    "Special handling requirements",
+                    "Individual product focus");
         };
     }
 
@@ -406,14 +412,24 @@ public class CategoryInformationResourceProvider {
                     "Vitamins",
                     "Fitness supplements",
                     "Hair care products");
-            case FOOD_BEVERAGES -> Collections.emptyList(); // TODO: Add a valid list
+            case FOOD_BEVERAGES -> List.of(
+                    "Organic snacks",
+                    "Gourmet coffee",
+                    "Craft beers",
+                    "Gluten-free pasta",
+                    "Vegan protein bars");
             case AUTOMOTIVE -> List.of(
                     "Brake pads",
                     "Engine oil",
                     "Car accessories",
                     "Diagnostic tools",
                     "Performance parts");
-            case OTHER -> Collections.emptyList(); // TODO: Add a valid list
+            case NOT_CATEGORIZED -> List.of(
+                    "Custom-made items",
+                    "Limited edition collectibles",
+                    "Specialty tools",
+                    "Unique art pieces",
+                    "Niche market products");
         };
     }
 
@@ -428,7 +444,7 @@ public class CategoryInformationResourceProvider {
             case HEALTH_BEAUTY -> "$8 - $250";
             case FOOD_BEVERAGES -> "$3 - $200";
             case AUTOMOTIVE -> "$10 - $1,000";
-            case OTHER -> "$10";
+            case NOT_CATEGORIZED -> "$10 - $3,000";
         };
     }
 
@@ -441,9 +457,9 @@ public class CategoryInformationResourceProvider {
             case SPORTS_OUTDOORS -> "Seasonal demand, equipment durability";
             case TOYS_GAMES -> "Holiday seasonality, safety compliance";
             case HEALTH_BEAUTY -> "Expiration dates, personal preferences";
-            case FOOD_BEVERAGES -> ""; // TODO: Add a valid consideration
+            case FOOD_BEVERAGES -> "Perishable items, dietary trends";
             case AUTOMOTIVE -> "Vehicle compatibility, technical specifications";
-            case OTHER -> ""; // TODO: Add a valid consideration
+            case NOT_CATEGORIZED -> "Unique handling requirements, individual product focus";
         };
     }
 
