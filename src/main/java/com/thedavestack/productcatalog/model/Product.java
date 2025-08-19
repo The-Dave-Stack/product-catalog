@@ -17,12 +17,12 @@ package com.thedavestack.productcatalog.model;
 import java.math.BigDecimal;
 import java.time.Instant;
 
-import com.thedavestack.productcatalog.converter.CategoryConverter;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
+
+import com.thedavestack.productcatalog.converter.CategoryConverter;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
