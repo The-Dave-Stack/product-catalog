@@ -43,13 +43,18 @@ services:
       - JWT_SECRET=${JWT_SECRET:-changeme-production-secret-key-must-be-at-least-256-bits}
       - JWT_EXPIRATION=${JWT_EXPIRATION:-86400}
       - JAVA_OPTS=-Xmx768m -Xms384m -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0
+      # MCP Server Configuration
+      - MCP_SERVER_ENABLED=${MCP_SERVER_ENABLED:-true}
+      - MCP_SERVER_NAME=${MCP_SERVER_NAME:-product-catalog-mcp-server}
+      - MCP_SERVER_VERSION=${MCP_SERVER_VERSION:-2.0.0}
+      - MCP_SSE_ENDPOINT=${MCP_SSE_ENDPOINT:-/sse}
     depends_on:
       postgres-db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8080/actuator/health && curl -f -H 'Accept: text/event-stream' http://localhost:8080/sse"]
       interval: 30s
-      timeout: 15s
+      timeout: 20s
       retries: 5
       start_period: 90s
     networks:
@@ -75,8 +80,11 @@ services:
       - "${NGINX_PORT:-80}:80"
       - "${NGINX_HTTPS_PORT:-443}:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      # Use production nginx config with enhanced security
+      - ./nginx/nginx-prod.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
+      # Fallback to standard config if nginx-prod.conf doesn't exist
+      # - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - product-catalog
     networks:

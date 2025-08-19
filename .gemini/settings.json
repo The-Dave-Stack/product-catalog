@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "product-catalog-local": {
+      "url": "http://localhost:8080/sse",
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc1NTUyNDIyNCwiZXhwIjoxNzU1NjEwNjI0fQ.9tcKTyIQzUmhkMj2VzaoVkDHA-Rpsu-3xMwoKFoavmitqKUgw7QE5BmyLv-0XQRJ"
+      }
+    }
+  }
+}
