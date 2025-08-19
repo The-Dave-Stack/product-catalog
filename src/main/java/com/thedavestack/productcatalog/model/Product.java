@@ -17,12 +17,15 @@ package com.thedavestack.productcatalog.model;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+import com.thedavestack.productcatalog.converter.CategoryConverter;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -49,7 +52,7 @@ public class Product {
     @Column(unique = true, nullable = false)
     private String sku;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(255)")
     private String name;
 
     private String description;
@@ -57,6 +60,7 @@ public class Product {
     @Column(nullable = false)
     private BigDecimal price;
 
+    @Convert(converter = CategoryConverter.class)
     private Category category;
 
     @Column(name = "stock_quantity", nullable = false)
