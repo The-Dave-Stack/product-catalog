@@ -31,13 +31,18 @@ services:
       - SPRING_DATASOURCE_PASSWORD=password
       - JWT_SECRET=dev-secret-key-1234567890123456789012345678901234567890
       - JWT_EXPIRATION=86400
+      # MCP Server Configuration
+      - MCP_SERVER_ENABLED=true
+      - MCP_SERVER_NAME=product-catalog-mcp-server
+      - MCP_SERVER_VERSION=2.0.0
+      - MCP_SSE_ENDPOINT=/sse
     depends_on:
       postgres-db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8080/actuator/health && curl -f -H 'Accept: text/event-stream' http://localhost:8080/sse"]
       interval: 30s
-      timeout: 10s
+      timeout: 15s
       retries: 3
       start_period: 60s
     networks:
