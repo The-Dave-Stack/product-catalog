@@ -1,0 +1,59 @@
+services:
+  postgres-db:
+    image: postgres:17.5-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=product_catalog_local
+      - POSTGRES_USER=local_user
+      - POSTGRES_PASSWORD=local_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U local_user -d product_catalog_local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - app-network
+
+  product-catalog:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local,docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/product_catalog_local
+      - SPRING_DATASOURCE_USERNAME=local_user
+      - SPRING_DATASOURCE_PASSWORD=local_password
+      - JWT_SECRET=dev-secret-key-1234567890123456789012345678901234567890
+      - JWT_EXPIRATION=86400
+      # MCP Server Configuration
+      - MCP_SERVER_ENABLED=true
+      - MCP_SERVER_NAME=product-catalog-mcp-server
+      - MCP_SERVER_VERSION=2.0.0
+      - MCP_SSE_ENDPOINT=/sse
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8080/actuator/health && curl -f -H 'Accept: text/event-stream' http://localhost:8080/sse"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 60s
+    networks:
+      - app-network
+    # Development: Mount source for hot reload (optional)
+    # volumes:
+    #   - ./target/classes:/application/classes
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
