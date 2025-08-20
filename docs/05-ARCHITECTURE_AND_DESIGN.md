@@ -7,8 +7,7 @@ This document provides a high-level overview of the project's architecture, secu
 The application follows a classic layered architecture pattern, promoting separation of concerns and maintainability.
 
 ### 📁 Package Structure
-````
-
+```bash
 com.thedavestack.productcatalog/
 ├── controller/     \# REST API endpoints with security
 ├── service/        \# Business logic with transactions  
@@ -20,7 +19,6 @@ com.thedavestack.productcatalog/
 ├── validation/     \# Custom validation logic
 ├── exception/      \# Global error handling
 └── config/         \# Spring configuration classes
-
 ```
 
 ### 🔄 Application Flow

@@ -34,7 +34,7 @@ This project implements a **comprehensive, enterprise-grade RESTful API** for pr
 1.  **Prerequisites**: Java 21, Docker, Maven.
 2.  **Clone the repository**:
     ```bash
-    git clone [https://github.com/your-repo/product-catalog.git](https://github.com/your-repo/product-catalog.git)
+    git clone https://github.com/your-repo/product-catalog.git
     cd product-catalog
     ```
 3.  **Configure environment**:

@@ -13,7 +13,7 @@ Follow these steps to run the complete application stack locally.
 
 1.  **Clone the Repository**
     ```bash
-    git clone [https://github.com/your-repo/product-catalog.git](https://github.com/your-repo/product-catalog.git)
+    git clone https://github.com/your-repo/product-catalog.git
     cd product-catalog
     ```
 
