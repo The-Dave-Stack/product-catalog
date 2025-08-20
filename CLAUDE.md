@@ -7,7 +7,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Building and Running
 - **Build project**: `mvn clean install`
 - **Run application**: `mvn spring-boot:run`
-- **Run with Docker**: `docker compose up` (recommended for development)
+
+#### Environment-Specific Docker Commands
+- **Local Development**: `docker compose -f docker-compose.local.yml up -d` (recommended for development)
+- **Stage Environment**: `docker compose -f docker-compose.stage.yml up -d` (automated via develop branch)
+- **Production Environment**: `docker compose -f docker-compose.prod.yml up -d` (automated via main branch)
 
 ### Testing
 - **Unit tests only**: `mvn test` (14 tests)
@@ -30,9 +34,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Login endpoint**: `POST /api/v1/auth/login`
 - **JWT token required**: All product endpoints require `Authorization: Bearer <token>`
 
-## Architecture Overview
+## Multi-Environment Architecture
 
-This is an **enterprise-grade Spring Boot 3.5.4 REST API** for product catalog management with comprehensive security, advanced features, and production-ready architecture:
+This is an **enterprise-grade Spring Boot 3.5.4 REST API** for product catalog management with comprehensive security, advanced features, and production-ready multi-environment architecture:
+
+### Environment Structure
+- **Local (Development)**: Full debugging, CORS enabled, all actuator endpoints
+- **Stage (Staging)**: Production-like with enhanced monitoring and testing features  
+- **Prod (Production)**: Security-hardened, minimal logging, optimized performance
 
 ### Package Structure
 - **Controller Layer** (`controller/`): REST endpoints with JWT security (Products + Auth)
@@ -202,6 +211,73 @@ All error responses follow a standardized format with optional developer guidanc
 
 This enhances developer experience by automatically providing navigation to authentication documentation when errors occur.
 
+## Multi-Environment Configuration
+
+### Environment Profiles and Docker Compose Files
+
+| Environment | Spring Profile | Docker Compose File | Database | Usage |
+|-------------|---------------|-------------------|----------|--------|
+| **Local** | `local,docker` | `docker-compose.local.yml` | `product_catalog_local` | Development with full debugging |
+| **Stage** | `stage,docker` | `docker-compose.stage.yml` | `product_catalog_stage` | Staging with production-like settings |
+| **Prod** | `prod,docker` | `docker-compose.prod.yml` | `product_catalog_prod` | Production with security hardening |
+
+### Environment-Specific Features
+
+#### Local Development Environment
+- **Full SQL logging**: `spring.jpa.show-sql=true` with formatted output
+- **Debug logging**: All Spring components and application code  
+- **CORS enabled**: Permissive CORS for frontend development
+- **All actuator endpoints**: `/actuator/*` exposed for debugging
+- **Short JWT expiration**: 1 hour for development testing
+- **Database**: Local PostgreSQL with `local_user` credentials
+
+#### Stage Environment (Staging)
+- **Moderate logging**: INFO level with security events
+- **Limited actuator**: Health, info, and custom product metrics only
+- **Resource limits**: 768M memory, 1.5 CPU cores max
+- **JWT expiration**: 12 hours for extended testing
+- **Database**: `product_catalog_stage` with `stage_user` credentials
+- **Nginx support**: Optional reverse proxy with stage-specific config
+
+#### Production Environment
+- **Minimal logging**: WARN level, no SQL output
+- **Security hardening**: HTTP-only cookies, secure headers
+- **Resource limits**: 1G memory, 2 CPU cores max  
+- **Standard JWT expiration**: 24 hours
+- **Database**: `product_catalog_prod` with `prod_user` credentials
+- **Nginx support**: Production reverse proxy with SSL/TLS support
+
+### Environment Variable Files
+
+Each environment has an example configuration file:
+- `.env.local.example` - Local development variables
+- `.env.stage.example` - Stage environment variables (GitHub Secrets)
+- `.env.prod.example` - Production environment variables (GitHub Secrets)
+
+### Deployment Commands by Environment
+
+```bash
+# Local Development
+docker compose -f docker-compose.local.yml up -d
+
+# Stage Environment (Automated via GitHub Actions)
+# Triggered by: git push origin develop
+
+# Production Environment (Automated via GitHub Actions) 
+# Triggered by: git push origin main
+
+# Manual deployments (if needed)
+docker compose -f docker-compose.stage.yml up -d
+docker compose -f docker-compose.prod.yml up -d
+```
+
+### Git Flow Integration
+
+- **Feature branches** → Local development testing
+- **develop branch** → Automated stage deployment with RC versioning
+- **main branch** → Automated production deployment with semantic versioning
+- **Pull requests** → Environment configuration validation
+
 ## Docker Container Deployment
 
 ### Container Architecture
@@ -240,7 +316,7 @@ This application is fully containerized with production-ready Docker configurati
 
 ### Environment Configuration
 
-**Container-Optimized Settings** (`application-docker.properties`):
+**Container-Optimized Settings** (integrated into environment-specific profiles):
 - Database connection pooling optimized for containers
 - JVM heap settings with container memory awareness
 - Structured logging for container log aggregation

@@ -6,6 +6,7 @@ on:
     paths:
       - 'src/**'
       - 'pom.xml'
+      - 'docker-compose.prod.yml'
       - '.github/workflows/*.yml'
 
 env:
@@ -56,10 +57,18 @@ jobs:
       run: |
         mvn versions:set -DnewVersion=${{ steps.version.outputs.version }} -DgenerateBackupPoms=false
 
+    - name: Validate production environment configuration
+      run: |
+        # Validate docker-compose.prod.yml syntax
+        docker compose -f docker-compose.prod.yml config
+        
+        # Check if prod application properties exist
+        test -f src/main/resources/application-prod.properties
+
     - name: Run tests
       run: |
-        mvn clean test
-        mvn failsafe:integration-test failsafe:verify -Dtest=none -DfailIfNoTests=false
+        mvn clean test -Dspring.profiles.active=prod
+        mvn failsafe:integration-test failsafe:verify -Dtest=none -DfailIfNoTests=false -Dspring.profiles.active=prod
 
     - name: Build application
       run: mvn clean package -DskipTests
@@ -77,8 +86,9 @@ jobs:
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         tags: |
-          type=raw,value=latest
+          type=raw,value=prod
           type=raw,value=${{ steps.version.outputs.version }}
+          type=raw,value=latest
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5

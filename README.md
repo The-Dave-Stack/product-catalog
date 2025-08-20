@@ -103,29 +103,64 @@ Structured guidance templates for complex operations:
 - **Business Intelligence**: `business-intelligence` - Performance, trends, optimization analysis
 - **Bulk Operations**: `bulk-operations` - Import, update, export, cleanup planning
 
-### ⚙️ **Configuration**
+### ⚙️ **Environment-Specific Configuration**
 
-Enhanced MCP server configuration in `application.properties`:
+The MCP server configuration adapts to each environment for optimal performance and security:
 
+#### Local Development Configuration
 ```properties
-# MCP Server Configuration  
+# Local MCP Server Configuration (application-local.properties)
 spring.ai.mcp.server.enabled=true
-spring.ai.mcp.server.name=product-catalog-mcp-server
-spring.ai.mcp.server.version=2.0.0
+spring.ai.mcp.server.name=product-catalog-mcp-server-local
+spring.ai.mcp.server.version=2.0.0-local
 spring.ai.mcp.server.type=SYNC
-spring.ai.mcp.server.instructions=Enterprise Product Catalog Management Server with AI-powered tools, resources, and prompts
+spring.ai.mcp.server.instructions=Local Development Product Catalog Management Server with AI-powered tools
 spring.ai.mcp.server.sse-endpoint=/sse
 
-# All Capabilities Enabled
+# All capabilities enabled for development
 spring.ai.mcp.server.capabilities.tool=true
 spring.ai.mcp.server.capabilities.resource=true  
 spring.ai.mcp.server.capabilities.prompt=true
 spring.ai.mcp.server.capabilities.completion=true
 
-# Change Notifications
+# Enhanced notifications for development
 spring.ai.mcp.server.tool-change-notification=true
 spring.ai.mcp.server.resource-change-notification=true
 spring.ai.mcp.server.prompt-change-notification=true
+```
+
+#### Stage Environment Configuration
+```properties
+# Stage MCP Server Configuration (application-stage.properties)
+spring.ai.mcp.server.enabled=true
+spring.ai.mcp.server.name=product-catalog-mcp-server-stage
+spring.ai.mcp.server.version=2.0.0-stage
+spring.ai.mcp.server.type=SYNC
+spring.ai.mcp.server.instructions=Staging Product Catalog Management Server for testing and validation
+spring.ai.mcp.server.sse-endpoint=/sse
+
+# Full capabilities for staging testing
+spring.ai.mcp.server.capabilities.tool=true
+spring.ai.mcp.server.capabilities.resource=true  
+spring.ai.mcp.server.capabilities.prompt=true
+spring.ai.mcp.server.capabilities.completion=true
+```
+
+#### Production Configuration
+```properties
+# Production MCP Server Configuration (application-prod.properties)
+spring.ai.mcp.server.enabled=true
+spring.ai.mcp.server.name=product-catalog-mcp-server-prod
+spring.ai.mcp.server.version=2.0.0-prod
+spring.ai.mcp.server.type=SYNC
+spring.ai.mcp.server.instructions=Production Product Catalog Management Server with enterprise-grade AI integration
+spring.ai.mcp.server.sse-endpoint=/sse
+
+# Production-optimized capabilities
+spring.ai.mcp.server.capabilities.tool=true
+spring.ai.mcp.server.capabilities.resource=true  
+spring.ai.mcp.server.capabilities.prompt=true
+spring.ai.mcp.server.capabilities.completion=true
 ```
 
 ### 🔗 **Access & Authentication**
@@ -479,27 +514,119 @@ Error: "Authentication failed"
 *   **Java 21**: Ensure Java Development Kit (JDK) 21 is installed and configured.
 *   **Maven**: Ensure Apache Maven is installed and configured.
 
+## 🌍 Multi-Environment Setup
+
+This project supports **three distinct environments** with optimized configurations for different use cases:
+
+| Environment | Spring Profile | Docker Compose File | Database | Usage |
+|-------------|---------------|---------------------|----------|--------|
+| **Local** | `local,docker` | `docker-compose.local.yml` | `product_catalog_local` | Development with full debugging |
+| **Stage** | `stage,docker` | `docker-compose.stage.yml` | `product_catalog_stage` | Staging with production-like settings |
+| **Prod** | `prod,docker` | `docker-compose.prod.yml` | `product_catalog_prod` | Production with security hardening |
+
+### 🏠 Local Development Environment
+- **Full SQL logging** and formatted output for debugging
+- **Debug logging** for all Spring components and application code  
+- **CORS enabled** for frontend development
+- **All actuator endpoints** exposed (`/actuator/*`)
+- **Short JWT expiration** (1 hour) for testing
+- **Permissive settings** optimized for development workflow
+
+### 🏢 Stage Environment (Staging)
+- **INFO level logging** with security event tracking
+- **Limited actuator endpoints** (health, info, product metrics)
+- **Resource limits** (768M memory, 1.5 CPU cores)
+- **JWT expiration** of 12 hours for extended testing
+- **Production-like configuration** for realistic testing
+- **Optional Nginx reverse proxy** with stage-specific config
+
+### 🏭 Production Environment
+- **WARN level logging** with minimal output for performance
+- **Security hardening** with HTTP-only cookies and secure headers
+- **Resource limits** (1G memory, 2 CPU cores) for optimal performance
+- **Standard JWT expiration** (24 hours)
+- **Nginx reverse proxy** with SSL/TLS support and rate limiting
+- **Enhanced monitoring** and health checks
+
 ## How to Run
 
-### Using Docker Compose (Recommended for Development)
+### 🚀 Environment-Specific Docker Commands
 
-To run the entire Product Catalog API stack (Spring Boot application and PostgreSQL database) using Docker Compose, navigate to this project's root directory and execute the following command:
-
+#### Local Development (Recommended)
 ```bash
-docker compose up
+# Start local development environment
+docker compose -f docker-compose.local.yml up -d
+
+# View logs
+docker compose -f docker-compose.local.yml logs -f
+
+# Stop services
+docker compose -f docker-compose.local.yml down
 ```
 
-This command will:
-1.  Build the `product-catalog-spring` Docker image (if not already built or if changes are detected).
-2.  Start the `postgres-db` service.
-3.  Start the `product-catalog-spring` service, waiting for the database to be healthy.
-
-The Spring Boot application will be accessible at `http://localhost:8080`.
-
-To stop and remove the Docker Compose services:
+#### Stage Environment
 ```bash
-docker compose down
+# Start staging environment (for integration testing)
+docker compose -f docker-compose.stage.yml up -d
+
+# With nginx reverse proxy
+docker compose -f docker-compose.stage.yml --profile nginx up -d
+
+# Stop services  
+docker compose -f docker-compose.stage.yml down
 ```
+
+#### Production Environment
+```bash
+# Start production environment
+docker compose -f docker-compose.prod.yml up -d
+
+# With nginx reverse proxy and SSL
+docker compose -f docker-compose.prod.yml --profile nginx up -d
+
+# Scale for high availability
+docker compose -f docker-compose.prod.yml up -d --scale product-catalog=3
+
+# Stop services
+docker compose -f docker-compose.prod.yml down
+```
+
+### 📝 Environment Configuration Files
+
+Each environment has dedicated configuration files:
+
+- **`.env.local.example`** - Local development variables
+- **`.env.stage.example`** - Staging environment secrets template  
+- **`.env.prod.example`** - Production environment secrets template
+
+Copy the appropriate `.env.{environment}.example` file to `.env.{environment}` and customize the values for your deployment.
+
+### 🎯 Git Flow Integration
+
+The multi-environment setup integrates seamlessly with Git Flow:
+
+- **Feature branches** → Local development and testing
+- **develop branch** → Automated stage deployment with RC versioning
+- **main branch** → Automated production deployment with semantic versioning
+- **Pull requests** → Comprehensive environment configuration validation
+
+All environments are validated by GitHub Actions to ensure consistency and prevent configuration drift.
+
+### ⚠️ Important Migration Note
+
+**Breaking Change**: The default `docker-compose.yml` has been renamed to `docker-compose.local.yml` as part of the multi-environment setup.
+
+**Before** (deprecated):
+```bash
+docker compose up  # This will no longer work
+```
+
+**After** (current):
+```bash
+docker compose -f docker-compose.local.yml up -d  # New local development command
+```
+
+This change ensures clear separation between development, staging, and production environments, preventing accidental deployments with wrong configurations.
 
 ### Using Maven (Local Development)
 
@@ -648,62 +775,111 @@ src/main/java/com/thedavestack/productcatalog/
 - **Developer-Friendly 404s**: Automatic Swagger UI links for invalid endpoints
 - **Developer-Friendly 401s**: Authentication errors include automatic login guidance
 
-## 🚀 Deployment & Production
+## 🚀 Deployment & Multi-Environment Production
 
-### 🐳 Docker Container Deployment
+### 🐳 Environment-Specific Container Deployment
 
-#### Quick Start (Development)
+#### Local Development Deployment
 ```bash
-# Start services for development
-docker compose up -d
+# Copy and customize local environment configuration
+cp .env.local.example .env.local
+# Edit .env.local file with local development values
 
-# View logs
-docker compose logs -f product-catalog
+# Start local development services
+docker compose -f docker-compose.local.yml up -d
+
+# View logs (with debug information)
+docker compose -f docker-compose.local.yml logs -f product-catalog
 
 # Stop services
-docker compose down
+docker compose -f docker-compose.local.yml down
+```
+
+#### Stage Environment Deployment
+```bash
+# Copy and customize stage environment configuration
+cp .env.stage.example .env.stage
+# Edit .env.stage file with staging values and secrets
+
+# Start staging services
+docker compose -f docker-compose.stage.yml up -d
+
+# Start with reverse proxy for realistic testing
+docker compose -f docker-compose.stage.yml --profile nginx up -d
+
+# Monitor staging environment
+docker compose -f docker-compose.stage.yml ps
+docker compose -f docker-compose.stage.yml logs -f product-catalog
 ```
 
 #### Production Deployment
 ```bash
-# Copy environment configuration
-cp .env.example .env
-# Edit .env file with production values
+# Copy and customize production environment configuration
+cp .env.prod.example .env.prod
+# Edit .env.prod file with production secrets
 
 # Start production services
 docker compose -f docker-compose.prod.yml up -d
 
-# Scale the application (load balancing)
+# Scale the application for high availability
 docker compose -f docker-compose.prod.yml up -d --scale product-catalog=3
 
-# Start with reverse proxy (nginx)
+# Start with reverse proxy and SSL support
 docker compose -f docker-compose.prod.yml --profile nginx up -d
 ```
 
-#### Container Health Monitoring
+#### Multi-Environment Health Monitoring
 ```bash
-# Check service health
-docker compose ps
+# Check service health across environments
+docker compose -f docker-compose.local.yml ps
+docker compose -f docker-compose.stage.yml ps  
 docker compose -f docker-compose.prod.yml ps
 
-# Monitor container logs
-docker compose logs -f product-catalog postgres-db
+# Monitor environment-specific logs
+docker compose -f docker-compose.local.yml logs -f product-catalog postgres-db
+docker compose -f docker-compose.stage.yml logs -f product-catalog postgres-db
+docker compose -f docker-compose.prod.yml logs -f product-catalog postgres-db
 
-# Health check endpoint
-curl http://localhost:8080/actuator/health
+# Environment-specific health check endpoints
+curl http://localhost:8080/actuator/health  # Any environment
+curl http://localhost:8080/actuator/info    # Shows environment-specific features
 ```
 
-### 🔧 Environment Variables
+### 🔧 Multi-Environment Variables
 
-#### Core Configuration
-| Variable | Description | Default | Required |
+#### Environment-Specific Core Configuration
+| Environment | Database Name | Default Username | JWT Expiration | Resource Limits |
+|-------------|---------------|------------------|----------------|-----------------|
+| **Local** | `product_catalog_local` | `local_user` | `3600s` (1h) | No limits (development) |
+| **Stage** | `product_catalog_stage` | `stage_user` | `43200s` (12h) | 768M / 1.5 CPUs |
+| **Prod** | `product_catalog_prod` | `prod_user` | `86400s` (24h) | 1G / 2 CPUs |
+
+#### Required Variables by Environment
+**Local Environment** (`.env.local`)
+| Variable | Description | Example | Required |
 |----------|-------------|---------|----------|
-| `DATABASE_NAME` | PostgreSQL database name | `product_catalog` | ✅ |
-| `DATABASE_USERNAME` | Database username | `user` | ✅ |
-| `DATABASE_PASSWORD` | Database password | `password` | ✅ |
-| `JWT_SECRET` | JWT signing key (256+ bits) | See .env.example | ✅ |
-| `JWT_EXPIRATION` | Token expiration (seconds) | `86400` | ❌ |
-| `APP_PORT` | Application port | `8080` | ❌ |
+| `DATABASE_NAME` | Local database name | `product_catalog_local` | ✅ |
+| `DATABASE_USERNAME` | Local database user | `local_user` | ✅ |
+| `DATABASE_PASSWORD` | Local database password | `local_password` | ✅ |
+| `JWT_SECRET` | JWT signing key for local | `localDevSecretKey...` | ✅ |
+
+**Stage Environment** (`.env.stage`)
+| Variable | Description | Example | Required |
+|----------|-------------|---------|----------|
+| `DATABASE_NAME` | Stage database name | `product_catalog_stage` | ✅ |
+| `DATABASE_USERNAME` | Stage database user | `stage_user` | ✅ |
+| `DATABASE_PASSWORD` | Stage database password | `secure-stage-password` | ✅ |
+| `JWT_SECRET` | JWT signing key for stage | `changeme-stage-secret...` | ✅ |
+
+**Production Environment** (`.env.prod`)
+| Variable | Description | Example | Required |
+|----------|-------------|---------|----------|
+| `DATABASE_NAME` | Production database name | `product_catalog_prod` | ✅ |
+| `DATABASE_USERNAME` | Production database user | `prod_user` | ✅ |
+| `DATABASE_PASSWORD` | Production database password | `very-secure-prod-password` | ✅ |
+| `JWT_SECRET` | Production JWT signing key | `changeme-production-secret...` | ✅ |
+| `SMTP_USERNAME` | Email notification user | `notifications@company.com` | ❌ |
+| `SMTP_PASSWORD` | Email notification password | `smtp-password` | ❌ |
 
 #### Performance & Scaling
 | Variable | Description | Default |

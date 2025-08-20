@@ -6,6 +6,7 @@ on:
     paths:
       - 'src/**'
       - 'pom.xml'
+      - 'docker-compose.stage.yml'
       - '.github/workflows/*.yml'
 
 env:
@@ -55,10 +56,18 @@ jobs:
       run: |
         mvn versions:set -DnewVersion=${{ steps.version.outputs.version }} -DgenerateBackupPoms=false
 
+    - name: Validate stage environment configuration
+      run: |
+        # Validate docker-compose.stage.yml syntax
+        docker compose -f docker-compose.stage.yml config
+        
+        # Check if stage application properties exist
+        test -f src/main/resources/application-stage.properties
+
     - name: Run tests
       run: |
-        mvn clean test
-        mvn failsafe:integration-test failsafe:verify -Dtest=none -DfailIfNoTests=false
+        mvn clean test -Dspring.profiles.active=stage
+        mvn failsafe:integration-test failsafe:verify -Dtest=none -DfailIfNoTests=false -Dspring.profiles.active=stage
 
     - name: Build application
       run: mvn clean package -DskipTests
@@ -76,8 +85,9 @@ jobs:
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         tags: |
-          type=raw,value=develop
+          type=raw,value=stage
           type=raw,value=${{ steps.version.outputs.version }}
+          type=raw,value=develop
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
