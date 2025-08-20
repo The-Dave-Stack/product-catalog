@@ -77,10 +77,30 @@ services:
       - "traefik.http.routers.product-catalog-stage.entrypoints=web,websecure"
       - "traefik.http.routers.product-catalog-stage.tls=true"
       - "traefik.http.routers.product-catalog-stage.tls.certresolver=letsencrypt"
+      
+      # Service configuration
       - "traefik.http.services.product-catalog-stage.loadbalancer.server.port=8080"
       - "traefik.http.services.product-catalog-stage.loadbalancer.healthcheck.path=/actuator/health"
       - "traefik.http.services.product-catalog-stage.loadbalancer.healthcheck.interval=30s"
       - "traefik.http.services.product-catalog-stage.loadbalancer.healthcheck.timeout=10s"
+      
+      # SSE/MCP Server specific configuration for long-lived connections
+      - "traefik.http.routers.product-catalog-stage.middlewares=sse-headers-stage"
+      - "traefik.http.middlewares.sse-headers-stage.headers.customrequestheaders.Cache-Control=no-cache"
+      - "traefik.http.middlewares.sse-headers-stage.headers.customrequestheaders.Connection=keep-alive"
+      - "traefik.http.middlewares.sse-headers-stage.headers.customresponseheaders.Cache-Control=no-cache"
+      - "traefik.http.middlewares.sse-headers-stage.headers.customresponseheaders.Connection=keep-alive"
+      - "traefik.http.middlewares.sse-headers-stage.headers.customresponseheaders.Content-Type=text/event-stream"
+      
+      # Extended timeouts for SSE connections (24 hours for MCP server)
+      - "traefik.http.services.product-catalog-stage.loadbalancer.responseforwarding.flushinterval=1s"
+      - "traefik.http.services.product-catalog-stage.loadbalancer.passhostheader=true"
+      - "traefik.http.routers.product-catalog-stage.timeout=86400s"
+      
+      # Buffering disabled for SSE streaming
+      - "traefik.http.middlewares.sse-headers-stage.buffering.memrequestbodybytes=0"
+      - "traefik.http.middlewares.sse-headers-stage.buffering.memresponsebodybytes=0"
+      
       - "log.format=text"
 
 volumes:
