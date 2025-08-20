@@ -4,13 +4,13 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=product_catalog
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=product_catalog_local
+      - POSTGRES_USER=local_user
+      - POSTGRES_PASSWORD=local_password
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d product_catalog"]
+      test: ["CMD-SHELL", "pg_isready -U local_user -d product_catalog_local"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -25,10 +25,10 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=default,docker
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/product_catalog
-      - SPRING_DATASOURCE_USERNAME=user
-      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_PROFILES_ACTIVE=local,docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/product_catalog_local
+      - SPRING_DATASOURCE_USERNAME=local_user
+      - SPRING_DATASOURCE_PASSWORD=local_password
       - JWT_SECRET=dev-secret-key-1234567890123456789012345678901234567890
       - JWT_EXPIRATION=86400
       # MCP Server Configuration

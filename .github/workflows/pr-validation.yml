@@ -6,6 +6,9 @@ on:
     paths:
       - 'src/**'
       - 'pom.xml'
+      - 'docker-compose*.yml'
+      - 'nginx/**'
+      - '.env*.example'
       - '.github/workflows/*.yml'
 
 jobs:
@@ -33,14 +36,46 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
 
+    - name: Validate environment configurations
+      run: |
+        # Validate all Docker Compose files
+        echo "Validating Docker Compose configurations..."
+        docker compose -f docker-compose.local.yml config
+        docker compose -f docker-compose.stage.yml config  
+        docker compose -f docker-compose.prod.yml config
+        
+        # Check all environment property files exist
+        echo "Checking application property files..."
+        test -f src/main/resources/application-local.properties
+        test -f src/main/resources/application-stage.properties
+        test -f src/main/resources/application-prod.properties
+        
+        # Validate nginx configurations
+        echo "Checking nginx configurations..."
+        test -f nginx/nginx.conf
+        test -f nginx/nginx-stage.conf
+        test -f nginx/nginx-prod.conf
+        
+        # Check environment example files
+        echo "Checking environment example files..."
+        test -f .env.local.example
+        test -f .env.stage.example
+        test -f .env.prod.example
+
     - name: Run code formatting check
       run: mvn spotless:check
 
-    - name: Run unit tests
-      run: mvn clean test
+    - name: Run unit tests with different profiles
+      run: |
+        echo "Testing with local profile..."
+        mvn clean test -Dspring.profiles.active=local
+        echo "Testing with stage profile..."
+        mvn test -Dspring.profiles.active=stage
+        echo "Testing with prod profile..."
+        mvn test -Dspring.profiles.active=prod
 
     - name: Run integration tests
-      run: mvn failsafe:integration-test failsafe:verify -Dtest=none -DfailIfNoTests=false
+      run: mvn failsafe:integration-test failsafe:verify -Dtest=none -DfailIfNoTests=false -Dspring.profiles.active=local
 
     - name: Build application
       run: mvn clean package -DskipTests
