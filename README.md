@@ -516,13 +516,31 @@ Error: "Authentication failed"
 
 ## 🌍 Multi-Environment Setup
 
-This project supports **three distinct environments** with optimized configurations for different use cases:
+This project supports **multiple deployment environments** with optimized configurations for different use cases:
+
+### 📊 **Environment Overview**
 
 | Environment | Spring Profile | Docker Compose File | Database | Usage |
 |-------------|---------------|---------------------|----------|--------|
 | **Local** | `local,docker` | `docker-compose.local.yml` | `product_catalog_local` | Development with full debugging |
-| **Stage** | `stage,docker` | `docker-compose.stage.yml` | `product_catalog_stage` | Staging with production-like settings |
-| **Prod** | `prod,docker` | `docker-compose.prod.yml` | `product_catalog_prod` | Production with security hardening |
+| **Stage** | `stage,docker` | `docker-compose.stage.yml` | `product_catalog_stage` | General staging with nginx proxy |
+| **Prod** | `prod,docker` | `docker-compose.prod.yml` | `product_catalog_prod` | General production with nginx proxy |
+| **VPS Stage** | `stage,docker` | `docker-compose.vps-stage.yml` | `product_catalog_stage` | **VPS-specific staging with Traefik** |
+
+### 🚀 **Docker Compose File Categories**
+
+#### **General Use (Self-Hosted/Traditional Deployments)**
+- `docker-compose.local.yml` - Local development environment
+- `docker-compose.stage.yml` - General staging with nginx reverse proxy
+- `docker-compose.prod.yml` - General production with nginx reverse proxy and SSL
+
+#### **VPS-Specific (Traefik + Dokploy Deployments)**
+- `docker-compose.vps-stage.yml` - **VPS staging with Traefik integration**
+  - Designed for Dokploy deployment platforms
+  - Uses external `dokploy-network` for Traefik routing
+  - SSL/HTTPS with Let's Encrypt certificates
+  - No nginx required - Traefik handles all routing
+  - Optimized for MCP server SSE endpoints with long connections
 
 ### 🏠 Local Development Environment
 - **Full SQL logging** and formatted output for debugging
@@ -547,6 +565,15 @@ This project supports **three distinct environments** with optimized configurati
 - **Standard JWT expiration** (24 hours)
 - **Nginx reverse proxy** with SSL/TLS support and rate limiting
 - **Enhanced monitoring** and health checks
+
+### 🌐 VPS Stage Environment (Traefik + Dokploy)
+- **Traefik-only routing** - No nginx required, simplified architecture
+- **External network integration** - Uses `dokploy-network` for Traefik
+- **Automatic SSL/HTTPS** - Let's Encrypt certificates via Traefik
+- **MCP server optimized** - SSE endpoints with 24-hour connection support
+- **Domain routing** - Configured for `stage-product-catalog.thedavestack.com`
+- **Health check integration** - Traefik load balancer monitoring
+- **Production-like settings** - Same resource limits and JWT expiration as general staging
 
 ## How to Run
 
@@ -590,6 +617,28 @@ docker compose -f docker-compose.prod.yml up -d --scale product-catalog=3
 # Stop services
 docker compose -f docker-compose.prod.yml down
 ```
+
+#### VPS Stage Environment (Traefik + Dokploy)
+```bash
+# Deploy to VPS with Traefik (recommended for Dokploy platforms)
+docker compose -f docker-compose.vps-stage.yml up -d
+
+# Monitor VPS deployment
+docker compose -f docker-compose.vps-stage.yml ps
+docker compose -f docker-compose.vps-stage.yml logs -f product-catalog-stage
+
+# Stop VPS services
+docker compose -f docker-compose.vps-stage.yml down
+
+# Health check (after Traefik routing is configured)
+curl https://stage-product-catalog.thedavestack.com/actuator/health
+```
+
+**VPS Deployment Notes:**
+- Requires external `dokploy-network` to be created by Dokploy/Traefik
+- SSL certificates automatically handled by Traefik with Let's Encrypt
+- Domain `stage-product-catalog.thedavestack.com` must point to your VPS
+- All endpoints (REST API, MCP SSE, Swagger UI) work through Traefik routing
 
 ### 📝 Environment Configuration Files
 
