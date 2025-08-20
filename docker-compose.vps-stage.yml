@@ -1,0 +1,92 @@
+services:
+  postgres-db-stage:
+    image: postgres:17.5-alpine
+    container_name: product-catalog-postgres-stage
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${DATABASE_NAME:-product_catalog_stage}
+      - POSTGRES_USER=${DATABASE_USERNAME:-stage_user}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-stage_password}
+    volumes:
+      - postgres_stage_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME:-stage_user} -d ${DATABASE_NAME:-product_catalog_stage}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - dokploy-network
+    # Internal database - no external access needed
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: '0.8'
+        reservations:
+          memory: 256M
+          cpus: '0.3'
+    labels:
+      - "log.format=text"
+
+  product-catalog-stage:
+    image: ghcr.io/the-dave-stack/product-catalog:${IMAGE_TAG:-stage}
+    container_name: product-catalog-app-stage
+    restart: unless-stopped
+    expose:
+      - 8080
+    environment:
+      - SPRING_PROFILES_ACTIVE=stage,docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db-stage:5432/${DATABASE_NAME:-product_catalog_stage}
+      - SPRING_DATASOURCE_USERNAME=${DATABASE_USERNAME:-stage_user}
+      - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD:-stage_password}
+      - JWT_SECRET=${JWT_SECRET:-changeme-stage-secret-key-must-be-at-least-256-bits}
+      - JWT_EXPIRATION=${JWT_EXPIRATION:-43200}
+      - JAVA_OPTS=-Xmx512m -Xms256m -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0
+      # MCP Server Configuration - Stage
+      - MCP_SERVER_ENABLED=${MCP_SERVER_ENABLED:-true}
+      - MCP_SERVER_NAME=${MCP_SERVER_NAME:-product-catalog-mcp-server-stage}
+      - MCP_SERVER_VERSION=${MCP_SERVER_VERSION:-2.0.0-stage}
+      - MCP_SSE_ENDPOINT=${MCP_SSE_ENDPOINT:-/sse}
+    depends_on:
+      postgres-db-stage:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8080/actuator/health && curl -f -H 'Accept: text/event-stream' http://localhost:8080/sse"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 60s
+    networks:
+      - dokploy-network
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: '1.5'
+        reservations:
+          memory: 256M
+          cpus: '0.5'
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.product-catalog-stage.rule=Host(`stage-product-catalog.thedavestack.com`)"
+      - "traefik.http.routers.product-catalog-stage.entrypoints=web,websecure"
+      - "traefik.http.routers.product-catalog-stage.tls=true"
+      - "traefik.http.routers.product-catalog-stage.tls.certresolver=letsencrypt"
+      - "traefik.http.services.product-catalog-stage.loadbalancer.server.port=8080"
+      - "traefik.http.services.product-catalog-stage.loadbalancer.healthcheck.path=/actuator/health"
+      - "traefik.http.services.product-catalog-stage.loadbalancer.healthcheck.interval=30s"
+      - "traefik.http.services.product-catalog-stage.loadbalancer.healthcheck.timeout=10s"
+      - "log.format=text"
+
+volumes:
+  postgres_stage_data:
+    driver: local
+
+networks:
+  dokploy-network:
+    external: true
