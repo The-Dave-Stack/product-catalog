@@ -29,9 +29,7 @@ services:
           cpus: '0.3'
 
   product-catalog:
-    build: 
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/the-dave-stack/product-catalog:${IMAGE_TAG:-stage}
     restart: unless-stopped
     ports:
       - "${APP_PORT:-8080}:8080"

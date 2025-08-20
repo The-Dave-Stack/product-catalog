@@ -293,17 +293,27 @@ This application is fully containerized with production-ready Docker configurati
 
 #### Container Configurations
 
-**Development** (`docker-compose.yml`):
+**Local Development** (`docker-compose.local.yml`):
+- Uses local builds: `build: { context: ., dockerfile: Dockerfile }`
 - Single-node setup with PostgreSQL
 - Development profile with extended logging
 - Port 8080 exposed for local development
-- Volume mounts for hot-reload (optional)
+- Full debugging capabilities and hot-reload support
+
+**Staging** (`docker-compose.stage.yml`):
+- Uses pre-built images: `ghcr.io/the-dave-stack/product-catalog:${IMAGE_TAG:-stage}`
+- Resource limits: 768M memory, 1.5 CPU cores
+- Environment-based configuration for staging validation
+- Automated deployment via develop branch CI/CD
+- Optional nginx reverse proxy with stage-specific configuration
 
 **Production** (`docker-compose.prod.yml`):
+- Uses pre-built images: `ghcr.io/the-dave-stack/product-catalog:${IMAGE_TAG:-latest}`
 - Multi-service architecture with network isolation
-- Resource limits and restart policies
-- Environment-based configuration
-- Optional nginx reverse proxy with rate limiting
+- Resource limits: 1G memory, 2 CPU cores
+- Environment-based configuration with security hardening
+- Automated deployment via main branch CI/CD
+- Optional nginx reverse proxy with SSL/TLS and enhanced security
 - Horizontal scaling support
 
 #### Security Features
@@ -326,13 +336,16 @@ This application is fully containerized with production-ready Docker configurati
 ### Deployment Commands
 
 ```bash
-# Development
-docker compose up -d
+# Local Development (with local build)
+docker compose -f docker-compose.local.yml up -d
 
-# Production
+# Staging (using pre-built images - automated via develop branch)
+docker compose -f docker-compose.stage.yml up -d
+
+# Production (using pre-built images - automated via main branch)
 docker compose -f docker-compose.prod.yml up -d
 
-# Scaling
+# Production with scaling
 docker compose -f docker-compose.prod.yml up -d --scale product-catalog=3
 
 # With Reverse Proxy
