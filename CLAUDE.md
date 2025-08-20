@@ -316,7 +316,7 @@ This application is fully containerized with production-ready Docker configurati
 
 ### Environment Configuration
 
-**Container-Optimized Settings** (`application-docker.properties`):
+**Container-Optimized Settings** (integrated into environment-specific profiles):
 - Database connection pooling optimized for containers
 - JVM heap settings with container memory awareness
 - Structured logging for container log aggregation
