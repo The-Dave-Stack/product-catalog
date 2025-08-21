@@ -8,8 +8,8 @@ This project implements a **comprehensive, enterprise-grade RESTful API** for pr
 * **Framework**: Spring Boot 3.5.4 with Spring Security
 * **AI Framework**: Spring AI
 * **Build Tool**: Maven
-* **Database**: PostgreSQL with advanced indexing
-* **Schema Migration**: Flyway (3 migrations)
+* **Database**: PostgreSQL with advanced indexing and user management
+* **Schema Migration**: Flyway (4 migrations)
 * **Authentication**: JWT (JSON Web Tokens)
 * **Containerization**: Docker & Docker Compose
 * **Testing**: JUnit 5, Mockito, Testcontainers, RestAssured
@@ -20,7 +20,7 @@ This project implements a **comprehensive, enterprise-grade RESTful API** for pr
 * **Logging**: Structured logging with audit trails
 
 ## 🚀 Key Features
-* 🔐 **Secure by Design**: Stateless JWT authentication with role-based access control (ADMIN vs. USER).
+* 🔐 **Secure by Design**: Database-managed users with JWT authentication and granular role-based access control (ADMIN, USER, MANAGER, READONLY).
 * 📊 **Advanced Product Management**: Soft deletes, optimistic locking, inventory tracking, and custom validations.
 * 🔍 **Powerful API**: Pagination, sorting, and advanced filtering capabilities.
 * 🤖 **Comprehensive AI Integration**: Natural language interface for catalog management via Spring AI's MCP Server.
@@ -61,9 +61,9 @@ For a detailed guide on every aspect of this project, please refer to the docume
 
 ### ✅ **Completed Features**
 - Full CRUD API with advanced filtering
-- JWT authentication with role-based authorization (ADMIN/USER)
+- Database-managed users with JWT authentication and enhanced role-based authorization (ADMIN/USER/MANAGER/READONLY)
 - Comprehensive test suite (28+ tests)
-- Database optimization with indexing and soft deletes
+- Database optimization with indexing, soft deletes, and user management audit trails
 - Custom actuator endpoints for business metrics and health monitoring
 - Docker containerization and multi-environment deployment
 - Interactive API documentation and enhanced error handling
