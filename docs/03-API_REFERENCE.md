@@ -6,12 +6,11 @@ This document provides a detailed reference for all available API endpoints.
 
 ## 🔐 Authentication
 
-### Database-Managed Users (V4 Migration)
+### Database-Managed Users (V4 Schema)
 The authentication system uses database-managed users with BCrypt password hashing, replacing the previous hardcoded system.
 
-### Default Seeded Users:
-- **Admin**: `admin` / `admin123` (Full CRUD access + user management)
-- **User**: `user` / `user123` (Read-only access + MCP capabilities)
+### User Bootstrap Process:
+The application requires initial user setup through a bootstrap service (implemented in task-14). No default users are seeded in migrations following enterprise security best practices.
 
 ### Available Roles:
 - **ADMIN**: Full CRUD operations, user management, role management, API key management, MCP access

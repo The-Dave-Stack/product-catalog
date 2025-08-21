@@ -80,22 +80,17 @@ mvn spring-boot:run
 
 Once the application is running, you can interact with it using `cURL` or any API client.
 
-1.  **Get a JWT Token**
+1.  **Initial Setup Required**
 
-    The application uses database-managed users with BCrypt password hashing (V4 migration). Default seeded credentials are:
+    The application uses database-managed users with BCrypt password hashing (V4 schema). 
 
-    **Admin User (full access):**
+    **⚠️ First-Time Setup**: On first deployment, you'll need to create an initial admin user through the application's bootstrap process (implemented in task-14).
+
+    **After Bootstrap Setup:**
     ```bash
     curl -X POST http://localhost:8080/api/v1/auth/login \
       -H "Content-Type: application/json" \
-      -d '{"username":"admin","password":"admin123"}'
-    ```
-
-    **Standard User (read-only + MCP access):**
-    ```bash
-    curl -X POST http://localhost:8080/api/v1/auth/login \
-      -H "Content-Type: application/json" \
-      -d '{"username":"user","password":"user123"}'
+      -d '{"username":"your-admin-user","password":"your-secure-password"}'
     ```
 
     This will return a JSON object with an `accessToken`. Copy the token for the next step.

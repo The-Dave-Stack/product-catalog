@@ -29,10 +29,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Check formatting**: `mvn spotless:check`
 
 ### Authentication Testing
-- **Admin credentials**: `admin` / `admin123` (full CRUD access)
-- **User credentials**: `user` / `user123` (read-only access)
-- **Login endpoint**: `POST /api/v1/auth/login`
+- **Bootstrap Required**: Initial admin user setup required on first deployment
+- **Database-Managed Users**: All authentication managed via database (V4 schema)
+- **Login endpoint**: `POST /api/v1/auth/login`  
 - **JWT token required**: All product endpoints require `Authorization: Bearer <token>`
+- **Data Seeding**: Handled by application bootstrap service (task-14), not migrations
 
 ## Multi-Environment Architecture
 
@@ -104,7 +105,7 @@ This is an **enterprise-grade Spring Boot 3.5.4 REST API** for product catalog m
 
 ### Authentication & Security
 - **JWT Implementation**: Stateless authentication with configurable expiration
-- **Database-Managed Users**: V4 migration replaces hardcoded users with database-backed authentication system
+- **Database-Managed Users**: V4 migration provides schema foundation; user data managed by application bootstrap (task-14)
 - **Role-Based Access**: Enhanced with 4 roles - `ADMIN` (full CRUD), `USER` (read-only), `MANAGER` (write access), `READONLY` (minimal)
 - **Granular Permissions**: Permission arrays including READ, WRITE, DELETE, USER_MANAGEMENT, MCP_TOOLS, API_KEY_MANAGEMENT
 - **Security Filters**: JWT validation on all protected endpoints
