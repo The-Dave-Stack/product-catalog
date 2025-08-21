@@ -98,7 +98,6 @@ services:
       # Extended timeouts for SSE connections (24 hours for MCP server)
       - "traefik.http.services.product-catalog-stage.loadbalancer.responseforwarding.flushinterval=1s"
       - "traefik.http.services.product-catalog-stage.loadbalancer.passhostheader=true"
-      - "traefik.http.routers.product-catalog-stage.timeout=86400s"
       
       # Buffering disabled for SSE streaming
       - "traefik.http.middlewares.sse-headers-stage.buffering.memrequestbodybytes=0"
