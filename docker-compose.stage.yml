@@ -85,8 +85,6 @@ services:
     depends_on:
       - product-catalog
     networks:
-      - app-network
-      # Add dokploy-network when using Traefik
       - dokploy-network
     deploy:
       resources:
