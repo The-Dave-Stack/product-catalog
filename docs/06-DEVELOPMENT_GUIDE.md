@@ -532,8 +532,14 @@ mvn spotless:apply
 # Check CI status
 gh run list --branch integration
 
+# Check auto-PR status
+gh pr list --head integration --base develop
+
 # Create feature branch
 git checkout integration && git pull && git checkout -b feature/my-feature
+
+# Test auto-PR workflow (push to integration)
+git push origin integration  # Triggers auto-PR creation if CI passes
 ```
 
 **Important URLs:**
