@@ -18,9 +18,9 @@ Feature Branches → integration → develop → main
 
 | Branch | Purpose | Protection | Automation |
 |--------|---------|------------|------------|
-| **`integration`** | Feature integration & testing | ✅ Status checks required | ⚡ Auto-creates PR to develop |
-| **`develop`** | Stage deployment preparation | ✅ PR reviews + status checks | 🚀 Triggers stage deployment |
-| **`main`** | Production releases | ✅ PR reviews + status checks | 🏭 Triggers production deployment |
+| **`integration`** | Feature integration & testing | ✅ Status checks + admin push access | ⚡ Auto-creates PR to develop |
+| **`develop`** | Stage deployment preparation | 🔒 **PR-only** + reviews + status checks | 🚀 Triggers stage deployment + auto-PR to main |
+| **`main`** | Production releases | 🔒 **PR-only** + reviews + status checks | 🏭 Triggers production deployment |
 
 #### Development Process
 
@@ -477,10 +477,11 @@ For **single-developer repositories using AI agents** (like Claude Code), specia
 
 **Solution**: Configure branch protection with **admin override enabled**:
 
-**1. Branch Protection Configuration:**
-- Both `develop` and `main` branches are configured with `enforce_admins: false`
-- This allows repository administrators to override protection rules when needed
-- Review requirements remain in place for normal development
+**1. Enhanced Branch Protection Configuration:**
+- **`integration`**: Admin direct push access for rapid development
+- **`develop` and `main`**: 🔒 **Push restrictions enabled** - NO direct commits allowed
+- **Admin override**: `enforce_admins: false` allows admin to merge PRs when needed
+- **Security**: All release branches (`develop`/`main`) force proper PR workflow
 
 **2. Admin Override Process:**
 ```bash
@@ -606,6 +607,34 @@ mvn spotless:apply
 
 # Check what needs formatting
 mvn spotless:check
+```
+
+**❌ Problem: "Push to develop/main rejected"**
+```bash
+# Error message when trying to push directly
+remote: error: GH006: Protected branch update failed for refs/heads/develop
+remote: error: Cannot push to this branch
+
+# Solution: This is intentional security! Use PR workflow instead
+git checkout -b feature/my-changes
+git push origin feature/my-changes
+# Then create PR: feature/my-changes → develop (or integration)
+```
+
+**❌ Problem: "Need to create PR but can't remember workflow"**
+```bash
+# Quick reference for secure workflow:
+# 1. Push to integration (admin direct push allowed)
+git push origin integration
+
+# 2. Review auto-created PR: integration → develop  
+gh pr list --head integration --base develop
+
+# 3. Use admin override to merge after validation
+gh pr merge [PR_NUMBER] --admin --merge
+
+# 4. Review auto-created PR: develop → main
+gh pr list --head develop --base main
 ```
 
 ### Environment Problems
