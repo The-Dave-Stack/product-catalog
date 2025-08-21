@@ -89,6 +89,11 @@ jobs:
     - name: Auto-create PR to develop
       if: success()
       run: |
+        # Set up local tracking branches for comparison
+        git branch -r
+        git checkout integration || git checkout -b integration origin/integration
+        git branch develop origin/develop 2>/dev/null || echo "develop branch already exists"
+        
         # Check if there's already an open PR from integration to develop
         EXISTING_PR=$(gh pr list --state open --head integration --base develop --json number --jq '.[0].number // empty')
         
@@ -105,7 +110,7 @@ jobs:
           
           # Get commit info for PR description
           LATEST_COMMIT_MSG=$(git log -1 --pretty=format:'%s')
-          COMMIT_COUNT=$(git rev-list --count develop..integration)
+          COMMIT_COUNT=$(git rev-list --count origin/develop..origin/integration)
           
           # Create the PR
           gh pr create \
