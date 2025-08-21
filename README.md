@@ -56,6 +56,7 @@ For a detailed guide on every aspect of this project, please refer to the docume
 * [**API Reference**](./docs/03-API_REFERENCE.md): Detailed endpoints, request/response formats, and cURL examples.
 * [**AI Integration (MCP Server)**](./docs/04-MCP_SERVER_AI_INTEGRATION.md): In-depth guide to the Spring AI integration and its capabilities.
 * [**Architecture & Design**](./docs/05-ARCHITECTURE_AND_DESIGN.md): Overview of the software architecture, security, and testing strategy.
+* [**Development Guide**](./docs/06-DEVELOPMENT_GUIDE.md): **Comprehensive guide for developers** including Git Flow, automated workflows, testing strategies, and troubleshooting.
 
 ## 📝 Project Status
 
@@ -70,6 +71,14 @@ For a detailed guide on every aspect of this project, please refer to the docume
 
 ### 🎯 **Ready for Production**
 This Spring Boot application demonstrates enterprise-grade development practices and is production-ready.
+
+### 🔄 **Development Workflow**
+This project uses a **three-branch Git Flow strategy**:
+- **`integration`** → Feature integration and testing
+- **`develop`** → Stage deployment with RC versioning
+- **`main`** → Production deployment with semantic versioning
+
+**Workflow**: Feature branches → `integration` → `develop` → `main`
 
 ### 📋 **Known Issues / TODOs**
 - 3 integration tests temporarily disabled pending investigation into database constraint edge cases. These issues do not affect core functionality or security.

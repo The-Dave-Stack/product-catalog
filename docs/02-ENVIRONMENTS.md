@@ -115,11 +115,24 @@ Copy the appropriate `.env.{environment}.example` file and customize the values 
 
 ## 🎯 Git Flow Integration
 
-The multi-environment setup integrates seamlessly with Git Flow:
+The multi-environment setup integrates seamlessly with a **three-branch Git Flow strategy**:
 
-  - **Feature branches** → Local development and testing
-  - **develop branch** → Automated stage deployment
-  - **main branch** → Automated production deployment
+### Branch Strategy
+- **`integration`** → Feature integration and testing
+- **`develop`** → Automated stage deployment with RC versioning
+- **`main`** → Automated production deployment with semantic versioning
+
+### Workflow
+1. **Feature Development**: Create feature branches from `integration`
+2. **Feature Integration**: Merge feature branches into `integration` for testing
+3. **Stage Preparation**: Merge stable `integration` → `develop` (triggers stage deployment)
+4. **Production Release**: Merge validated `develop` → `main` (triggers production deployment)
+
+### Environment Mapping
+- **Feature branches** → Local development and testing
+- **integration branch** → Feature integration and stability testing
+- **develop branch** → Automated stage deployment (RC versions)
+- **main branch** → Automated production deployment (semantic versions)
 
 All environments are validated by GitHub Actions to ensure consistency and prevent configuration drift.
 

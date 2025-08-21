@@ -271,9 +271,29 @@ docker compose -f docker-compose.stage.yml up -d
 docker compose -f docker-compose.prod.yml up -d
 ```
 
-### Git Flow Integration
+### Git Flow Integration - Three Branch Strategy
 
+This project uses a **three-branch Git Flow strategy** for robust development and deployment:
+
+#### Branch Structure
+- **`integration`** → Feature integration and testing
+- **`develop`** → Automated stage deployment with RC versioning  
+- **`main`** → Automated production deployment with semantic versioning
+
+#### Development Workflow
+1. **Create feature branches from `integration`** (not develop)
+2. **Merge feature branches into `integration`** for testing
+3. **Merge stable `integration` → `develop`** (triggers stage deployment)
+4. **Merge validated `develop` → `main`** (triggers production deployment)
+
+#### Branch Protection Rules
+- **main**: Requires PR reviews, status checks must pass
+- **develop**: Requires PR reviews, status checks must pass
+- **integration**: Requires status checks, allows direct pushes for feature integration
+
+#### Environment Mapping
 - **Feature branches** → Local development testing
+- **integration branch** → Feature integration and stability testing
 - **develop branch** → Automated stage deployment with RC versioning
 - **main branch** → Automated production deployment with semantic versioning
 - **Pull requests** → Environment configuration validation

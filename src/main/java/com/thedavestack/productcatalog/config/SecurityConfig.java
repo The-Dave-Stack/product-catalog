@@ -42,17 +42,20 @@ public class SecurityConfig {
                                         .permitAll()
                                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
                                         .permitAll()
-                                        
+
                                         // Static resources - required for proper web functionality
                                         .requestMatchers("/favicon.ico") // Browser favicon requests
                                         .permitAll()
                                         .requestMatchers("/error") // Spring Boot error page
                                         .permitAll()
-                                        
-                                        // Swagger UI dependencies - required for UI to load properly
-                                        .requestMatchers("/webjars/**") // WebJars static resources (CSS/JS)
+
+                                        // Swagger UI dependencies - required for UI to load
+                                        // properly
+                                        .requestMatchers(
+                                                "/webjars/**") // WebJars static resources (CSS/JS)
                                         .permitAll()
-                                        .requestMatchers("/swagger-resources/**") // Legacy Swagger resources
+                                        .requestMatchers(
+                                                "/swagger-resources/**") // Legacy Swagger resources
                                         .permitAll()
 
                                         // Actuator endpoints - require USER or ADMIN role (except
