@@ -8,6 +8,8 @@ on:
       - 'pom.xml'
       - 'docker-compose*.yml'
       - '.github/workflows/*.yml'
+      - 'docs/**'
+      - '*.md'
 
 jobs:
   build-and-test:
