@@ -73,12 +73,14 @@ For a detailed guide on every aspect of this project, please refer to the docume
 This Spring Boot application demonstrates enterprise-grade development practices and is production-ready.
 
 ### 🔄 **Development Workflow**
-This project uses a **three-branch Git Flow strategy**:
-- **`integration`** → Feature integration and testing
-- **`develop`** → Stage deployment with RC versioning
+This project uses a **fully automated three-branch Git Flow strategy**:
+- **`integration`** → Feature integration with automated PR creation to develop
+- **`develop`** → Stage deployment with RC versioning + automated PR creation to main  
 - **`main`** → Production deployment with semantic versioning
 
-**Workflow**: Feature branches → `integration` → `develop` → `main`
+**Automated Workflow**: Feature branches → `integration` → **auto-PR** → `develop` → **auto-PR** → `main`
+
+Both integration and develop branches automatically create pull requests to the next branch when CI/deployment succeeds, maintaining proper review gates while maximizing development velocity.
 
 ### 📋 **Known Issues / TODOs**
 - 3 integration tests temporarily disabled pending investigation into database constraint edge cases. These issues do not affect core functionality or security.

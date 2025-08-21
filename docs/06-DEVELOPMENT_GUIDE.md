@@ -59,23 +59,24 @@ When you push to `integration`, our **Auto-PR System** automatically:
 - 📝 Includes detailed CI summary and commit information
 - 🔄 Updates existing PR with new results if one already exists
 
-**5. 🎯 Stage Preparation**
+**5. 🎯 Stage Deployment & Auto-PR**
 - Review the auto-generated PR from `integration` → `develop`
 - Approve and merge to trigger stage deployment
-- Test in staging environment
+- **Automatic**: Stage deployment creates auto-PR from `develop` → `main`
+- Test in staging environment and validate deployment
 
 **6. 🚀 Production Release**
-- Create PR from `develop` → `main`
-- Final review and approval
+- Review the auto-generated PR from `develop` → `main`
+- Final review and approval with production checklist
 - Merge triggers production deployment with semantic versioning
 
 ## ⚡ Automated CI/CD Workflows
 
-### 🤖 Auto-PR Creation System
+### 🤖 Dual Auto-PR Creation System
 
-Our **`integration-cd.yml`** workflow revolutionizes the development process:
+Our **complete automation chain** revolutionizes the development process with **two automated PR workflows**:
 
-#### How It Works
+#### Integration → Develop Workflow (`integration-cd.yml`)
 1. **Trigger**: Push to `integration` branch
 2. **CI Testing**: Comprehensive validation (unit tests, integration tests, formatting, environment config)
 3. **Auto-PR Logic**:
@@ -83,14 +84,27 @@ Our **`integration-cd.yml`** workflow revolutionizes the development process:
    - ❌ **CI Failure** → No PR created, developer notified
    - 🔄 **Existing PR** → Adds update comment instead of creating duplicate
 
+#### Develop → Main Workflow (`develop-cd.yml`)
+1. **Trigger**: Successful merge to `develop` branch
+2. **Stage Deployment**: RC versioning, Docker build, stage environment deployment
+3. **Auto-PR Logic**:
+   - ✅ **Stage Success** → Automatically creates PR to `main`
+   - 📊 **Deployment Info** → Includes RC version, Docker tags, test results
+   - 🔄 **Existing PR** → Adds deployment update comment with latest stage results
+
 #### What to Expect
 
-**Auto-Generated PR Title:**
+**Integration → Develop PR Title:**
 ```
 🚀 Integration → Develop: Auto-promotion after CI success
 ```
 
-**Auto-Generated PR Description:**
+**Develop → Main PR Title:**
+```
+🚀 Production Release: Deploy v1.0.0-RC.123 to Production
+```
+
+**Integration → Develop PR Description:**
 ```markdown
 ## 🎯 Automated Promotion from Integration
 
@@ -113,11 +127,47 @@ This PR was automatically created after successful CI validation.
 - Completed: 2024-01-15 14:30:22 UTC
 ```
 
+**Develop → Main PR Description:**
+```markdown
+## 🎯 Production Deployment Request
+
+This PR was automatically created after successful stage deployment and validation.
+
+### ✅ Stage Deployment Summary
+- **RC Version**: 1.0.0-RC.123
+- **Docker Images**: Built and pushed to registry
+- **Environment**: Stage deployment completed successfully
+- **Tests**: All tests passed (unit, integration, stage validation)
+- **Pre-release**: Created with tag v1.0.0-RC.123
+
+### 📋 Changes for Production
+- **Commits**: 5 new commit(s) since last main branch
+- **Latest commit**: feat: enhance product filtering capabilities
+- **Docker Image**: `ghcr.io/the-dave-stack/product-catalog:stage`
+
+### 🚀 Production Checklist
+- [x] Stage deployment successful
+- [x] All automated tests passed
+- [x] Docker images built and available
+- [x] Pre-release created
+- [ ] Manual verification in stage environment
+- [ ] Production deployment approval
+```
+
 #### Developer Responsibilities
+
+**For Integration → Develop PRs:**
 1. **Review Auto-Generated PRs**: Don't just merge automatically
 2. **Test in Integration**: Ensure your changes work before pushing
 3. **Monitor CI Status**: Check GitHub Actions for any failures
 4. **Handle Failures**: Fix issues if CI fails (no PR will be created)
+
+**For Develop → Main PRs:**
+1. **Validate Stage Deployment**: Verify the RC version works correctly in stage
+2. **Review Production Checklist**: Ensure all deployment criteria are met
+3. **Manual Testing**: Perform critical path testing in stage environment
+4. **Monitor Deployment Metrics**: Check stage environment health and performance
+5. **Rollback Preparation**: Understand rollback procedures before production merge
 
 ### 📊 All CI/CD Workflows
 
@@ -125,7 +175,7 @@ This PR was automatically created after successful CI validation.
 |----------|---------|---------|-------------|
 | **pr-validation.yml** | PRs to main/develop/integration | Validate changes | Tests, formatting, environment validation |
 | **integration-cd.yml** ⭐ | Push to integration | Auto-PR creation | CI tests + auto-create PR to develop |
-| **develop-cd.yml** | Push to develop | Stage deployment | RC versioning, Docker build, stage deploy |
+| **develop-cd.yml** ⭐ | Push to develop | Stage deployment + Auto-PR | RC versioning, Docker build, stage deploy, auto-create PR to main |
 | **main-cd.yml** | Push to main | Production deployment | Semantic versioning, production deploy |
 | **environment-validation.yml** | Scheduled/manual | Config validation | Environment consistency checks |
 
@@ -417,6 +467,70 @@ If you prefer not to use a PAT, you can enable repository-wide permissions:
 2. Scroll to "Workflow permissions" 
 3. Enable "Allow GitHub Actions to create and approve pull requests"
 
+### AI-Assisted Development Workflow (Single Developer)
+
+For **single-developer repositories using AI agents** (like Claude Code), special considerations apply to the automated workflow:
+
+#### Admin Override for AI Workflows
+
+**Problem**: GitHub's branch protection prevents PR creators from approving their own PRs, which blocks AI-assisted development where the same account creates and needs to merge PRs.
+
+**Solution**: Configure branch protection with **admin override enabled**:
+
+**1. Branch Protection Configuration:**
+- Both `develop` and `main` branches are configured with `enforce_admins: false`
+- This allows repository administrators to override protection rules when needed
+- Review requirements remain in place for normal development
+
+**2. Admin Override Process:**
+```bash
+# When auto-generated PR needs merging after validation
+gh pr merge [PR_NUMBER] --admin --merge
+
+# Example: Merge integration → develop PR after AI validation
+gh pr merge 36 --admin --merge
+```
+
+**3. When to Use Admin Override:**
+- ✅ AI-generated changes have been manually reviewed and validated
+- ✅ All CI tests pass and code quality checks succeed
+- ✅ Changes align with project requirements and security standards
+- ❌ Never bypass review for complex or security-sensitive changes
+
+**4. Safety Guidelines:**
+```bash
+# Always review the PR content before override
+gh pr view [PR_NUMBER] --json title,body,additions,deletions
+
+# Check CI status before merge
+gh pr checks [PR_NUMBER]
+
+# Verify no conflicts exist
+gh pr status --repo [REPO_NAME]
+```
+
+**5. Alternative: Manual Review Process**
+For critical changes, consider inviting a collaborator for genuine code review:
+```bash
+# Add temporary collaborator for review
+gh api repos/OWNER/REPO/collaborators/USERNAME -X PUT
+
+# Remove after review
+gh api repos/OWNER/REPO/collaborators/USERNAME -X DELETE
+```
+
+#### AI Agent Validation Checklist
+
+Before using admin override, ensure:
+- [ ] **Code Quality**: All formatting and linting checks pass
+- [ ] **Tests**: Unit, integration, and E2E tests are successful  
+- [ ] **Security**: No hardcoded secrets or security vulnerabilities
+- [ ] **Functionality**: Changes work as expected in local environment
+- [ ] **Documentation**: Any necessary documentation updates included
+- [ ] **Rollback Plan**: Confident in ability to revert changes if needed
+
+This workflow maintains code quality while enabling efficient AI-assisted development in single-developer environments.
+
 ## 🔧 Troubleshooting & FAQ
 
 ### Common Development Issues
@@ -425,6 +539,29 @@ If you prefer not to use a PAT, you can enable repository-wide permissions:
 ```
 Solution: This is actually expected behavior! Check the existing PR 
 from integration → develop for an update comment with your latest CI results.
+```
+
+**❌ Problem: Develop deployment successful but no PR to main created**
+```bash
+# Check if stage deployment actually completed successfully
+gh run list --branch develop --limit 3
+
+# Look for develop-cd.yml workflow failure
+gh run view [RUN_ID] --log
+
+# Common causes:
+# 1. Stage deployment failed (check Docker build/push steps)
+# 2. PAT_FOR_CI secret missing or expired
+# 3. Pre-release creation failed
+# 4. No changes since last main merge
+```
+
+**❌ Problem: Production PR created but missing deployment information**
+```
+Solution: Check the develop-cd.yml workflow logs. The PR creation
+step runs after successful stage deployment, so missing info usually
+indicates a workflow step failure during RC version generation or
+Docker image creation.
 ```
 
 **❌ Problem: "GitHub Actions is not permitted to create pull requests"**
@@ -575,14 +712,22 @@ mvn spotless:apply
 # Check CI status
 gh run list --branch integration
 
-# Check auto-PR status
+# Check auto-PR status (integration → develop)
 gh pr list --head integration --base develop
+
+# Check auto-PR status (develop → main)
+gh pr list --head develop --base main
+
+# Monitor complete automation chain
+gh pr list --state open  # Shows all active PRs
 
 # Create feature branch
 git checkout integration && git pull && git checkout -b feature/my-feature
 
-# Test auto-PR workflow (push to integration)
-git push origin integration  # Triggers auto-PR creation if CI passes
+# Complete automated workflow chain:
+git push origin integration  # 1. Triggers integration CI → auto-PR to develop
+# (Review & merge PR) → 2. Triggers stage deployment → auto-PR to main
+# (Review & merge PR) → 3. Triggers production deployment
 ```
 
 **Important URLs:**
