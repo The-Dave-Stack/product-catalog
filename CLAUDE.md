@@ -271,9 +271,29 @@ docker compose -f docker-compose.stage.yml up -d
 docker compose -f docker-compose.prod.yml up -d
 ```
 
-### Git Flow Integration
+### Git Flow Integration - Three Branch Strategy
 
+This project uses a **three-branch Git Flow strategy** for robust development and deployment:
+
+#### Branch Structure
+- **`integration`** → Feature integration and testing
+- **`develop`** → Automated stage deployment with RC versioning  
+- **`main`** → Automated production deployment with semantic versioning
+
+#### Development Workflow
+1. **Create feature branches from `integration`** (not develop)
+2. **Merge feature branches into `integration`** for testing
+3. **Merge stable `integration` → `develop`** (triggers stage deployment)
+4. **Merge validated `develop` → `main`** (triggers production deployment)
+
+#### Branch Protection Rules
+- **main**: Requires PR reviews, status checks must pass
+- **develop**: Requires PR reviews, status checks must pass
+- **integration**: Requires status checks, allows direct pushes for feature integration
+
+#### Environment Mapping
 - **Feature branches** → Local development testing
+- **integration branch** → Feature integration and stability testing
 - **develop branch** → Automated stage deployment with RC versioning
 - **main branch** → Automated production deployment with semantic versioning
 - **Pull requests** → Environment configuration validation
@@ -293,17 +313,27 @@ This application is fully containerized with production-ready Docker configurati
 
 #### Container Configurations
 
-**Development** (`docker-compose.yml`):
+**Local Development** (`docker-compose.local.yml`):
+- Uses local builds: `build: { context: ., dockerfile: Dockerfile }`
 - Single-node setup with PostgreSQL
 - Development profile with extended logging
 - Port 8080 exposed for local development
-- Volume mounts for hot-reload (optional)
+- Full debugging capabilities and hot-reload support
+
+**Staging** (`docker-compose.stage.yml`):
+- Uses pre-built images: `ghcr.io/the-dave-stack/product-catalog:${IMAGE_TAG:-stage}`
+- Resource limits: 768M memory, 1.5 CPU cores
+- Environment-based configuration for staging validation
+- Automated deployment via develop branch CI/CD
+- Optional nginx reverse proxy with stage-specific configuration
 
 **Production** (`docker-compose.prod.yml`):
+- Uses pre-built images: `ghcr.io/the-dave-stack/product-catalog:${IMAGE_TAG:-latest}`
 - Multi-service architecture with network isolation
-- Resource limits and restart policies
-- Environment-based configuration
-- Optional nginx reverse proxy with rate limiting
+- Resource limits: 1G memory, 2 CPU cores
+- Environment-based configuration with security hardening
+- Automated deployment via main branch CI/CD
+- Optional nginx reverse proxy with SSL/TLS and enhanced security
 - Horizontal scaling support
 
 #### Security Features
@@ -326,13 +356,16 @@ This application is fully containerized with production-ready Docker configurati
 ### Deployment Commands
 
 ```bash
-# Development
-docker compose up -d
+# Local Development (with local build)
+docker compose -f docker-compose.local.yml up -d
 
-# Production
+# Staging (using pre-built images - automated via develop branch)
+docker compose -f docker-compose.stage.yml up -d
+
+# Production (using pre-built images - automated via main branch)
 docker compose -f docker-compose.prod.yml up -d
 
-# Scaling
+# Production with scaling
 docker compose -f docker-compose.prod.yml up -d --scale product-catalog=3
 
 # With Reverse Proxy

@@ -1,6 +1,6 @@
 project_name: "product-catalog-spring"
 default_status: "To Do"
-statuses: ["To Do", "In Progress", "Blocked", "Done"]
+statuses: ["To Do", "In Progress", "Pending Review", "Blocked", "Done"]
 labels: []
 milestones: []
 date_format: yyyy-mm-dd

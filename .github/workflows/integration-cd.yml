@@ -1,0 +1,157 @@
+name: Integration Branch CI
+
+on:
+  push:
+    branches: [ integration ]
+    paths:
+      - 'src/**'
+      - 'pom.xml'
+      - 'docker-compose*.yml'
+      - '.github/workflows/*.yml'
+      - 'docs/**'
+      - '*.md'
+
+jobs:
+  build-and-test:
+    name: Build and Test Integration
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      actions: read
+    defaults:
+      run:
+        working-directory: ./
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch all history for all branches
+
+    - name: Fetch all branches
+      run: git fetch --all
+
+    - name: Set up Java 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Cache Maven dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
+    - name: Validate environment configurations
+      run: |
+        # Validate all Docker Compose files
+        echo "Validating Docker Compose configurations..."
+        docker compose -f docker-compose.local.yml config
+        docker compose -f docker-compose.stage.yml config  
+        docker compose -f docker-compose.prod.yml config
+        
+        # Check all environment property files exist
+        echo "Checking application property files..."
+        test -f src/main/resources/application-local.properties
+        test -f src/main/resources/application-stage.properties
+        test -f src/main/resources/application-prod.properties
+
+    - name: Run code formatting check
+      run: mvn spotless:check
+
+    - name: Run comprehensive tests
+      run: |
+        echo "Running unit tests..."
+        mvn clean test -Dspring.profiles.active=local
+        
+        echo "Running integration tests..."
+        mvn failsafe:integration-test failsafe:verify -Dtest=none -DfailIfNoTests=false -Dspring.profiles.active=local
+
+    - name: Build application
+      run: mvn clean package -DskipTests
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: integration-test-results
+        path: |
+          target/surefire-reports/
+          target/failsafe-reports/
+
+    - name: Create build summary
+      run: |
+        echo "## Integration Build Summary" >> $GITHUB_STEP_SUMMARY
+        echo "✅ Integration branch validation completed" >> $GITHUB_STEP_SUMMARY
+        echo "🔧 Branch ready for merge to develop" >> $GITHUB_STEP_SUMMARY
+        echo "📊 All tests and validations passed" >> $GITHUB_STEP_SUMMARY
+
+    - name: Auto-create PR to develop
+      if: success()
+      run: |
+        # Note: This step requires PAT_FOR_CI secret with 'repo' and 'pull_requests' permissions
+        # Fallback to GITHUB_TOKEN if PAT_FOR_CI is not available
+        # Set up local tracking branches for comparison
+        git branch -r
+        git checkout integration || git checkout -b integration origin/integration
+        git branch develop origin/develop 2>/dev/null || echo "develop branch already exists"
+        
+        # Check if there's already an open PR from integration to develop
+        EXISTING_PR=$(gh pr list --state open --head integration --base develop --json number --jq '.[0].number // empty')
+        
+        if [ -n "$EXISTING_PR" ]; then
+          echo "✓ PR #$EXISTING_PR already exists from integration to develop"
+          echo "📝 Adding comment to existing PR with latest CI results"
+          gh pr comment $EXISTING_PR --body "🔄 **Integration CI passed again**
+          
+          ✅ All tests passed in latest push to integration branch
+          📊 Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          🕐 Completed: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+        else
+          echo "🚀 Creating new PR from integration to develop"
+          
+          # Get commit info for PR description
+          LATEST_COMMIT_MSG=$(git log -1 --pretty=format:'%s')
+          COMMIT_COUNT=$(git rev-list --count origin/develop..origin/integration)
+          
+          # Create the PR
+          gh pr create \
+            --base develop \
+            --head integration \
+            --title "🚀 Integration → Develop: Auto-promotion after CI success" \
+            --body "## 🎯 Automated Promotion from Integration
+          
+          This PR was automatically created after successful CI validation on the integration branch.
+          
+          ### ✅ Validation Summary
+          - **Unit Tests**: ✅ Passed  
+          - **Integration Tests**: ✅ Passed
+          - **Code Formatting**: ✅ Passed (Spotless)
+          - **Environment Config**: ✅ Validated (local, stage, prod)
+          - **Build**: ✅ Successful
+          
+          ### 📋 Changes
+          - **Commits**: $COMMIT_COUNT new commit(s) since last develop merge
+          - **Latest commit**: $LATEST_COMMIT_MSG
+          
+          ### 🔗 CI Details
+          - **Workflow run**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          - **Triggered by**: ${{ github.actor }}
+          - **Completed**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          
+          ### 🚀 Next Steps
+          1. Review the changes in this PR
+          2. Approve and merge to trigger stage deployment
+          3. Monitor stage environment for validation
+          
+          ---
+          *This PR was automatically created by the Integration CI workflow*"
+          
+          echo "✅ PR created successfully"
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT_FOR_CI || secrets.GITHUB_TOKEN }}

@@ -23,6 +23,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      pull-requests: write
 
     steps:
     - name: Checkout code
@@ -107,3 +108,91 @@ jobs:
         publish: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create deployment summary
+      run: |
+        echo "## Stage Deployment Summary" >> $GITHUB_STEP_SUMMARY
+        echo "✅ Stage deployment completed successfully" >> $GITHUB_STEP_SUMMARY
+        echo "🚀 RC Version: ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "🐳 Docker Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:stage" >> $GITHUB_STEP_SUMMARY
+        echo "🎯 Ready for production deployment" >> $GITHUB_STEP_SUMMARY
+
+    - name: Auto-create PR to main
+      if: success()
+      run: |
+        # Set up local tracking branches for comparison
+        git fetch --all
+        git checkout develop || git checkout -b develop origin/develop
+        git branch main origin/main 2>/dev/null || echo "main branch already exists"
+        
+        # Check if there's already an open PR from develop to main
+        EXISTING_PR=$(gh pr list --state open --head develop --base main --json number --jq '.[0].number // empty')
+        
+        if [ -n "$EXISTING_PR" ]; then
+          echo "✓ PR #$EXISTING_PR already exists from develop to main"
+          echo "📝 Adding comment to existing PR with latest deployment results"
+          gh pr comment $EXISTING_PR --body "🚀 **Stage Deployment Successful**
+          
+          ✅ New RC version deployed to staging: **${{ steps.version.outputs.version }}**
+          🐳 Docker images built and pushed successfully
+          📊 All tests passed in stage environment
+          🔗 Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          🕐 Deployed: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          
+          **Ready for production deployment** 🎯"
+        else
+          echo "🎯 Creating new PR from develop to main"
+          
+          # Get deployment info for PR description
+          LATEST_COMMIT_MSG=$(git log -1 --pretty=format:'%s')
+          COMMIT_COUNT=$(git rev-list --count origin/main..origin/develop)
+          
+          # Create the PR
+          gh pr create \
+            --base main \
+            --head develop \
+            --title "🚀 Production Release: Deploy ${{ steps.version.outputs.version }} to Production" \
+            --body "## 🎯 Production Deployment Request
+          
+          This PR was automatically created after successful stage deployment and validation.
+          
+          ### ✅ Stage Deployment Summary
+          - **RC Version**: ${{ steps.version.outputs.version }}
+          - **Docker Images**: Built and pushed to registry
+          - **Environment**: Stage deployment completed successfully
+          - **Tests**: All tests passed (unit, integration, stage validation)
+          - **Pre-release**: Created with tag v${{ steps.version.outputs.version }}
+          
+          ### 📋 Changes for Production
+          - **Commits**: $COMMIT_COUNT new commit(s) since last main branch
+          - **Latest commit**: $LATEST_COMMIT_MSG
+          - **Docker Image**: \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:stage\`
+          
+          ### 🔗 Deployment Details
+          - **Stage Workflow**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          - **Triggered by**: ${{ github.actor }}
+          - **Deployed**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          - **Registry**: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          
+          ### 🚀 Production Checklist
+          - [x] Stage deployment successful
+          - [x] All automated tests passed
+          - [x] Docker images built and available
+          - [x] Pre-release created
+          - [ ] Manual verification in stage environment
+          - [ ] Production deployment approval
+          
+          ### 📖 Rollback Plan
+          Previous production version can be restored using:
+          \`\`\`bash
+          # Rollback to previous Docker image if needed
+          docker service update --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:previous-tag product-catalog
+          \`\`\`
+          
+          ---
+          *This PR was automatically created by the Develop CI/CD workflow after successful stage deployment*"
+          
+          echo "✅ Production PR created successfully"
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT_FOR_CI || secrets.GITHUB_TOKEN }}
