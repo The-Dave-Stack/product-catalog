@@ -94,7 +94,6 @@ services:
         reservations:
           memory: 32M
           cpus: '0.1'
-    # Minimal Traefik labels for Dokploy deployment
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.product-catalog-stage.rule=Host(`${STAGE_DOMAIN:-stage-product-catalog.thedavestack.com}`)"
@@ -102,9 +101,6 @@ services:
       - "traefik.http.routers.product-catalog-stage.tls=true"
       - "traefik.http.routers.product-catalog-stage.tls.certresolver=letsencrypt"
       - "traefik.http.services.product-catalog-stage.loadbalancer.server.port=80"
-      # Health check for Traefik load balancer
-      - "traefik.http.services.product-catalog-stage.loadbalancer.healthcheck.path=/actuator/health"
-      - "traefik.http.services.product-catalog-stage.loadbalancer.healthcheck.interval=30s"
       - "log.format=text"
 
 volumes:
