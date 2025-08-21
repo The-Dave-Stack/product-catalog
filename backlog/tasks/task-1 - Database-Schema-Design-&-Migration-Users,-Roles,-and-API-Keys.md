@@ -1,9 +1,10 @@
 ---
 id: task-1
 title: 'Database Schema Design & Migration - Users, Roles, and API Keys'
-status: todo
+status: Pending Review
 assignee: []
 created_date: '2025-08-21 11:30'
+updated_date: '2025-08-21 12:05'
 labels:
   - database
   - migration
