@@ -384,6 +384,39 @@ curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
 - ✅ Role-based access control testing
 - ✅ SQL injection prevention (use JPA properly)
 
+## 🔐 Repository Setup for Auto-PR Creation
+
+### Personal Access Token (PAT) Configuration
+
+The auto-PR creation workflow requires a Personal Access Token with proper permissions to create pull requests on behalf of GitHub Actions.
+
+#### Required Setup (Repository Owner):
+
+**1. Create Personal Access Token:**
+1. Go to GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. Click "Generate new token" → "Generate new token (classic)"
+3. Set expiration (recommend 90 days or 1 year)
+4. Select required scopes:
+   - ✅ `repo` (Full control of private repositories)
+   - ✅ `pull_requests` (Access pull requests)
+5. Generate token and **copy it immediately**
+
+**2. Add Token to Repository Secrets:**
+1. Go to Repository Settings → Secrets and variables → Actions
+2. Click "New repository secret"
+3. Name: `PAT_FOR_CI`
+4. Value: [paste your PAT here]
+5. Click "Add secret"
+
+**3. Verify Setup:**
+After adding the PAT secret, the next push to `integration` branch will automatically create PRs to `develop` if CI passes.
+
+#### Alternative: Repository Permission Settings
+If you prefer not to use a PAT, you can enable repository-wide permissions:
+1. Repository Settings → Actions → General
+2. Scroll to "Workflow permissions" 
+3. Enable "Allow GitHub Actions to create and approve pull requests"
+
 ## 🔧 Troubleshooting & FAQ
 
 ### Common Development Issues
@@ -392,6 +425,16 @@ curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
 ```
 Solution: This is actually expected behavior! Check the existing PR 
 from integration → develop for an update comment with your latest CI results.
+```
+
+**❌ Problem: "GitHub Actions is not permitted to create pull requests"**
+```bash
+# Error message in workflow logs
+pull request create failed: GraphQL: GitHub Actions is not permitted to create 
+or approve pull requests (createPullRequest)
+
+# Solution: Repository owner needs to set up PAT_FOR_CI secret
+# See "Repository Setup for Auto-PR Creation" section above for detailed steps
 ```
 
 **❌ Problem: Auto-PR not created after pushing to integration**

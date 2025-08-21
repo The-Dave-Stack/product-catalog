@@ -93,6 +93,8 @@ jobs:
     - name: Auto-create PR to develop
       if: success()
       run: |
+        # Note: This step requires PAT_FOR_CI secret with 'repo' and 'pull_requests' permissions
+        # Fallback to GITHUB_TOKEN if PAT_FOR_CI is not available
         # Set up local tracking branches for comparison
         git branch -r
         git checkout integration || git checkout -b integration origin/integration
@@ -152,4 +154,4 @@ jobs:
           echo "✅ PR created successfully"
         fi
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PAT_FOR_CI || secrets.GITHUB_TOKEN }}
