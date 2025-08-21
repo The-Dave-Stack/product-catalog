@@ -83,7 +83,7 @@ services:
       
       # Service configuration
       - "traefik.http.services.product-catalog-stage.loadbalancer.server.port=8080"
-      - "traefik.http.services.product-catalog-stage.loadbalancer.healthcheck.path=/"
+      - "traefik.http.services.product-catalog-stage.loadbalancer.healthcheck.path=/api/v1/auth/login"
       - "traefik.http.services.product-catalog-stage.loadbalancer.healthcheck.interval=30s"
       - "traefik.http.services.product-catalog-stage.loadbalancer.healthcheck.timeout=10s"
       
