@@ -31,7 +31,7 @@ com.thedavestack.productcatalog/
 
 ## 🔒 Security Architecture
 - **JWT Stateless Authentication**: No server-side session storage, making the application scalable.
-- **Role-Based Access Control**: Clear separation of duties between `ADMIN` (full CRUD) and `USER` (read-only) roles.
+- **Enhanced Role-Based Access Control**: Database-managed users with 4 granular roles - `ADMIN` (full management), `MANAGER` (write access), `USER` (read + MCP), and `READONLY` (minimal access).
 - **Input Validation**: Multi-layer validation using Bean Validation annotations (`@Valid`) and custom validators for business rules.
 - **Developer-Friendly Errors**: 401 (Unauthorized) and 404 (Not Found) errors provide helpful links and guidance to the developer.
 

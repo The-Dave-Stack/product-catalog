@@ -4,7 +4,7 @@ title: 'Database Schema Design & Migration - Users, Roles, and API Keys'
 status: Pending Review
 assignee: []
 created_date: '2025-08-21 11:30'
-updated_date: '2025-08-21 12:05'
+updated_date: '2025-08-21 12:39'
 labels:
   - database
   - migration
@@ -33,3 +33,7 @@ Create normalized database schema with separate tables for users, roles, and API
 ## Implementation Plan
 
 1. Checkout develop branch and create feature/database-schema-users-roles-apikeys branch,2. Create V4__Create_users_roles_and_api_keys_tables.sql migration file,3. Implement roles table with id name description permissions timestamps,4. Implement users table with role_id foreign key and authentication fields,5. Implement api_keys table with user relationship and scoping,6. Implement user_role_history for audit trail,7. Add strategic indexes for performance optimization,8. Insert default roles with appropriate permissions,9. Migrate existing hardcoded users to database,10. Test migration locally with flyway,11. Commit and push changes,12. Create PR to develop branch
+
+## Implementation Notes
+
+Implementation complete: V4 migration follows enterprise best practices with schema-only approach. All data seeding removed from migration and moved to application bootstrap service (task-14) for security. Tables created: roles, users, api_keys, user_role_history. Architectural improvement: eliminates hardcoded credentials in version control, enables environment-specific user setup, and separates schema evolution from business data. Awaiting PR #34 review.

@@ -29,10 +29,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Check formatting**: `mvn spotless:check`
 
 ### Authentication Testing
-- **Admin credentials**: `admin` / `admin123` (full CRUD access)
-- **User credentials**: `user` / `user123` (read-only access)
-- **Login endpoint**: `POST /api/v1/auth/login`
+- **Bootstrap Required**: Initial admin user setup required on first deployment
+- **Database-Managed Users**: All authentication managed via database (V4 schema)
+- **Login endpoint**: `POST /api/v1/auth/login`  
 - **JWT token required**: All product endpoints require `Authorization: Bearer <token>`
+- **Data Seeding**: Handled by application bootstrap service (task-14), not migrations
 
 ## Multi-Environment Architecture
 
@@ -58,7 +59,7 @@ This is an **enterprise-grade Spring Boot 3.5.4 REST API** for product catalog m
 ### Key Components - Enhanced
 - **Product Entity**: Advanced model with inventory, categories, soft deletes, versioning
 - **JWT Authentication**: Stateless auth with role-based access (ADMIN/USER)
-- **Database**: PostgreSQL with 3 Flyway migrations and strategic indexing
+- **Database**: PostgreSQL with 4 Flyway migrations and strategic indexing
 - **Audit System**: Asynchronous audit logging for all CRUD operations
 - **Testing Strategy**: 28+ tests (Unit, Integration, E2E) with 100% pass rate
 - **API Documentation**: Enhanced Swagger UI with JWT security schemas
@@ -91,18 +92,26 @@ This is an **enterprise-grade Spring Boot 3.5.4 REST API** for product catalog m
 ## Development Notes - Enterprise Features
 
 ### Database Schema - Enhanced
-- **Flyway Migrations**: 3 production-ready migrations with automatic execution
+- **Flyway Migrations**: 4 production-ready migrations with automatic execution
 - **Products Table**: Enhanced with inventory, categories, audit fields, soft delete
-- **Strategic Indexing**: Indexes on `sku`, `category`, `stock_quantity`, `deleted`
+- **User Management Tables** (V4 Migration):
+  - **Roles Table**: Normalized role management with granular permissions arrays (ADMIN, USER, MANAGER, READONLY)
+  - **Users Table**: Database-managed users with role-based access control, MCP access flags, BCrypt password hashing
+  - **API Keys Table**: Scoped API key management with expiration, usage tracking, and user association
+  - **User Role History**: Complete audit trail for all role changes with timestamps and change reasons
+- **Strategic Indexing**: Indexes on `sku`, `category`, `stock_quantity`, `deleted`, plus 8 user management indexes
 - **Data Types**: UUID primary keys, BigDecimal for prices, timestamps for auditing
 - **Soft Delete**: Logical deletion preserving data integrity and audit trails
 
 ### Authentication & Security
 - **JWT Implementation**: Stateless authentication with configurable expiration
-- **Role-Based Access**: `ADMIN` (full CRUD) vs `USER` (read-only) permissions
+- **Database-Managed Users**: V4 migration provides schema foundation; user data managed by application bootstrap (task-14)
+- **Role-Based Access**: Enhanced with 4 roles - `ADMIN` (full CRUD), `USER` (read-only), `MANAGER` (write access), `READONLY` (minimal)
+- **Granular Permissions**: Permission arrays including READ, WRITE, DELETE, USER_MANAGEMENT, MCP_TOOLS, API_KEY_MANAGEMENT
 - **Security Filters**: JWT validation on all protected endpoints
-- **Hardcoded Users**: Demo credentials for development and testing
-- **Password Security**: Production-ready for external authentication integration
+- **BCrypt Password Hashing**: Secure password storage with industry-standard encryption
+- **API Key Management**: Scoped API keys with expiration and usage tracking
+- **Audit Trail**: Complete role change history for compliance and security monitoring
 
 ### Testing Patterns - Comprehensive
 - **Unit Tests**: `@ExtendWith(MockitoExtension.class)` with service layer isolation
