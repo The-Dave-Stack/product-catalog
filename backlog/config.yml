@@ -1,14 +1,14 @@
-project_name: "product-catalog-spring"
+project_name: "product-catalog"
 default_status: "To Do"
-statuses: ["To Do", "In Progress", "Pending Review", "Blocked", "Done"]
-labels: []
+statuses: ["To Do", "In Progress", "PR for Integration", "PR for Stage", "PR for Production", "Blocked", "Done"]
+labels: ["database", "migration", "security", "foundation", "filters", "authentication", "validation", "controller", "api", "rest-api", "endpoints", "dto", "serialization", "seeding", "data", "production", "testing", "integration", "e2e", "configuration", "documentation", "deployment", "jpa", "entities", "domain", "repository", "data-access", "queries", "services", "jwt", "mcp", "tools", "admin", "user-management", "roles", "permissions", "self-service", "user-profile", "resources", "providers", "authorization"]
 milestones: []
 date_format: yyyy-mm-dd
 max_column_width: 20
 auto_open_browser: true
 default_port: 6420
-remote_operations: false
+remote_operations: true
 auto_commit: false
 bypass_git_hooks: false
-check_active_branches: false
+check_active_branches: true
 active_branch_days: 30

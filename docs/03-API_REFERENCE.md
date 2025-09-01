@@ -6,9 +6,17 @@ This document provides a detailed reference for all available API endpoints.
 
 ## 🔐 Authentication
 
-### Default Credentials:
-- **Admin**: `admin` / `admin123` (Full CRUD access)
-- **User**: `user` / `user123` (Read-only access)
+### Database-Managed Users (V4 Schema)
+The authentication system uses database-managed users with BCrypt password hashing, replacing the previous hardcoded system.
+
+### User Bootstrap Process:
+The application requires initial user setup through a bootstrap service (implemented in task-14). No default users are seeded in migrations following enterprise security best practices.
+
+### Available Roles:
+- **ADMIN**: Full CRUD operations, user management, role management, API key management, MCP access
+- **MANAGER**: Write operations, delete operations, API key management, MCP access (no user management)
+- **USER**: Read operations, MCP tools and resources, SSE access
+- **READONLY**: Minimal read-only access, limited MCP resources
 
 | Method | Path                    | Description                      | Authorization |
 |--------|-------------------------|----------------------------------|---------------|
@@ -17,12 +25,12 @@ This document provides a detailed reference for all available API endpoints.
 ## 📦 Product Management
 | Method | Path                           | Description                           | Authorization |
 |--------|--------------------------------|---------------------------------------|---------------|
-| `POST` | `/products`             | Create a new product                  | ADMIN         |
-| `GET`  | `/products/{id}`        | Retrieve a product by ID              | USER/ADMIN    |
-| `GET`  | `/products`             | Retrieve products with pagination     | USER/ADMIN    |
-| `GET`  | `/products/low-stock`   | Get products below minimum stock      | USER/ADMIN    |
-| `PUT`  | `/products/{id}`        | Update an existing product            | ADMIN         |
-| `DELETE`| `/products/{id}`       | Soft delete a product                 | ADMIN         |
+| `POST` | `/products`             | Create a new product                  | ADMIN/MANAGER |
+| `GET`  | `/products/{id}`        | Retrieve a product by ID              | All roles     |
+| `GET`  | `/products`             | Retrieve products with pagination     | All roles     |
+| `GET`  | `/products/low-stock`   | Get products below minimum stock      | All roles     |
+| `PUT`  | `/products/{id}`        | Update an existing product            | ADMIN/MANAGER |
+| `DELETE`| `/products/{id}`       | Soft delete a product                 | ADMIN/MANAGER |
 
 ### 🔍 Advanced Query Parameters
 The `GET /products` endpoint supports the following query parameters for filtering, sorting, and pagination:
@@ -40,11 +48,11 @@ The `GET /products` endpoint supports the following query parameters for filteri
 | Method | Path                           | Description                           | Authorization |
 |--------|--------------------------------|---------------------------------------|---------------|
 | `GET`  | `/actuator/health`             | Application health status with custom product health | Public |
-| `GET`  | `/actuator/info`               | Enhanced application information with features | USER/ADMIN |
-| `GET`  | `/actuator/metrics`            | Standard Spring Boot metrics          | USER/ADMIN |
-| `GET`  | `/actuator/productmetrics`     | Custom product catalog metrics        | USER/ADMIN |
-| `GET`  | `/actuator/audit`              | Audit log summary and recent entries  | USER/ADMIN |
-| `GET`  | `/actuator/audit/{entityId}`   | Audit logs for specific entity        | USER/ADMIN |
+| `GET`  | `/actuator/info`               | Enhanced application information with features | All roles |
+| `GET`  | `/actuator/metrics`            | Standard Spring Boot metrics          | All roles |
+| `GET`  | `/actuator/productmetrics`     | Custom product catalog metrics        | All roles |
+| `GET`  | `/actuator/audit`              | Audit log summary and recent entries  | ADMIN only |
+| `GET`  | `/actuator/audit/{entityId}`   | Audit logs for specific entity        | ADMIN only |
 | `GET`  | `/swagger-ui/index.html`       | Interactive API documentation         | Public |
 | `GET`  | `/v3/api-docs`                 | OpenAPI specification (JSON)         | Public |
 
